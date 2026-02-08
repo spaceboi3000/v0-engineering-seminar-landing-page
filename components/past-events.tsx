@@ -11,7 +11,7 @@ const images = [
 
 export function PastEvents() {
   return (
-    <section id="past-events" className="border-t border-white/5 py-20 lg:py-28">
+    <section id="past-events" className="py-20 lg:py-28">
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
         <div className="text-center">
           <p className="text-sm font-semibold uppercase tracking-widest bg-gradient-to-r from-red-500 to-fuchsia-500 bg-clip-text text-transparent">

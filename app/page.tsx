@@ -7,6 +7,7 @@ import { Sponsors } from "@/components/sponsors"
 import { Location } from "@/components/location"
 import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
+import { SectionDivider } from "@/components/section-divider"
 
 export default function Page() {
   return (
@@ -14,13 +15,20 @@ export default function Page() {
       <Header />
       <main>
         <Hero />
+        <SectionDivider />
         <About />
+        <SectionDivider />
         <PastEvents />
+        <SectionDivider />
         <Venue />
+        <SectionDivider />
         <Location />
+        <SectionDivider />
         <Sponsors />
+        <SectionDivider />
         <Contact />
       </main>
+      <SectionDivider />
       <Footer />
     </>
   )
