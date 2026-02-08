@@ -3,7 +3,7 @@ import { Bot, Users, Lightbulb } from "lucide-react"
 
 export function About() {
   return (
-    <section id="about" className="border-t border-white/5 py-20 lg:py-28">
+    <section id="about" className="border-t border-white/5 bg-zinc-950 py-20 lg:py-28">
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           {/* Text Column */}
