@@ -21,8 +21,8 @@ export function Header() {
         {/* Logo */}
         <a href="#home" className="flex items-center gap-3">
           <Image
-            src="/images/ras-logo.png"
-            alt="RAS NTUA logo"
+            src="/images/robotalk-logo.png"
+            alt="RoboTalk Logo"
             width={40}
             height={40}
             className="h-10 w-10 object-contain"

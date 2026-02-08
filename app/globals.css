@@ -54,3 +54,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+button, a, .clickable {
+  user-select: none;
+  -webkit-user-select: none; /* Safari needs this */
+}

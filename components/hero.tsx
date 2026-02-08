@@ -22,7 +22,7 @@ export function Hero() {
       {/* Background image with dark overlay */}
       <div className="absolute inset-0" aria-hidden="true">
         <Image
-          src="/images/event-1.jpg"
+          src="/images/Robotalk2025-4.jpg"
           alt=""
           fill
           className="object-cover"

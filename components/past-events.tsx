@@ -1,12 +1,12 @@
 import Image from "next/image"
 
 const images = [
-  { src: "/images/event-1.jpg", alt: "Packed auditorium at a previous RoboTalk event", tall: true },
-  { src: "/images/event-2.jpg", alt: "Speaker presenting on robotics innovations", tall: false },
-  { src: "/images/event-3.jpg", alt: "Networking event with professionals discussing", tall: false },
-  { src: "/images/event-4.jpg", alt: "Hands-on robotics workshop", tall: true },
-  { src: "/images/event-5.jpg", alt: "Panel discussion with expert speakers", tall: false },
-  { src: "/images/event-6.jpg", alt: "Expo floor with robotics displays", tall: true },
+  { src: "/images/Robotalk2025-1.jpg", alt: "Packed auditorium at a previous RoboTalk event", tall: true },
+  { src: "/images/Robotalk2025-2.jpg", alt: "Hands-on robotics workshop", tall: false },
+  { src: "/images/Robotalk2025-3.png", alt: "Speaker presenting on robotics innovations", tall: false },
+  { src: "/images/Robotalk2025-4.jpg", alt: "Final Group image", tall: false },
+  { src: "/images/Robotalk2024-1.jpg", alt: "Robotalk 2024 event", tall: false },
+  { src: "/images/Robotalk2023-1.jpg", alt: "RoboTalk 2023 event", tall: false },
 ]
 
 export function PastEvents() {

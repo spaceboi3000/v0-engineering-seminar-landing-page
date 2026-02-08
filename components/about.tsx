@@ -63,7 +63,7 @@ export function About() {
           {/* Image Column */}
           <div className="relative overflow-hidden rounded-2xl border border-white/10 shadow-[0_0_30px_rgba(239,68,68,0.08)]">
             <Image
-              src="/images/about-seminar.jpg"
+              src="/images/Robotalk2025-5.jpg"
               alt="Engineering seminar with audience and presenter on stage"
               width={800}
               height={600}
