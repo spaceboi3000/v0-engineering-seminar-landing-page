@@ -11,10 +11,10 @@ const images = [
 
 export function PastEvents() {
   return (
-    <section id="past-events" className="border-t border-border/50 py-20 lg:py-28">
+    <section id="past-events" className="border-t border-white/5 py-20 lg:py-28">
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
         <div className="text-center">
-          <p className="text-sm font-semibold uppercase tracking-widest text-primary">
+          <p className="text-sm font-semibold uppercase tracking-widest bg-gradient-to-r from-red-500 to-fuchsia-500 bg-clip-text text-transparent">
             Gallery
           </p>
           <h2 className="mt-3 text-balance text-3xl font-bold tracking-tight text-foreground md:text-4xl">
@@ -30,7 +30,7 @@ export function PastEvents() {
           {images.map((img) => (
             <div
               key={img.src}
-              className="group mb-4 break-inside-avoid overflow-hidden rounded-xl border border-border"
+              className="group mb-4 break-inside-avoid overflow-hidden rounded-xl border border-white/10 transition-shadow duration-500 hover:shadow-[0_0_25px_rgba(239,68,68,0.15)]"
             >
               <Image
                 src={img.src || "/placeholder.svg"}
