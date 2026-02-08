@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { Cpu, Users, Lightbulb } from "lucide-react"
+import { Bot, Users, Lightbulb } from "lucide-react"
 
 export function About() {
   return (
@@ -12,24 +12,24 @@ export function About() {
               About the Event
             </p>
             <h2 className="mt-3 text-balance text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-              Where Innovation Meets Industry
+              Where Robotics Meets Innovation
             </h2>
             <p className="mt-6 leading-relaxed text-muted-foreground">
-              TechSummit 2026 brings together the brightest minds in electrical and computer
-              engineering for two days of keynotes, workshops, and networking. From cutting-edge
-              semiconductor research to the latest in embedded systems and AI hardware, this event
-              is designed for professionals pushing the boundaries of what technology can achieve.
+              RoboTalk is an event organized by IEEE RAS NTUA Student Branch, bringing together
+              students, researchers, and industry professionals to explore the latest advances
+              in robotics, automation, and artificial intelligence. Join us for an inspiring day
+              of talks, demos, and networking at Goethe-Institut Athen.
             </p>
 
             <div className="mt-8 flex flex-col gap-5">
               <div className="flex items-start gap-4">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                  <Cpu className="h-5 w-5 text-primary" />
+                  <Bot className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground">40+ Technical Sessions</h3>
+                  <h3 className="font-semibold text-foreground">Robotics {"&"} AI Talks</h3>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    Deep-dive talks on semiconductors, FPGA, power electronics, and more.
+                    Expert presentations on cutting-edge robotics, machine learning, and automation.
                   </p>
                 </div>
               </div>
@@ -39,9 +39,9 @@ export function About() {
                   <Users className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground">500+ Attendees</h3>
+                  <h3 className="font-semibold text-foreground">Networking</h3>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    Connect with engineers, researchers, and executives from around the globe.
+                    Connect with fellow students, researchers, and professionals from the robotics community.
                   </p>
                 </div>
               </div>
@@ -51,9 +51,9 @@ export function About() {
                   <Lightbulb className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground">Hands-On Workshops</h3>
+                  <h3 className="font-semibold text-foreground">Live Demos</h3>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    Get practical experience with the latest tools and frameworks.
+                    See real robots and AI systems in action during interactive demonstrations.
                   </p>
                 </div>
               </div>
@@ -64,7 +64,7 @@ export function About() {
           <div className="relative overflow-hidden rounded-2xl border border-border">
             <Image
               src="/images/about-seminar.jpg"
-              alt="Engineering seminar keynote stage with blue lighting"
+              alt="Engineering seminar with audience and presenter on stage"
               width={800}
               height={600}
               className="h-auto w-full object-cover"

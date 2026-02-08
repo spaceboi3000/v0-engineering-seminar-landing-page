@@ -1,13 +1,12 @@
 "use client"
 
 import React from "react"
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
-import { Mail, Send, Twitter, Linkedin, Github } from "lucide-react"
+import { Mail, Send, Instagram, Linkedin } from "lucide-react"
 
 export function Contact() {
   const [submitted, setSubmitted] = useState(false)
@@ -92,11 +91,11 @@ export function Contact() {
               <div>
                 <h3 className="font-semibold text-foreground">Email Us</h3>
                 <a
-                  href="mailto:hello@techsummit2026.com"
+                  href="mailto:ras.ntua@gmail.com"
                   className="mt-1 flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary"
                 >
                   <Mail className="h-4 w-4" />
-                  hello@techsummit2026.com
+                  ras.ntua@gmail.com
                 </a>
               </div>
 
@@ -104,25 +103,22 @@ export function Contact() {
                 <h3 className="font-semibold text-foreground">Follow Us</h3>
                 <div className="mt-2 flex gap-3">
                   <a
-                    href="#"
+                    href="https://www.instagram.com/ras.ntua"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-secondary text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary"
-                    aria-label="Twitter"
+                    aria-label="Instagram"
                   >
-                    <Twitter className="h-4 w-4" />
+                    <Instagram className="h-4 w-4" />
                   </a>
                   <a
-                    href="#"
+                    href="https://www.linkedin.com/company/ras-chapter-ntua-student-branch/"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-secondary text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary"
                     aria-label="LinkedIn"
                   >
                     <Linkedin className="h-4 w-4" />
-                  </a>
-                  <a
-                    href="#"
-                    className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-secondary text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary"
-                    aria-label="GitHub"
-                  >
-                    <Github className="h-4 w-4" />
                   </a>
                 </div>
               </div>

@@ -1,4 +1,4 @@
-import { MapPin, Train, Plane, Building } from "lucide-react"
+import { MapPin, Train } from "lucide-react"
 
 export function Location() {
   return (
@@ -20,41 +20,21 @@ export function Location() {
               <MapPin className="mt-1 h-5 w-5 shrink-0 text-primary" />
               <div>
                 <h3 className="text-lg font-semibold text-foreground">
-                  Megaron Athens International Conference Centre
+                  Goethe-Institut Athen
                 </h3>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Vass. Sofias {"&"} Kokkali, 115 21 Athens, Greece
+                  Omirou 14-16, 106 72 Athens, Greece
                 </p>
               </div>
             </div>
 
             <div className="mt-8 flex flex-col gap-4">
               <div className="flex items-start gap-3">
-                <Plane className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                <div>
-                  <h4 className="font-medium text-foreground">By Air</h4>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Athens International Airport (ATH) is 35 km away. Direct metro line to Syntagma Square, then a short walk.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
                 <Train className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
                 <div>
                   <h4 className="font-medium text-foreground">By Metro</h4>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    Megaro Moussikis station (Line 3) is directly adjacent to the venue.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <Building className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                <div>
-                  <h4 className="font-medium text-foreground">Accommodation</h4>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Partner hotels within walking distance offer discounted rates for attendees.
+                    Panepistimio station (Line 2) is a short walk from the venue, located in the heart of central Athens.
                   </p>
                 </div>
               </div>
@@ -64,8 +44,8 @@ export function Location() {
           {/* Map Column */}
           <div className="aspect-video overflow-hidden rounded-2xl border border-border bg-secondary">
             <iframe
-              title="Megaron Athens International Conference Centre"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3144.4683853668894!2d23.74584481531!3d37.97614797972!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14a1bd3e3b0e7c3d%3A0x5a3e3e8f0e0e0e0e!2sMegaron%20Athens%20International%20Conference%20Centre!5e0!3m2!1sen!2sgr!4v1700000000000!5m2!1sen!2sgr"
+              title="Goethe-Institut Athen location"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3145.0!2d23.7352!3d37.9812!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14a1bd3919e9a3a3%3A0x7e8e8e8e8e8e8e8e!2sGoethe-Institut%20Athen!5e0!3m2!1sen!2sgr!4v1700000000000!5m2!1sen!2sgr"
               className="h-full w-full border-0"
               allowFullScreen
               loading="lazy"

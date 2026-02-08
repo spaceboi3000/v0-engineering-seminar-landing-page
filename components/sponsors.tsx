@@ -1,11 +1,4 @@
-const sponsors = [
-  { name: "Synapse Corp", initials: "SC" },
-  { name: "NovaTech", initials: "NT" },
-  { name: "CircuitLab", initials: "CL" },
-  { name: "VoltEdge", initials: "VE" },
-  { name: "DeepSilicon", initials: "DS" },
-  { name: "PulseWave", initials: "PW" },
-]
+import Image from "next/image"
 
 export function Sponsors() {
   return (
@@ -13,27 +6,45 @@ export function Sponsors() {
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
         <div className="text-center">
           <p className="text-sm font-semibold uppercase tracking-widest text-primary">
-            Proudly Supported By
+            Organized By
           </p>
           <h2 className="mt-3 text-balance text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-            Our Partners
+            Our Community
           </h2>
         </div>
 
-        <div className="mt-12 flex flex-wrap items-center justify-center gap-8 lg:gap-12">
-          {sponsors.map((s) => (
-            <div
-              key={s.name}
-              className="group flex h-20 w-40 items-center justify-center rounded-xl border border-border bg-secondary/50 transition-all duration-300 hover:border-primary/30 hover:bg-secondary"
-            >
-              <div className="flex flex-col items-center gap-1 grayscale transition-all duration-300 group-hover:grayscale-0">
-                <span className="text-2xl font-bold tracking-tighter text-primary">{s.initials}</span>
-                <span className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground group-hover:text-foreground">
-                  {s.name}
-                </span>
-              </div>
+        <div className="mt-12 flex flex-wrap items-center justify-center gap-12 lg:gap-16">
+          {/* RAS NTUA Logo */}
+          <div className="group flex flex-col items-center gap-3 transition-all duration-300">
+            <div className="flex h-28 w-28 items-center justify-center rounded-2xl border border-border bg-secondary/50 p-4 transition-all duration-300 group-hover:border-primary/30 group-hover:bg-secondary">
+              <Image
+                src="/images/ras-logo.png"
+                alt="IEEE RAS NTUA Student Branch"
+                width={80}
+                height={80}
+                className="h-auto w-full object-contain grayscale transition-all duration-300 group-hover:grayscale-0"
+              />
             </div>
-          ))}
+            <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground group-hover:text-foreground">
+              IEEE RAS NTUA
+            </span>
+          </div>
+
+          {/* IEEE SB NTUA Logo */}
+          <div className="group flex flex-col items-center gap-3 transition-all duration-300">
+            <div className="flex h-28 w-28 items-center justify-center rounded-2xl border border-border bg-secondary/50 p-4 transition-all duration-300 group-hover:border-primary/30 group-hover:bg-secondary">
+              <Image
+                src="/images/sb-logo.png"
+                alt="IEEE NTUA Student Branch"
+                width={80}
+                height={80}
+                className="h-auto w-full object-contain grayscale transition-all duration-300 group-hover:grayscale-0"
+              />
+            </div>
+            <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground group-hover:text-foreground">
+              IEEE NTUA SB
+            </span>
+          </div>
         </div>
       </div>
     </section>

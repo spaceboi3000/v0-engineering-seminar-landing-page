@@ -8,12 +8,12 @@ const _inter = Inter({ subsets: ['latin'] })
 const _jetbrainsMono = JetBrains_Mono({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'TechSummit 2026 | The Future of Electrical & Computer Engineering',
-  description: 'Join industry leaders for a 2-day immersive engineering seminar in Athens, Greece. October 12-14, 2026.',
+  title: 'RoboTalk | RAS NTUA Robotics & AI Seminar',
+  description: 'Join us for RoboTalk on April 25, 2026 at Goethe-Institut Athen. A robotics and AI seminar by IEEE RAS NTUA.',
 }
 
 export const viewport: Viewport = {
-  themeColor: '#0ea5e9',
+  themeColor: '#d44040',
 }
 
 export default function RootLayout({

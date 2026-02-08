@@ -1,12 +1,12 @@
 import Image from "next/image"
 
 const images = [
-  { src: "/images/event-1.jpg", alt: "Packed auditorium at a previous TechSummit", tall: true },
-  { src: "/images/event-2.jpg", alt: "Speaker presenting on electrical engineering innovations", tall: false },
+  { src: "/images/event-1.jpg", alt: "Packed auditorium at a previous RoboTalk event", tall: true },
+  { src: "/images/event-2.jpg", alt: "Speaker presenting on robotics innovations", tall: false },
   { src: "/images/event-3.jpg", alt: "Networking event with professionals discussing", tall: false },
-  { src: "/images/event-4.jpg", alt: "Hands-on engineering workshop with circuit boards", tall: true },
-  { src: "/images/event-5.jpg", alt: "Panel discussion with expert speakers on stage", tall: false },
-  { src: "/images/event-6.jpg", alt: "Aerial view of a technology expo floor", tall: true },
+  { src: "/images/event-4.jpg", alt: "Hands-on robotics workshop", tall: true },
+  { src: "/images/event-5.jpg", alt: "Panel discussion with expert speakers", tall: false },
+  { src: "/images/event-6.jpg", alt: "Expo floor with robotics displays", tall: true },
 ]
 
 export function PastEvents() {
@@ -21,7 +21,7 @@ export function PastEvents() {
             Past Highlights
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-            Moments from previous TechSummit events around the world.
+            Moments from previous RoboTalk events.
           </p>
         </div>
 
