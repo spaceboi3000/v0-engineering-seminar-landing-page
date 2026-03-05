@@ -64,12 +64,11 @@ export function Sponsors() {
                 </span>
               </div>
 
-              {/* IEEE SB NTUA Logo - Now with Blue Styling */}
+              {/* IEEE SB NTUA Logo - Blue Styling */}
               <div 
                 onClick={() => setActiveHost(activeHost === "ieee" ? null : "ieee")}
                 className="group flex flex-col items-center gap-3 cursor-pointer"
               >
-                {/* Changed border-fuchsia to border-blue and updated RGB for blue glow */}
                 <div className={`flex h-32 w-32 items-center justify-center rounded-2xl border bg-white/5 p-4 transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-[0_0_30px_rgba(37,99,235,0.25)] ${
                   activeHost === "ieee" ? "border-blue-500 shadow-[0_0_30px_rgba(37,99,235,0.25)]" : "border-white/10 group-hover:border-blue-500/50"
                 }`}>
@@ -81,7 +80,6 @@ export function Sponsors() {
                     className="h-auto w-full object-contain"
                   />
                 </div>
-                {/* Changed text-fuchsia to text-blue */}
                 <span className={`text-xs font-bold uppercase tracking-widest transition-colors ${
                   activeHost === "ieee" ? "text-blue-400" : "text-white/60 group-hover:text-blue-400"
                 }`}>
@@ -91,13 +89,12 @@ export function Sponsors() {
 
             </div>
 
-            {/* IEEE Info Panel (Appears from Right) - Now Blue */}
+            {/* IEEE Info Panel (Appears from Right) - Blue Styling */}
             <div 
               className={`transition-all duration-700 ease-in-out overflow-hidden flex items-center ${
                 activeHost === "ieee" ? "max-w-md opacity-100 ml-4 sm:ml-8" : "max-w-0 opacity-0 ml-0"
               }`}
             >
-              {/* Changed border and bg from fuchsia to blue */}
               <div className="w-[280px] sm:w-[320px] rounded-2xl border border-blue-500/30 bg-blue-500/10 p-5 backdrop-blur-sm shrink-0">
                 <h3 className="text-lg font-bold text-blue-400 mb-2">IEEE NTUA SB</h3>
                 <p className="text-sm text-white/80 leading-relaxed">
