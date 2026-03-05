@@ -2,6 +2,8 @@ import { Header } from "@/components/header"
 import { Hero } from "@/components/hero"
 import { About } from "@/components/about"
 import { PastEvents } from "@/components/past-events"
+import { SectionDivider } from "@/components/section-divider"
+import { Organizers } from "@/components/organizers"
 import { Sponsors } from "@/components/sponsors"
 import { Location } from "@/components/location"
 import { Contact } from "@/components/contact"
@@ -15,7 +17,11 @@ export default function Page() {
         <Hero />
         <About />
         <PastEvents />
+        <SectionDivider />
+        <Organizers />
+        <SectionDivider />
         <Sponsors />
+        <SectionDivider />
         <Location />
         <Contact />
       </main>

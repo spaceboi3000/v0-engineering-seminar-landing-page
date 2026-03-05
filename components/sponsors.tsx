@@ -1,149 +1,176 @@
 "use client"
 
 import Image from "next/image"
-import { useState } from "react"
+import Link from "next/link"
+import { useCallback, useEffect, useRef, useState } from "react"
+import { sponsors, TIER_CONFIG } from "@/data/sponsors"
 
 export function Sponsors() {
-  // State to track which host info is currently open
-  const [activeHost, setActiveHost] = useState<"ras" | "ieee" | null>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const [isPaused, setIsPaused] = useState(false)
+  const [canScrollLeft, setCanScrollLeft] = useState(false)
+  const [canScrollRight, setCanScrollRight] = useState(true)
+  const animationRef = useRef<number | null>(null)
+  const scrollSpeed = 0.6 // pixels per frame
+
+  // Sort sponsors by tier order: platinum → gold → silver → bronze
+  const tierOrder = ["platinum", "gold", "silver", "bronze"] as const
+  const sortedSponsors = [...sponsors].sort(
+    (a, b) => tierOrder.indexOf(a.tier) - tierOrder.indexOf(b.tier)
+  )
+
+  const updateScrollButtons = useCallback(() => {
+    const el = scrollRef.current
+    if (!el) return
+    setCanScrollLeft(el.scrollLeft > 2)
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 2)
+  }, [])
+
+  // Auto-scroll animation loop
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!el) return
+
+    const step = () => {
+      if (!isPaused && el) {
+        el.scrollLeft += scrollSpeed
+        // Loop back when reaching the end
+        if (el.scrollLeft >= el.scrollWidth - el.clientWidth) {
+          el.scrollLeft = 0
+        }
+        updateScrollButtons()
+      }
+      animationRef.current = requestAnimationFrame(step)
+    }
+
+    animationRef.current = requestAnimationFrame(step)
+
+    return () => {
+      if (animationRef.current) cancelAnimationFrame(animationRef.current)
+    }
+  }, [isPaused, updateScrollButtons])
+
+  const scrollBy = (direction: "left" | "right") => {
+    const el = scrollRef.current
+    if (!el) return
+    const amount = 340
+    el.scrollBy({ left: direction === "left" ? -amount : amount, behavior: "smooth" })
+    setTimeout(updateScrollButtons, 350)
+  }
 
   return (
-    <div className="flex flex-col">
-      {/* SECTION 1: ORGANIZERS */}
-      <section className="border-t border-white/5 py-16 lg:py-20 bg-black/20 overflow-hidden">
-        <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="text-center">
-            <p className="text-sm font-semibold uppercase tracking-widest text-red-500">
-              Event Hosts
-            </p>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight text-white md:text-4xl">
-              Organized By
-            </h2>
-          </div>
+    <section className="py-16 lg:py-20">
+      <div className="mx-auto max-w-7xl px-4 lg:px-8">
+        <div className="text-center mb-10">
+          <p className="text-sm font-semibold uppercase tracking-widest text-ras-red">
+            Our Partners
+          </p>
+          <h2 className="mt-2 text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+            Supported By
+          </h2>
+        </div>
 
-          {/* Interactive Container for Hosts */}
-          <div className="mt-10 flex w-full items-center justify-center">
-            
-            {/* RAS Info Panel (Appears from Left) */}
-            <div 
-              className={`transition-all duration-700 ease-in-out overflow-hidden flex items-center ${
-                activeHost === "ras" ? "max-w-md opacity-100 mr-4 sm:mr-8" : "max-w-0 opacity-0 mr-0"
-              }`}
-            >
-              <div className="w-[280px] sm:w-[320px] rounded-2xl border border-red-500/30 bg-red-500/10 p-5 backdrop-blur-sm shrink-0">
-                <h3 className="text-lg font-bold text-red-400 mb-2">IEEE RAS NTUA</h3>
-                <p className="text-sm text-white/80 leading-relaxed">
-                  The Robotics and Automation Society Student Branch Chapter at NTUA is dedicated to fostering innovation and hands-on experience in robotics.
-                </p>
-              </div>
-            </div>
+        {/* Carousel wrapper */}
+        <div
+          className="relative group/carousel"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
+          {/* Left arrow */}
+          <button
+            onClick={() => scrollBy("left")}
+            disabled={!canScrollLeft}
+            aria-label="Scroll sponsors left"
+            className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full border border-border/40 bg-background/70 backdrop-blur-sm flex items-center justify-center transition-all duration-300 ${
+              canScrollLeft
+                ? "opacity-0 group-hover/carousel:opacity-100 hover:border-ras-red/50 hover:bg-background/90 cursor-pointer"
+                : "opacity-0 cursor-default"
+            }`}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-foreground">
+              <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
 
-            {/* The Logos Container */}
-            <div className="flex flex-wrap sm:flex-nowrap items-center justify-center gap-8 lg:gap-12 shrink-0 transition-transform duration-700">
-              
-              {/* RAS NTUA Logo - Red Styling */}
-              <div 
-                onClick={() => setActiveHost(activeHost === "ras" ? null : "ras")}
-                className="group flex flex-col items-center gap-3 cursor-pointer"
-              >
-                <div className={`flex h-32 w-32 items-center justify-center rounded-2xl border bg-white/5 p-4 transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-[0_0_30px_rgba(239,68,68,0.25)] ${
-                  activeHost === "ras" ? "border-red-500 shadow-[0_0_30px_rgba(239,68,68,0.25)]" : "border-white/10 group-hover:border-red-500/50"
-                }`}>
-                  <Image
-                    src="/images/ras-logo.png"
-                    alt="IEEE RAS NTUA Student Branch"
-                    width={100}
-                    height={100}
-                    className="h-auto w-full object-contain" 
-                  />
-                </div>
-                <span className={`text-xs font-bold uppercase tracking-widest transition-colors ${
-                  activeHost === "ras" ? "text-red-400" : "text-white/60 group-hover:text-red-400"
-                }`}>
-                  IEEE RAS NTUA
-                </span>
-              </div>
+          {/* Right arrow */}
+          <button
+            onClick={() => scrollBy("right")}
+            disabled={!canScrollRight}
+            aria-label="Scroll sponsors right"
+            className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full border border-border/40 bg-background/70 backdrop-blur-sm flex items-center justify-center transition-all duration-300 ${
+              canScrollRight
+                ? "opacity-0 group-hover/carousel:opacity-100 hover:border-ras-red/50 hover:bg-background/90 cursor-pointer"
+                : "opacity-0 cursor-default"
+            }`}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-foreground">
+              <path d="M6 4L10 8L6 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
 
-              {/* IEEE SB NTUA Logo - Now with Blue Styling */}
-              <div 
-                onClick={() => setActiveHost(activeHost === "ieee" ? null : "ieee")}
-                className="group flex flex-col items-center gap-3 cursor-pointer"
-              >
-                {/* Changed border-fuchsia to border-blue and updated RGB for blue glow */}
-                <div className={`flex h-32 w-32 items-center justify-center rounded-2xl border bg-white/5 p-4 transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-[0_0_30px_rgba(37,99,235,0.25)] ${
-                  activeHost === "ieee" ? "border-blue-500 shadow-[0_0_30px_rgba(37,99,235,0.25)]" : "border-white/10 group-hover:border-blue-500/50"
-                }`}>
-                  <Image
-                    src="/images/sb-logo.png"
-                    alt="IEEE NTUA Student Branch"
-                    width={100}
-                    height={100}
-                    className="h-auto w-full object-contain"
-                  />
-                </div>
-                {/* Changed text-fuchsia to text-blue */}
-                <span className={`text-xs font-bold uppercase tracking-widest transition-colors ${
-                  activeHost === "ieee" ? "text-blue-400" : "text-white/60 group-hover:text-blue-400"
-                }`}>
-                  IEEE NTUA SB
-                </span>
-              </div>
+          {/* Left/right fade edges */}
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-background/80 to-transparent z-[5]" />
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background/80 to-transparent z-[5]" />
 
-            </div>
+          {/* Scrollable track */}
+          <div
+            ref={scrollRef}
+            onScroll={updateScrollButtons}
+            className="flex gap-5 overflow-x-auto scrollbar-hide px-2 py-2"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
+            {sortedSponsors.map((sponsor) => {
+              const tier = TIER_CONFIG[sponsor.tier]
+              return (
+                <Link
+                  key={sponsor.id}
+                  href={`/sponsors/${sponsor.id}`}
+                  className="group relative flex shrink-0 w-[320px] items-start gap-4 rounded-2xl border border-border/40 bg-muted/20 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-border/60 hover:bg-muted/40 hover:shadow-[0_4px_30px_rgba(228,61,64,0.04)] cursor-pointer"
+                >
+                  {/* Tier badge — top right */}
+                  <span
+                    className={`absolute top-3 right-3 text-[10px] font-bold uppercase tracking-widest ${tier.textClass}`}
+                    style={{ opacity: 0.85 }}
+                  >
+                    {tier.label}
+                  </span>
 
-            {/* IEEE Info Panel (Appears from Right) - Now Blue */}
-            <div 
-              className={`transition-all duration-700 ease-in-out overflow-hidden flex items-center ${
-                activeHost === "ieee" ? "max-w-md opacity-100 ml-4 sm:ml-8" : "max-w-0 opacity-0 ml-0"
-              }`}
-            >
-              {/* Changed border and bg from fuchsia to blue */}
-              <div className="w-[280px] sm:w-[320px] rounded-2xl border border-blue-500/30 bg-blue-500/10 p-5 backdrop-blur-sm shrink-0">
-                <h3 className="text-lg font-bold text-blue-400 mb-2">IEEE NTUA SB</h3>
-                <p className="text-sm text-white/80 leading-relaxed">
-                  The IEEE Student Branch of the National Technical University of Athens connects students with global technology trends and networking.
-                </p>
-              </div>
-            </div>
+                  {/* Logo container */}
+                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border border-border/40 bg-muted/30 p-2">
+                    <Image
+                      src={sponsor.logo}
+                      alt={sponsor.name}
+                      width={48}
+                      height={48}
+                      className="h-auto w-full object-contain"
+                    />
+                  </div>
 
+                  {/* Text */}
+                  <div className="flex flex-col min-w-0 pt-0.5">
+                    <h3 className="text-sm font-semibold text-foreground truncate pr-16 group-hover:text-ras-red-400 transition-colors">
+                      {sponsor.name}
+                    </h3>
+                    <p className="mt-1.5 text-xs text-muted-foreground/70 leading-relaxed line-clamp-3">
+                      {sponsor.shortDescription}
+                    </p>
+                  </div>
+                </Link>
+              )
+            })}
           </div>
         </div>
-      </section>
 
-      {/* SECTION 2: SPONSORS */}
-      <section className="border-t border-white/5 py-16 lg:py-20">
-        <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl font-semibold tracking-tight text-white/80">
-              Supported By
-            </h2>
-          </div>
-
-          {/* Placeholder for Sponsors */}
-          <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-8 opacity-75">
-            {/* Example Sponsor 1 */}
-            <div className="flex items-center gap-2 px-6 py-3 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition-colors cursor-pointer">
-              <div className="h-8 w-8 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 text-xs font-bold">
-                S1
-              </div>
-              <span className="text-sm font-medium text-white">Sponsor Name</span>
-            </div>
-
-             {/* Example Sponsor 2 */}
-             <div className="flex items-center gap-2 px-6 py-3 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition-colors cursor-pointer">
-              <div className="h-8 w-8 rounded-full bg-green-500/20 flex items-center justify-center text-green-400 text-xs font-bold">
-                S2
-              </div>
-              <span className="text-sm font-medium text-white">Sponsor Name</span>
-            </div>
-
-            {/* "Become a Sponsor" Button */}
-            <div className="flex items-center gap-2 px-6 py-3 rounded-full border border-dashed border-white/20 hover:border-white/40 hover:bg-white/5 transition-all cursor-pointer">
-              <span className="text-sm font-medium text-white/50">+ Become a Sponsor</span>
-            </div>
-          </div>
+        {/* "Become a Sponsor" CTA */}
+        <div className="mt-8 flex justify-center">
+          <a
+            href="mailto:sponsors@example.com"
+            className="inline-flex items-center gap-2 rounded-full border border-dashed border-border/60 px-6 py-3 text-sm font-medium text-muted-foreground transition-all hover:border-border hover:bg-muted/30 hover:text-foreground/80"
+          >
+            <span className="text-lg leading-none">+</span> Become a Sponsor
+          </a>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   )
 }

@@ -15,6 +15,7 @@ const config: Config = {
         mono: ['var(--font-jetbrains-mono)', 'monospace'],
       },
       colors: {
+        /* ── shadcn/ui semantic tokens ────────────────────────── */
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {
@@ -65,6 +66,52 @@ const config: Config = {
           border: 'hsl(var(--sidebar-border))',
           ring: 'hsl(var(--sidebar-ring))',
         },
+
+        /* ── RoboTalk brand palette ───────────────────────────── */
+        'ras-red': {
+          DEFAULT: '#E43D40',
+          50:  '#FEF2F2',
+          100: '#FEE2E3',
+          200: '#FECACA',
+          300: '#FDA4A6',
+          400: '#F87173',
+          500: '#E43D40',
+          600: '#D12D30',
+          700: '#B91C1F',
+          800: '#991B1E',
+          900: '#7F1D1F',
+          950: '#450A0C',
+        },
+        'ieee-blue': {
+          DEFAULT: '#2563EB',
+          50:  '#EFF6FF',
+          100: '#DBEAFE',
+          200: '#BFDBFE',
+          300: '#93C5FD',
+          400: '#60A5FA',
+          500: '#3B82F6',
+          600: '#2563EB',
+          700: '#1D4ED8',
+          800: '#1E40AF',
+          900: '#1E3A8A',
+          950: '#172554',
+        },
+        'ieee-cyan': {
+          DEFAULT: '#0EA5E9',
+          50:  '#F0F9FF',
+          100: '#E0F2FE',
+          200: '#BAE6FD',
+          300: '#7DD3FC',
+          400: '#38BDF8',
+          500: '#0EA5E9',
+          600: '#0284C7',
+          700: '#0369A1',
+          800: '#075985',
+          900: '#0C4A6E',
+          950: '#082F49',
+        },
+        'brand-darkest': '#141810',
+        'brand-text': '#F1F1F0',
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -73,20 +120,12 @@ const config: Config = {
       },
       keyframes: {
         'accordion-down': {
-          from: {
-            height: '0',
-          },
-          to: {
-            height: 'var(--radix-accordion-content-height)',
-          },
+          from: { height: '0' },
+          to: { height: 'var(--radix-accordion-content-height)' },
         },
         'accordion-up': {
-          from: {
-            height: 'var(--radix-accordion-content-height)',
-          },
-          to: {
-            height: '0',
-          },
+          from: { height: 'var(--radix-accordion-content-height)' },
+          to: { height: '0' },
         },
       },
       animation: {

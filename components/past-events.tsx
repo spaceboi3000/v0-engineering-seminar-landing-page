@@ -110,13 +110,13 @@ export function PastEvents() {
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
           {/* Heading */}
           <div className="text-center">
-            <p className="text-sm font-semibold uppercase tracking-widest text-blue-200/80">
+            <p className="text-sm font-semibold uppercase tracking-widest text-ieee-blue-200/80">
               Gallery
             </p>
             <h2 className="mt-3 text-balance text-3xl font-bold tracking-tight text-white md:text-4xl">
               Past Highlights
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-blue-100/70">
+            <p className="mx-auto mt-4 max-w-2xl text-ieee-blue-100/70">
               Moments from previous RoboTalk events.
             </p>
           </div>
@@ -134,11 +134,9 @@ export function PastEvents() {
               return (
                 <div
                   key={slide.src}
-                  // THE FIX IS HERE: Added responsive negative margins (-ml-[...]) to match the widths
                   className="absolute left-1/2 top-0 w-[280px] -ml-[140px] sm:w-[340px] sm:-ml-[170px] md:w-[420px] md:-ml-[210px] lg:w-[480px] lg:-ml-[240px]"
                   style={{
                     ...style,
-                    // Removed the hardcoded marginLeft from here
                     transformStyle: "preserve-3d",
                     transition: "all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
                     willChange: "transform, opacity",
@@ -230,7 +228,7 @@ export function PastEvents() {
           </div>
 
           {/* Slide counter */}
-          <p className="mt-4 text-center text-xs font-mono tracking-wider text-blue-200/50">
+          <p className="mt-4 text-center text-xs font-mono tracking-wider text-ieee-blue-200/50">
             {String(current + 1).padStart(2, "0")} / {String(slides.length).padStart(2, "0")}
           </p>
         </div>
@@ -239,12 +237,12 @@ export function PastEvents() {
       {/* Fullscreen Image Lightbox Overlay */}
       {zoomedImage && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm transition-opacity duration-300"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-background/90 p-4 backdrop-blur-sm transition-opacity duration-300"
           onClick={() => setZoomedImage(null)}
         >
           <button
             onClick={() => setZoomedImage(null)}
-            className="absolute right-6 top-6 z-[110] rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-white/20"
+            className="absolute right-6 top-6 z-[110] rounded-full bg-muted/40 p-2 text-foreground transition-colors hover:bg-muted/60"
             aria-label="Close fullscreen image"
           >
             <X className="h-6 w-6" />

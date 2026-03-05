@@ -3,12 +3,12 @@ import { Bot, Users, Lightbulb } from "lucide-react"
 
 export function About() {
   return (
-    <section id="about" className="border-t border-white/5 py-20 lg:py-28">
+    <section id="about" className="border-t border-border/20 py-20 lg:py-28">
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           {/* Text Column */}
           <div>
-            <p className="text-sm font-semibold uppercase tracking-widest bg-gradient-to-r from-red-500 to-fuchsia-500 bg-clip-text text-transparent">
+            <p className="text-sm font-semibold uppercase tracking-widest bg-gradient-to-r from-ras-red to-fuchsia-500 bg-clip-text text-transparent">
               About the Event
             </p>
             <h2 className="mt-3 text-balance text-3xl font-bold tracking-tight text-foreground md:text-4xl">
@@ -23,8 +23,8 @@ export function About() {
 
             <div className="mt-8 flex flex-col gap-5">
               <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-red-500/10 border border-red-500/20">
-                  <Bot className="h-5 w-5 text-red-400" />
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-ras-red/10 border border-ras-red/20">
+                  <Bot className="h-5 w-5 text-ras-red-400" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-foreground">Robotics {"&"} AI Talks</h3>
@@ -47,8 +47,8 @@ export function About() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-red-500/10 border border-red-500/20">
-                  <Lightbulb className="h-5 w-5 text-red-400" />
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-ras-red/10 border border-ras-red/20">
+                  <Lightbulb className="h-5 w-5 text-ras-red-400" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-foreground">Live Demos</h3>
@@ -61,7 +61,7 @@ export function About() {
           </div>
 
           {/* Image Column */}
-          <div className="relative overflow-hidden rounded-2xl border border-white/10 shadow-[0_0_30px_rgba(239,68,68,0.08)]">
+          <div className="relative overflow-hidden rounded-2xl border border-border/40 shadow-[0_0_30px_rgba(228,61,64,0.08)]">
             <Image
               src="/images/Robotalk2025-5.jpg"
               alt="Engineering seminar with audience and presenter on stage"
