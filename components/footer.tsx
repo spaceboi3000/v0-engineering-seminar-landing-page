@@ -13,11 +13,17 @@ export function Footer() {
             className="h-7 w-7 object-contain"
           />
           <span className="text-sm font-semibold text-foreground">
+<<<<<<< HEAD
             Robo<span className="bg-gradient-to-r from-ras-red to-fuchsia-500 bg-clip-text text-transparent">Talk</span>
+=======
+            {/* Updated gradient to match the dark blue to light blue theme */}
+            Robo<span className="bg-gradient-to-r from-blue-600 to-sky-400 bg-clip-text text-transparent">Talk</span>
+>>>>>>> main
           </span>
         </div>
 
         <nav className="flex flex-wrap items-center justify-center gap-6" aria-label="Footer navigation">
+<<<<<<< HEAD
           <a href="#home" className="text-xs text-muted-foreground/60 transition-colors hover:text-foreground">
             Home
           </a>
@@ -31,6 +37,22 @@ export function Footer() {
             Location
           </a>
           <a href="#contact" className="text-xs text-muted-foreground/60 transition-colors hover:text-foreground">
+=======
+          {/* Updated hover effects to sky-400 for consistency across the site */}
+          <a href="#home" className="text-xs text-white/40 transition-colors hover:text-sky-400">
+            Home
+          </a>
+          <a href="#about" className="text-xs text-white/40 transition-colors hover:text-sky-400">
+            About
+          </a>
+          <a href="#past-events" className="text-xs text-white/40 transition-colors hover:text-sky-400">
+            Past Events
+          </a>
+          <a href="#location" className="text-xs text-white/40 transition-colors hover:text-sky-400">
+            Location
+          </a>
+          <a href="#contact" className="text-xs text-white/40 transition-colors hover:text-sky-400">
+>>>>>>> main
             Contact
           </a>
         </nav>
