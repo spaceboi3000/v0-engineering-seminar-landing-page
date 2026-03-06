@@ -17,11 +17,7 @@ export function Contact() {
     <section id="contact" className="border-t border-border/20 py-20 lg:py-28">
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
         <div className="text-center">
-<<<<<<< HEAD
-          <p className="text-sm font-semibold uppercase tracking-widest bg-gradient-to-r from-ras-red to-fuchsia-500 bg-clip-text text-transparent">
-=======
           <p className="text-sm font-semibold uppercase tracking-widest bg-gradient-to-r from-blue-600 to-sky-400 bg-clip-text text-transparent">
->>>>>>> main
             Get in Touch
           </p>
           <h2 className="mt-3 text-balance text-3xl font-bold tracking-tight text-foreground md:text-4xl">
@@ -32,15 +28,6 @@ export function Contact() {
           </p>
         </div>
 
-<<<<<<< HEAD
-        <Card className="mx-auto mt-12 max-w-4xl border-border/40 bg-muted/20 backdrop-blur-sm">
-          <CardContent className="grid gap-8 p-6 md:grid-cols-5 md:p-8">
-            {/* Form */}
-            <div className="md:col-span-3">
-              {submitted ? (
-                <div className="flex h-full items-center justify-center rounded-lg border border-ras-red/30 bg-ras-red/10 p-8 shadow-[0_0_20px_rgba(228,61,64,0.1)]">
-                  <p className="text-center font-medium text-ras-red-300">
-=======
         <Card className="relative mx-auto mt-12 max-w-4xl border-white/10 bg-white/[0.03] backdrop-blur-sm overflow-hidden z-0">
           
           {/* --- NEW COOL BACKGROUND: Tech Grid --- */}
@@ -66,7 +53,6 @@ export function Contact() {
               {submitted ? (
                 <div className="flex h-full items-center justify-center rounded-lg border border-sky-500/30 bg-sky-500/10 p-8 shadow-[0_0_20px_rgba(14,165,233,0.1)]">
                   <p className="text-center font-medium text-sky-300">
->>>>>>> main
                     Thank you for your message! We will be in touch soon.
                   </p>
                 </div>
@@ -80,11 +66,7 @@ export function Contact() {
                       id="name"
                       required
                       placeholder="Your name"
-<<<<<<< HEAD
-                      className="w-full rounded-lg border border-border/40 bg-muted/30 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 transition-shadow focus:outline-none focus:shadow-[0_0_15px_rgba(228,61,64,0.2)] focus:border-ras-red/30"
-=======
                       className="w-full rounded-lg border border-white/10 bg-black/40 px-4 py-2.5 text-sm text-white placeholder:text-white/30 transition-shadow focus:outline-none focus:shadow-[0_0_15px_rgba(37,99,235,0.2)] focus:border-blue-500/50"
->>>>>>> main
                     />
                   </div>
                   <div>
@@ -96,11 +78,7 @@ export function Contact() {
                       type="email"
                       required
                       placeholder="you@example.com"
-<<<<<<< HEAD
-                      className="w-full rounded-lg border border-border/40 bg-muted/30 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 transition-shadow focus:outline-none focus:shadow-[0_0_15px_rgba(228,61,64,0.2)] focus:border-ras-red/30"
-=======
                       className="w-full rounded-lg border border-white/10 bg-black/40 px-4 py-2.5 text-sm text-white placeholder:text-white/30 transition-shadow focus:outline-none focus:shadow-[0_0_15px_rgba(37,99,235,0.2)] focus:border-blue-500/50"
->>>>>>> main
                     />
                   </div>
                   <div>
@@ -112,20 +90,12 @@ export function Contact() {
                       required
                       rows={4}
                       placeholder="How can we help?"
-<<<<<<< HEAD
-                      className="w-full rounded-lg border border-border/40 bg-muted/30 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 transition-shadow focus:outline-none focus:shadow-[0_0_15px_rgba(228,61,64,0.2)] focus:border-ras-red/30 resize-none"
-=======
                       className="w-full rounded-lg border border-white/10 bg-black/40 px-4 py-2.5 text-sm text-white placeholder:text-white/30 transition-shadow focus:outline-none focus:shadow-[0_0_15px_rgba(37,99,235,0.2)] focus:border-blue-500/50 resize-none"
->>>>>>> main
                     />
                   </div>
                   <button
                     type="submit"
-<<<<<<< HEAD
-                    className="inline-flex items-center gap-2 self-start rounded-lg bg-gradient-to-r from-ras-red-600 to-fuchsia-600 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_20px_rgba(228,61,64,0.3)] transition-all hover:shadow-[0_0_30px_rgba(217,70,239,0.5)] hover:scale-105"
-=======
                     className="inline-flex items-center gap-2 self-start rounded-lg bg-gradient-to-r from-blue-600 to-sky-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all hover:shadow-[0_0_30px_rgba(14,165,233,0.5)] hover:scale-105"
->>>>>>> main
                   >
                     <Send className="h-4 w-4" />
                     Send Message
@@ -135,20 +105,12 @@ export function Contact() {
             </div>
 
             {/* Info Panel */}
-<<<<<<< HEAD
-            <div className="flex flex-col justify-center gap-6 md:col-span-2 md:border-l md:border-border/40 md:pl-8">
-=======
             <div className="flex flex-col justify-center gap-6 md:col-span-2 md:border-l md:border-white/10 md:pl-8 relative z-20">
->>>>>>> main
               <div>
                 <h3 className="font-semibold text-foreground">Email Us</h3>
                 <a
                   href="mailto:ras.ntua@gmail.com"
-<<<<<<< HEAD
-                  className="mt-1 flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-ras-red-400"
-=======
                   className="mt-1 flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-sky-400"
->>>>>>> main
                 >
                   <Mail className="h-4 w-4" />
                   ras.ntua@gmail.com
@@ -162,11 +124,7 @@ export function Contact() {
                     href="https://www.instagram.com/ras.ntua"
                     target="_blank"
                     rel="noopener noreferrer"
-<<<<<<< HEAD
-                    className="flex h-9 w-9 items-center justify-center rounded-lg border border-border/40 bg-muted/30 text-muted-foreground transition-all hover:border-ras-red/30 hover:text-ras-red-400 hover:shadow-[0_0_15px_rgba(228,61,64,0.2)]"
-=======
                     className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-black/40 text-white/50 transition-all hover:border-blue-500/30 hover:text-blue-400 hover:shadow-[0_0_15px_rgba(37,99,235,0.2)]"
->>>>>>> main
                     aria-label="Instagram"
                   >
                     <Instagram className="h-4 w-4" />
@@ -175,11 +133,7 @@ export function Contact() {
                     href="https://www.linkedin.com/company/ras-chapter-ntua-student-branch/"
                     target="_blank"
                     rel="noopener noreferrer"
-<<<<<<< HEAD
-                    className="flex h-9 w-9 items-center justify-center rounded-lg border border-border/40 bg-muted/30 text-muted-foreground transition-all hover:border-fuchsia-500/30 hover:text-fuchsia-400 hover:shadow-[0_0_15px_rgba(217,70,239,0.2)]"
-=======
                     className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-black/40 text-white/50 transition-all hover:border-blue-500/30 hover:text-blue-400 hover:shadow-[0_0_15px_rgba(37,99,235,0.2)]"
->>>>>>> main
                     aria-label="LinkedIn"
                   >
                     <Linkedin className="h-4 w-4" />
