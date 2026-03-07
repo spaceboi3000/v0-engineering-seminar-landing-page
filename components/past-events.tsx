@@ -104,7 +104,7 @@ export function PastEvents() {
         id="past-events"
         className="relative py-20 lg:py-28 overflow-hidden"
         style={{
-          background: "linear-gradient(180deg, #0c1a3a 0%, #162d6b 30%, #2563eb 65%, #60a5fa 100%)",
+          background: "linear-gradient(180deg, hsl(var(--background)) 0%, #162d6b 30%, #2563eb 65%, #60a5fa 85%, hsl(var(--background)) 100%)",
         }}
       >
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
