@@ -11,9 +11,8 @@ export function Sponsors() {
   const [canScrollLeft, setCanScrollLeft] = useState(false)
   const [canScrollRight, setCanScrollRight] = useState(true)
   const animationRef = useRef<number | null>(null)
-  const scrollSpeed = 0.6 // pixels per frame
+  const scrollSpeed = 0.6
 
-  // Sort sponsors by tier order: platinum → gold → silver → bronze
   const tierOrder = ["platinum", "gold", "silver", "bronze"] as const
   const sortedSponsors = [...sponsors].sort(
     (a, b) => tierOrder.indexOf(a.tier) - tierOrder.indexOf(b.tier)
@@ -26,7 +25,6 @@ export function Sponsors() {
     setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 2)
   }, [])
 
-  // Auto-scroll animation loop
   useEffect(() => {
     const el = scrollRef.current
     if (!el) return
@@ -34,7 +32,6 @@ export function Sponsors() {
     const step = () => {
       if (!isPaused && el) {
         el.scrollLeft += scrollSpeed
-        // Loop back when reaching the end
         if (el.scrollLeft >= el.scrollWidth - el.clientWidth) {
           el.scrollLeft = 0
         }
@@ -59,7 +56,7 @@ export function Sponsors() {
   }
 
   return (
-    <section className="py-16 lg:py-20">
+    <section id="sponsors" className="py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
         <div className="text-center mb-10">
           <p className="text-sm font-semibold uppercase tracking-widest text-ras-red">
@@ -70,7 +67,6 @@ export function Sponsors() {
           </h2>
         </div>
 
-        {/* Carousel wrapper */}
         <div
           className="relative group/carousel"
           onMouseEnter={() => setIsPaused(true)}
@@ -127,7 +123,7 @@ export function Sponsors() {
                   href={`/sponsors/${sponsor.id}`}
                   className="group relative flex shrink-0 w-[320px] items-start gap-4 rounded-2xl border border-border/40 bg-muted/20 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-border/60 hover:bg-muted/40 hover:shadow-[0_4px_30px_rgba(228,61,64,0.04)] cursor-pointer"
                 >
-                  {/* Tier badge — top right */}
+                  {/* Tier badge */}
                   <span
                     className={`absolute top-3 right-3 text-[10px] font-bold uppercase tracking-widest ${tier.textClass}`}
                     style={{ opacity: 0.85 }}

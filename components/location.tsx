@@ -73,7 +73,7 @@ export function Location() {
             <div className="relative aspect-video w-full overflow-hidden rounded-2xl border-2 border-blue-400/50 shadow-[0_0_30px_rgba(59,130,246,0.5)] transition-all duration-300 hover:shadow-[0_0_45px_rgba(59,130,246,0.7)] hover:border-blue-300">
               <iframe
                 title="Goethe-Institut Athen location"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3144.925439934185!2d23.73356061532454!3d37.9791011797227!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14a1bd3b48450143%3A0xc3f14006c99c5132!2sGoethe-Institut%20Athen!5e0!3m2!1sen!2sgr!4v1680000000000!5m2!1sen!2sgr"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3144.9202508819653!2d23.732493676043728!3d37.97899040036996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14a1bdf584243709%3A0x4ec35b51817ab506!2sGOETHE-INSTITUT%20ATHEN!5e0!3m2!1sel!2sgr!4v1772902146386!5m2!1sel!2sgr"
                 className="h-full w-full border-0 opacity-90 transition-all duration-500 hover:opacity-100"
                 allowFullScreen
                 loading="lazy"
