@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { supabase } from "@/lib/supabase"
+import { getSupabase } from "@/lib/supabase"
 import { transporter } from "@/lib/mailer"
 
 export async function POST(req: Request) {
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
       .update({ token, subscribed_at: now })
       .eq("email", email)
   } else {
-    const { error } = await supabase.from("subscribers").insert({
+    const { error } = await getSupabase().from("subscribers").insert({
       email,
       token,
       confirmed: false,

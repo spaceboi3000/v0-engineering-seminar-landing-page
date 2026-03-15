@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { supabase } from "@/lib/supabase"
+import { getSupabase } from "@/lib/supabase"
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
@@ -9,7 +9,7 @@ export async function GET(req: Request) {
     return NextResponse.redirect(new URL("/?confirmed=invalid", req.url))
   }
 
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("subscribers")
     .select("id, confirmed")
     .eq("token", token)
@@ -23,7 +23,7 @@ export async function GET(req: Request) {
     return NextResponse.redirect(new URL("/?confirmed=already", req.url))
   }
 
-  await supabase
+  await getSupabase()
     .from("subscribers")
     .update({ confirmed: true, confirmed_at: new Date().toISOString() })
     .eq("token", token)
