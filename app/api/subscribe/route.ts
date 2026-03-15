@@ -10,7 +10,7 @@ export async function POST(req: Request) {
   }
 
   // Check if already subscribed
-  const { data: existing } = await supabase
+  const { data: existing } = await getSupabase()
     .from("subscribers")
     .select("id, confirmed")
     .eq("email", email)
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
 
   if (existing) {
     // Resend confirmation for unconfirmed subscriber
-    await supabase
+    await getSupabase()
       .from("subscribers")
       .update({ token, subscribed_at: now })
       .eq("email", email)
