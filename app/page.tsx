@@ -4,7 +4,6 @@ import { About } from "@/components/about"
 import { PastEvents } from "@/components/past-events"
 import { SectionDivider } from "@/components/section-divider"
 import { Organizers } from "@/components/organizers"
-import { Sponsors } from "@/components/sponsors"
 import { Location } from "@/components/location"
 import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
@@ -19,8 +18,6 @@ export default function Page() {
         <PastEvents />
         <SectionDivider />
         <Organizers />
-        <SectionDivider />
-        <Sponsors />
         <SectionDivider />
         <Location />
         <Contact />
