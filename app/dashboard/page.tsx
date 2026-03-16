@@ -33,7 +33,7 @@ export default async function DashboardPage() {
       <SidebarNav />
 
       <div className="flex flex-1 flex-col lg:flex-row lg:min-h-svh flex-wrap">
-        <div id="qr-code" className="mx-auto flex w-full max-w-lg flex-col gap-6 lg:max-w-sm lg:shrink-0 lg:border-r lg:border-border lg:p-8 lg:gap-8">
+        <div id="qr-code" className="mx-auto flex w-full max-w-lg flex-col gap-6 lg:hidden">
           <UserHeader
             name={fullName}
             group="A"
