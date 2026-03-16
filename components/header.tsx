@@ -97,6 +97,14 @@ export function Header() {
               {link.label}
             </a>
           ))}
+          {user && (
+            <Link
+              href="/dashboard"
+              className="text-sm font-medium text-white/60 transition-colors hover:text-sky-400"
+            >
+              My Account
+            </Link>
+          )}
         </nav>
 
         {/* CTA + Mobile Toggle */}
@@ -128,6 +136,15 @@ export function Header() {
                 {link.label}
               </a>
             ))}
+            {user && (
+              <Link
+                href="/dashboard"
+                onClick={() => setMobileOpen(false)}
+                className="rounded-md px-3 py-2 text-sm font-medium text-white/60 transition-colors hover:bg-white/10 hover:text-sky-400"
+              >
+                My Account
+              </Link>
+            )}
             {mobileAuthButton}
           </div>
         </nav>
