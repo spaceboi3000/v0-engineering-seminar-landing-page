@@ -10,17 +10,23 @@ export default function LoginPage() {
   const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<"invalid" | "other" | null>(null)
+  const [errorMsg, setErrorMsg] = useState("")
   const [loading, setLoading] = useState(false)
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setError(null)
     setLoading(true)
     const supabase = createSupabaseBrowser()
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) {
-      setError(error.message)
+      if (error.message.toLowerCase().includes("invalid login credentials") || error.message.toLowerCase().includes("invalid credentials")) {
+        setError("invalid")
+      } else {
+        setError("other")
+        setErrorMsg(error.message)
+      }
       setLoading(false)
     } else {
       router.push("/")
@@ -70,9 +76,17 @@ export default function LoginPage() {
               />
             </div>
 
-            {error && (
+            {error === "invalid" && (
               <p className="text-red-400 text-sm rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-2">
-                {error}
+                Δεν βρέθηκε λογαριασμός με αυτό το email ή ο κωδικός είναι λάθος.{" "}
+                <Link href="/register" className="underline hover:text-red-300 transition-colors">
+                  Εγγραφή εδώ
+                </Link>
+              </p>
+            )}
+            {error === "other" && (
+              <p className="text-red-400 text-sm rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-2">
+                {errorMsg}
               </p>
             )}
 
