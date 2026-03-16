@@ -1,11 +1,18 @@
+"use client"
+
+import { QRCodeSVG } from "qrcode.react"
 import { Card, CardContent } from "@/components/ui/card"
-import { QrCode, ScanLine } from "lucide-react"
+import { ScanLine } from "lucide-react"
 
 interface QrCheckinCardProps {
   attendeeId: string
+  userId: string
 }
 
-export function QrCheckinCard({ attendeeId }: QrCheckinCardProps) {
+export function QrCheckinCard({ attendeeId, userId }: QrCheckinCardProps) {
+  // Encode the full user UUID so scanners get the canonical identifier
+  const qrValue = `ras-ntua:checkin:${userId}`
+
   return (
     <section className="px-5 lg:px-0" aria-label="Check-in QR Code">
       <Card className="border-border/60 bg-card overflow-hidden">
@@ -17,7 +24,7 @@ export function QrCheckinCard({ attendeeId }: QrCheckinCardProps) {
             </p>
           </div>
 
-          {/* QR Code placeholder */}
+          {/* QR Code */}
           <div className="relative flex items-center justify-center size-52 lg:size-56 rounded-2xl bg-foreground p-4">
             {/* Corner accents */}
             <span className="absolute top-0 left-0 size-5 rounded-tl-2xl border-t-3 border-l-3 border-accent" />
@@ -25,9 +32,13 @@ export function QrCheckinCard({ attendeeId }: QrCheckinCardProps) {
             <span className="absolute bottom-0 left-0 size-5 rounded-bl-2xl border-b-3 border-l-3 border-accent" />
             <span className="absolute bottom-0 right-0 size-5 rounded-br-2xl border-b-3 border-r-3 border-accent" />
 
-            <div className="flex flex-col items-center gap-3">
-              <QrCode className="size-32 text-background" strokeWidth={1} />
-            </div>
+            <QRCodeSVG
+              value={qrValue}
+              size={176}
+              bgColor="transparent"
+              fgColor="hsl(var(--background))"
+              level="M"
+            />
           </div>
 
           <div className="flex flex-col items-center gap-1">
@@ -35,7 +46,7 @@ export function QrCheckinCard({ attendeeId }: QrCheckinCardProps) {
               Show this at the entrance
             </p>
             <p className="text-xs text-muted-foreground font-mono tracking-wider">
-              ID: {attendeeId}
+              {attendeeId}
             </p>
           </div>
         </CardContent>
