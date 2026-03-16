@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Send } from "lucide-react"
 
 export function Newsletter() {
@@ -8,7 +8,14 @@ export function Newsletter() {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle")
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  useEffect(() => {
+    if (status === "success") {
+      const t = setTimeout(() => setStatus("idle"), 5000)
+      return () => clearTimeout(t)
+    }
+  }, [status])
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setStatus("loading")
     setErrorMsg(null)
@@ -32,7 +39,7 @@ export function Newsletter() {
   return (
     <div className="w-full">
       {status === "success" ? (
-        <p className="text-sm text-sky-300">You&apos;re on the list! Check your inbox for a confirmation.</p>
+        <p className="text-sm text-sky-300">You&apos;re on the list! Check your inbox (and spam) for a confirmation email.</p>
       ) : (
         <form onSubmit={handleSubmit} className="flex flex-col gap-2 sm:flex-row">
           <input
