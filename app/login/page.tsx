@@ -49,7 +49,7 @@ export default function LoginPage() {
 
         <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-8">
           <h1 className="text-2xl font-bold text-white mb-1">Καλώς ήρθες</h1>
-          <p className="text-white/50 text-sm mb-6">Σύνδεσε τον λογαριασμό σου</p>
+          <p className="text-white/50 text-sm mb-6">Συνδέσου στον λογαριασμό σου</p>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div>

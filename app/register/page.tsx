@@ -87,7 +87,7 @@ export default function RegisterPage() {
               Στείλαμε ένα link επιβεβαίωσης στο <span className="text-sky-400">{form.email}</span>. Κλίκαρέ το για να ολοκληρωθεί η εγγραφή σου.
             </p>
             <Link href="/login" className="mt-6 inline-block text-sm text-sky-400 hover:text-sky-300 transition-colors">
-              Πήγαινε στη σύνδεση →
+              Συνδέσου →
             </Link>
           </div>
         </div>
