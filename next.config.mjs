@@ -7,7 +7,7 @@ const nextConfig = {
     unoptimized: true,
   },
   turbopack: {
-    root: __dirname,
+    root: import.meta.dirname,
   },
 }
 
