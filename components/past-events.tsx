@@ -6,34 +6,34 @@ import { ChevronLeft, ChevronRight, X } from "lucide-react"
 
 const slides = [
   {
-    src: "/images/event-1.jpg",
-    alt: "Packed auditorium at a previous RoboTalk event",
-    caption: "RoboTalk 2024 -- Record attendance with over 300 participants",
+    src: "/past_events/2023rob1.JPG",
+    alt: "RoboTalk 2023 — photo 1",
+    caption: "RoboTalk 2023",
   },
   {
-    src: "/images/event-2.jpg",
-    alt: "Speaker presenting on robotics innovations",
-    caption: "Keynote on next-gen autonomous systems",
+    src: "/past_events/2023rob2.JPG",
+    alt: "RoboTalk 2023 — photo 2",
+    caption: "RoboTalk 2023",
   },
   {
-    src: "/images/event-3.jpg",
-    alt: "Networking event with professionals discussing",
-    caption: "Networking session connecting students with industry leaders",
+    src: "/past_events/2024rob1.JPG",
+    alt: "RoboTalk 2024 — photo 1",
+    caption: "RoboTalk 2024",
   },
   {
-    src: "/images/event-4.jpg",
-    alt: "Hands-on robotics workshop",
-    caption: "Hands-on workshop: Building your first robotic arm",
+    src: "/past_events/2024rob2.JPG",
+    alt: "RoboTalk 2024 — photo 2",
+    caption: "RoboTalk 2024",
   },
   {
-    src: "/images/event-5.jpg",
-    alt: "Panel discussion with expert speakers",
-    caption: "Expert panel on the future of AI in robotics",
+    src: "/past_events/2025rob1.jpg",
+    alt: "RoboTalk 2025 — photo 1",
+    caption: "RoboTalk 2025",
   },
   {
-    src: "/images/event-6.jpg",
-    alt: "Expo floor with robotics displays",
-    caption: "Demo showcase featuring student-built robots",
+    src: "/past_events/2025rob2.JPG",
+    alt: "RoboTalk 2025 — photo 2",
+    caption: "RoboTalk 2025",
   },
 ]
 
