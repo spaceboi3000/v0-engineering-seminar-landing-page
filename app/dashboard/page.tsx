@@ -33,7 +33,7 @@ export default async function DashboardPage() {
       <SidebarNav />
 
       <div className="flex flex-1 flex-col lg:flex-row lg:min-h-svh flex-wrap">
-        <div id="qr-code" className="mx-auto flex w-full max-w-lg flex-col gap-6 lg:hidden">
+        <div id="qr-code" className="mx-auto flex w-full max-w-lg flex-col gap-6 pt-10 lg:pt-0 lg:max-w-sm lg:shrink-0 lg:border-r lg:border-border lg:p-8 lg:gap-8">
           <UserHeader
             name={fullName}
             group="A"
@@ -43,7 +43,7 @@ export default async function DashboardPage() {
           <QrCheckinCard attendeeId={attendeeId} userId={user.id} />
         </div>
 
-        <div id="schedule" className="mx-auto flex w-full max-w-lg flex-col lg:max-w-none lg:flex-1 lg:p-8">
+        <div id="schedule" className="mx-auto flex w-full max-w-lg flex-col pt-6 lg:pt-0 lg:max-w-none lg:flex-1 lg:p-8">
           <ScheduleTimeline />
         </div>
 

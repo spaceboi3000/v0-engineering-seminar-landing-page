@@ -42,8 +42,8 @@ export function QrCheckinCard({ attendeeId, userId }: QrCheckinCardProps) {
           </div>
 
           <div className="flex flex-col items-center gap-1">
-            <p className="text-sm font-medium text-foreground">
-              Show this at the entrance
+            <p className="text-sm font-medium text-foreground text-center">
+              Σκάναρέ το στην είσοδο για να πάρεις παρουσία
             </p>
             <p className="text-xs text-muted-foreground font-mono tracking-wider">
               {attendeeId}
