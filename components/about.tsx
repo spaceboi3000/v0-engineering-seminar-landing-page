@@ -79,7 +79,7 @@ export function About() {
               </div>
 
               <div
-                className="flex items-start gap-4 transition-all duration-700 delay-[400ms]"
+                className="flex items-start gap-4 transition-all duration-700 delay-400"
                 style={{
                   opacity: visible ? 1 : 0,
                   transform: visible ? "translateY(0)" : "translateY(20px)",
