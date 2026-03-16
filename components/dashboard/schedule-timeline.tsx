@@ -27,15 +27,7 @@ const typeConfig: Record<
   networking: { icon: Users, label: "Networking", bg: "bg-purple-100", text: "text-purple-600" },
 }
 
-const events: ScheduleEvent[] = [
-  { id: "1", time: "9:00 AM", endTime: "9:30 AM", title: "Registration & Breakfast", location: "Main Lobby", type: "break" },
-  { id: "2", time: "9:30 AM", endTime: "10:00 AM", title: "Opening Keynote", location: "Hall A", type: "seminar", speaker: "Dr. Sarah Chen", isNow: true },
-  { id: "3", time: "10:00 AM", endTime: "11:30 AM", title: "React Workshop", location: "Room 201", type: "workshop", speaker: "Marcus Rivera" },
-  { id: "4", time: "11:30 AM", endTime: "12:00 PM", title: "Networking Session", location: "Rooftop Terrace", type: "networking" },
-  { id: "5", time: "12:00 PM", endTime: "1:00 PM", title: "Lunch Break", location: "Dining Hall", type: "break" },
-  { id: "6", time: "1:00 PM", endTime: "2:30 PM", title: "AI & Machine Learning Seminar", location: "Hall B", type: "seminar", speaker: "Prof. James Liu" },
-  { id: "7", time: "2:45 PM", endTime: "4:15 PM", title: "Design Systems Workshop", location: "Room 305", type: "workshop", speaker: "Elena Kowalski" },
-]
+const events: ScheduleEvent[] = []
 
 const filterOptions: { label: string; value: EventType | "all" }[] = [
   { label: "All", value: "all" },
@@ -52,7 +44,7 @@ export function ScheduleTimeline() {
     <section className="flex flex-col gap-4 px-5 pb-10 lg:px-0 lg:pb-0 lg:flex-1 lg:overflow-hidden" aria-label="Today's Schedule">
       <div className="flex items-center justify-between">
         <h2 className="text-base font-semibold text-foreground lg:text-lg">Today's Schedule</h2>
-        <span className="text-xs text-muted-foreground">{events.length} events</span>
+        <span className="text-xs text-muted-foreground">Coming soon</span>
       </div>
 
       <div className="flex items-center gap-2 lg:gap-3" role="tablist">
@@ -72,12 +64,10 @@ export function ScheduleTimeline() {
       </div>
 
       <div className="flex flex-col gap-0 lg:flex-1 lg:overflow-y-auto lg:pr-2 lg:gap-3" role="list">
-        {(filter === "seminar" || filter === "workshop") ? (
+        {filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
             <div className="flex items-center justify-center size-14 rounded-2xl bg-secondary">
-              {filter === "seminar"
-                ? <Presentation className="size-6 text-muted-foreground" />
-                : <Wrench className="size-6 text-muted-foreground" />}
+              <Presentation className="size-6 text-muted-foreground" />
             </div>
             <p className="text-sm font-medium text-foreground">Will be announced soon</p>
             <p className="text-xs text-muted-foreground">Check back closer to the event date</p>
