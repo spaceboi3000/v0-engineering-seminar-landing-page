@@ -1,19 +1,38 @@
 "use client"
 
-import React from "react"
-import { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { CalendarDays, MapPin, ArrowRight, ChevronDown } from "lucide-react"
 import Image from "next/image"
 
 export function Hero() {
   const [email, setEmail] = useState("")
-  const [submitted, setSubmitted] = useState(false)
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle")
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
 
-  function handleSubmit(e: React.FormEvent) {
+  useEffect(() => {
+    if (status === "success") {
+      const t = setTimeout(() => setStatus("idle"), 5000)
+      return () => clearTimeout(t)
+    }
+  }, [status])
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (email) {
-      setSubmitted(true)
+    setStatus("loading")
+    setErrorMsg(null)
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || "Something went wrong.")
+      setStatus("success")
       setEmail("")
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : "Something went wrong.")
+      setStatus("error")
     }
   }
 
@@ -91,9 +110,9 @@ export function Hero() {
 
         {/* Email CTA - Blue theme matching Contact */}
         <div className="mx-auto mt-10 max-w-md">
-          {submitted ? (
+          {status === "success" ? (
             <div className="rounded-lg border border-sky-500/30 bg-sky-500/10 px-6 py-4 text-sm font-medium text-sky-300 shadow-[0_0_20px_rgba(14,165,233,0.15)]">
-              You are on the list! We will notify you with updates.
+              You&apos;re on the list! Check your inbox (and spam) for a confirmation email.
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex gap-2">
@@ -108,13 +127,15 @@ export function Hero() {
               />
               <button
                 type="submit"
-                className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-sky-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all hover:shadow-[0_0_30px_rgba(14,165,233,0.5)] hover:scale-105"
+                disabled={status === "loading"}
+                className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-sky-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all hover:shadow-[0_0_30px_rgba(14,165,233,0.5)] hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
-                Notify Me
+                {status === "loading" ? "..." : "Notify Me"}
                 <ArrowRight className="h-4 w-4" />
               </button>
             </form>
           )}
+          {errorMsg && <p className="mt-2 text-sm text-red-400">{errorMsg}</p>}
           <p className="mt-3 text-xs text-muted-foreground/60">
             Be the first to know. No spam, ever.
           </p>
