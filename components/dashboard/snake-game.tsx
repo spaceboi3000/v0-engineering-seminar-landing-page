@@ -176,7 +176,7 @@ export function SnakeGame() {
         )}
 
         {(!isPlaying && !gameWon) && (
-          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm">
             {gameOver && <p className="mb-4 text-2xl font-bold text-red-400">System Failure!</p>}
             <button
               onClick={resetGame}

@@ -18,7 +18,7 @@ export default async function DashboardPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("first_name, last_name")
+    .select("first_name, last_name, university, department")
     .eq("id", user.id)
     .single()
 
@@ -41,6 +41,11 @@ export default async function DashboardPage() {
             group="A"
             eventName="RoboTalk 2026"
             date="April 25, 2026"
+            userId={user.id}
+            firstName={profile?.first_name ?? ""}
+            lastName={profile?.last_name ?? ""}
+            university={profile?.university ?? ""}
+            department={profile?.department ?? ""}
           />
           <QrCheckinCard attendeeId={attendeeId} userId={user.id} />
           <div className="hidden lg:flex flex-col gap-2 pb-4">
