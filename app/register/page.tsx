@@ -242,6 +242,9 @@ export default function RegisterPage() {
               Σύνδεση εδώ
             </Link>
           </p>
+          <Link href="/" className="mt-3 block text-center text-sm text-white/30 hover:text-white/60 transition-colors">
+            ← Επιστροφή στην αρχική
+          </Link>
         </div>
       </div>
     </main>
