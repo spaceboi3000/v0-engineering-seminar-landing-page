@@ -111,14 +111,14 @@ export function Hero() {
 
         {/* Register / Subscribe CTA */}
         <div className="mx-auto mt-10 max-w-md">
-          <div className="mb-4 flex items-center gap-3">
+          <div className="mb-4 flex flex-col items-center gap-2">
             <Link
               href="/register"
-              className="flex-1 inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-sky-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all hover:shadow-[0_0_30px_rgba(14,165,233,0.5)] hover:scale-105"
+              className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-sky-500 px-10 py-2.5 text-sm font-semibold text-white shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all hover:shadow-[0_0_30px_rgba(14,165,233,0.5)] hover:scale-105"
             >
               Register
             </Link>
-            <span className="text-xs text-muted-foreground/50">or subscribe to the newsletter</span>
+            <span className="text-xs text-muted-foreground/50">or subscribe to the newsletter below</span>
           </div>
         </div>
         <div className="mx-auto max-w-md">
