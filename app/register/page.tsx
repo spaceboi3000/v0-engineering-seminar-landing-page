@@ -56,17 +56,22 @@ export default function RegisterPage() {
     }
 
     if (data.user) {
-      const { error: profileError } = await supabase.from("profiles").insert({
-        id: data.user.id,
-        first_name: form.firstName,
-        last_name: form.lastName,
-        university: form.university,
-        department: form.department,
-        year: form.year,
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: data.user.id,
+          firstName: form.firstName,
+          lastName: form.lastName,
+          university: form.university,
+          department: form.department,
+          year: form.year,
+        }),
       })
 
-      if (profileError) {
-        setError(profileError.message)
+      if (!res.ok) {
+        const { error: profileError } = await res.json()
+        setError(profileError)
         setLoading(false)
         return
       }
