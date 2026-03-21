@@ -16,19 +16,24 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
-    // Changed to an extremely dark custom blue (Midnight Blue) with 80% opacity
+    // Midnight Blue background with 80% opacity
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[#081229]/80 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 lg:px-8">
-        {/* Logo */}
-        <a href="#home" className="flex items-center gap-3">
+      {/* ADDED: Slightly more vertical padding for a more spacious feel (py-2 -> py-1.5) */}
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-1.5 lg:px-8">
+        {/* Logo Section */}
+        {/* UPDATED: Larger height (h-16) and gap (gap-4) for the container */}
+        <a href="#home" className="flex items-center gap-4 h-16">
           <Image
-            src="/images/robotalk-logo.png"
+            // UPDATED: Path matches the exact filename in your public/images folder
+            src="/images/RoboTalk ROBOT_PNG_IM.png"
             alt="RoboTalk Logo"
-            width={40}
-            height={40}
-            className="h-10 w-10 object-contain"
+            width={60} // INCREASED: For better scaling
+            height={60} // INCREASED: For better scaling
+            // UPDATED: Standard logo image height increased from h-10 to h-14
+            className="h-14 w-auto object-contain" 
           />
-          <span className="text-lg font-bold tracking-tight text-foreground">
+          {/* UPDATED: Increased text size for better balance */}
+          <span className="text-xl font-bold tracking-tight text-foreground">
             {/* Blue gradient for "Talk" */}
             Robo<span className="bg-gradient-to-r from-blue-600 to-sky-400 bg-clip-text text-transparent">Talk</span>
           </span>
@@ -40,7 +45,6 @@ export function Header() {
             <a
               key={link.href}
               href={link.href}
-              // Adjusted hover effect to sky-400 (matching the footer)
               className="text-sm font-medium text-white/60 transition-colors hover:text-sky-400"
             >
               {link.label}
@@ -52,8 +56,7 @@ export function Header() {
         <div className="flex items-center gap-3">
           <a
             href="#contact"
-            // Changed button gradient and glow shadows (RGB values) to blue/light blue
-            className="hidden items-center rounded-lg bg-gradient-to-r from-blue-600 to-sky-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all hover:shadow-[0_0_30px_rgba(14,165,233,0.5)] hover:scale-105 md:inline-flex"
+            className="hidden items-center rounded-lg bg-gradient-to-r from-blue-600 to-sky-500 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all hover:shadow-[0_0_30px_rgba(14,165,233,0.5)] hover:scale-105 md:inline-flex"
           >
             Get in Touch
           </a>
@@ -63,6 +66,8 @@ export function Header() {
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-expanded={mobileOpen}
             aria-label="Toggle navigation menu"
+            // Added suppression just in case extensions interfere with the menu button
+            suppressHydrationWarning
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -71,14 +76,12 @@ export function Header() {
 
       {/* Mobile Nav */}
       {mobileOpen && (
-        // Using the custom dark blue here as well, with 95% opacity for better readability
         <nav className="border-t border-white/10 bg-[#081229]/95 px-4 pb-4 pt-2 backdrop-blur-xl md:hidden" aria-label="Mobile navigation">
           <div className="flex flex-col gap-3">
             {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                // Adjusted hover effect to sky-400
                 className="rounded-md px-3 py-2 text-sm font-medium text-white/60 transition-colors hover:bg-white/10 hover:text-sky-400"
                 onClick={() => setMobileOpen(false)}
               >
@@ -88,8 +91,7 @@ export function Header() {
             <a
               href="#contact"
               onClick={() => setMobileOpen(false)}
-              // Changed button gradient to blue/light blue
-              className="mt-1 rounded-lg bg-gradient-to-r from-blue-600 to-sky-500 px-4 py-2 text-center text-sm font-semibold text-white"
+              className="mt-1 rounded-lg bg-gradient-to-r from-blue-600 to-sky-500 px-4 py-2.5 text-center text-sm font-semibold text-white"
             >
               Get in Touch
             </a>
