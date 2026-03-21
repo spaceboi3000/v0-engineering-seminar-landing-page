@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { CalendarDays, Bell } from "lucide-react"
+import { CalendarDays } from "lucide-react"
 
 interface UserHeaderProps {
   name: string
@@ -14,8 +14,8 @@ export function UserHeader({ name, group, eventName, date }: UserHeaderProps) {
     <header className="flex flex-col gap-5 px-5 pt-6 pb-2 lg:px-0 lg:pt-0 lg:pb-0">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3 lg:gap-4">
-          <Avatar className="size-11 bg-accent lg:size-14">
-            <AvatarFallback className="bg-accent text-accent-foreground font-semibold text-base lg:text-lg">
+          <Avatar className="size-11 bg-gradient-to-br from-red-600 to-rose-500 lg:size-14 shadow-md shadow-red-500/20">
+            <AvatarFallback className="bg-transparent text-white font-semibold text-base lg:text-lg">
               {name
                 .split(" ")
                 .map((n) => n[0])
@@ -29,13 +29,6 @@ export function UserHeader({ name, group, eventName, date }: UserHeaderProps) {
             </h1>
           </div>
         </div>
-        <button
-          className="relative flex items-center justify-center size-10 rounded-lg bg-secondary text-muted-foreground hover:text-foreground transition-colors"
-          aria-label="Notifications"
-        >
-          <Bell className="size-5" />
-          <span className="absolute top-2 right-2.5 size-2 rounded-full bg-accent" />
-        </button>
       </div>
 
       <div className="flex items-center justify-between rounded-xl bg-secondary px-4 py-3">
@@ -48,7 +41,8 @@ export function UserHeader({ name, group, eventName, date }: UserHeaderProps) {
             <span>{date}</span>
           </div>
         </div>
-        <Badge className="bg-accent/15 text-accent border-accent/25 font-semibold text-xs px-3 py-1">
+        {/* Badge hat jetzt einen kräftigen Verlauf und reinweiße Schrift */}
+        <Badge className="bg-gradient-to-r from-red-600 to-rose-500 border-none text-white font-semibold text-xs px-3 py-1 shadow-sm shadow-red-500/20">
           Group {group}
         </Badge>
       </div>
