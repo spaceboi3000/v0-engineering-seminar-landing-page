@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react"
 import { CalendarDays, MapPin, ArrowRight, ChevronDown } from "lucide-react"
 import Image from "next/image"
-import Link from "next/link"
 
 export function Hero() {
   const [email, setEmail] = useState("")
@@ -51,7 +50,7 @@ export function Hero() {
         <div className="absolute inset-0 bg-background/80" />
       </div>
 
-      {/* Neon glow orbs - updated to red and blue */}
+      {/* Neon glow orbs - updated to red + blue */}
       <div className="pointer-events-none absolute left-1/3 top-1/4 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-ras-red/10 blur-[150px]" aria-hidden="true" />
       <div className="pointer-events-none absolute right-1/4 bottom-1/4 h-[400px] w-[400px] rounded-full bg-blue-500/10 blur-[130px]" aria-hidden="true" />
 
@@ -74,9 +73,8 @@ export function Hero() {
         {/* Floating Robot Logo with glow */}
         <div className="mx-auto mb-10 flex justify-center">
           <div className="animate-[float_3s_ease-in-out_infinite] drop-shadow-[0_0_40px_rgba(228,61,64,0.4)]">
-            {/* UPDATED: Path perfectly matches the original file name in the folder */}
             <Image
-              src="/images/RoboTalk ROBOT_PNG_IM.png"
+              src="/images/robotalk-logo-with-glow.png"
               alt="RoboTalk robot mascot"
               width={200}
               height={200}
@@ -110,29 +108,14 @@ export function Hero() {
           </span>
         </div>
 
-<<<<<<< HEAD
-        {/* Email CTA - Suppress hydration warnings for browser extensions */}
-=======
-        {/* Register / Subscribe CTA */}
->>>>>>> 8629ee725163f4106b170ad75a68ab5a4eefdd4c
+        {/* Email CTA - Blue theme matching Contact */}
         <div className="mx-auto mt-10 max-w-md">
-          <div className="mb-4 flex flex-col items-center gap-2">
-            <Link
-              href="/register"
-              className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-sky-500 px-10 py-2.5 text-sm font-semibold text-white shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all hover:shadow-[0_0_30px_rgba(14,165,233,0.5)] hover:scale-105"
-            >
-              Register
-            </Link>
-            <span className="text-xs text-muted-foreground/50">or subscribe to the newsletter below</span>
-          </div>
-        </div>
-        <div className="mx-auto max-w-md">
           {status === "success" ? (
             <div className="rounded-lg border border-sky-500/30 bg-sky-500/10 px-6 py-4 text-sm font-medium text-sky-300 shadow-[0_0_20px_rgba(14,165,233,0.15)]">
               You&apos;re on the list! Check your inbox (and spam) for a confirmation email.
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="flex gap-2" suppressHydrationWarning>
+            <form onSubmit={handleSubmit} className="flex gap-2">
               <input
                 type="email"
                 required
@@ -141,13 +124,11 @@ export function Hero() {
                 onChange={(e) => setEmail(e.target.value)}
                 className="flex-1 rounded-lg border border-white/10 bg-muted/30 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 backdrop-blur-sm transition-shadow focus:outline-none focus:shadow-[0_0_15px_rgba(37,99,235,0.2)] focus:border-blue-500/50"
                 aria-label="Email address"
-                suppressHydrationWarning
               />
               <button
                 type="submit"
                 disabled={status === "loading"}
                 className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-sky-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all hover:shadow-[0_0_30px_rgba(14,165,233,0.5)] hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
-                suppressHydrationWarning
               >
                 {status === "loading" ? "..." : "Notify Me"}
                 <ArrowRight className="h-4 w-4" />

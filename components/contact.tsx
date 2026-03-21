@@ -80,8 +80,7 @@ export function Contact() {
                   </p>
                 </div>
               ) : (
-                /* ADDED: suppressHydrationWarning to form */
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4" suppressHydrationWarning>
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                   <div>
                     <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-foreground">
                       Name
@@ -91,8 +90,6 @@ export function Contact() {
                       required
                       placeholder="Your name"
                       className="w-full rounded-lg border border-white/10 bg-black/40 px-4 py-2.5 text-sm text-white placeholder:text-white/30 transition-shadow focus:outline-none focus:shadow-[0_0_15px_rgba(37,99,235,0.2)] focus:border-blue-500/50"
-                      /* ADDED: suppressHydrationWarning to input */
-                      suppressHydrationWarning
                     />
                   </div>
                   <div>
@@ -105,8 +102,6 @@ export function Contact() {
                       required
                       placeholder="you@example.com"
                       className="w-full rounded-lg border border-white/10 bg-black/40 px-4 py-2.5 text-sm text-white placeholder:text-white/30 transition-shadow focus:outline-none focus:shadow-[0_0_15px_rgba(37,99,235,0.2)] focus:border-blue-500/50"
-                      /* ADDED: suppressHydrationWarning to input */
-                      suppressHydrationWarning
                     />
                   </div>
                   <div>
@@ -119,8 +114,6 @@ export function Contact() {
                       rows={4}
                       placeholder="How can we help?"
                       className="w-full rounded-lg border border-white/10 bg-black/40 px-4 py-2.5 text-sm text-white placeholder:text-white/30 transition-shadow focus:outline-none focus:shadow-[0_0_15px_rgba(37,99,235,0.2)] focus:border-blue-500/50 resize-none"
-                      /* ADDED: suppressHydrationWarning to textarea */
-                      suppressHydrationWarning
                     />
                   </div>
                   {error && (
@@ -130,8 +123,6 @@ export function Contact() {
                     type="submit"
                     disabled={loading}
                     className="inline-flex items-center gap-2 self-start rounded-lg bg-gradient-to-r from-blue-600 to-sky-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all hover:shadow-[0_0_30px_rgba(14,165,233,0.5)] hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
-                    /* ADDED: suppressHydrationWarning to button */
-                    suppressHydrationWarning
                   >
                     <Send className="h-4 w-4" />
                     {loading ? "Sending..." : "Send Message"}
