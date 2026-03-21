@@ -1,0 +1,13 @@
+# Overrides the vector (log aggregator) container which uses jemalloc,
+# incompatible with Raspberry Pi's 16K memory page size.
+# Replaces it with a no-op alpine container that passes health checks.
+services:
+  vector:
+    image: alpine:3.18
+    entrypoint: ["sh", "-c", "while true; do sleep 86400; done"]
+    healthcheck:
+      test: ["CMD", "true"]
+      interval: 2s
+      timeout: 2s
+      retries: 3
+      start_period: 0s
