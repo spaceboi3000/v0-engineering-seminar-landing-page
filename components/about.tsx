@@ -1,20 +1,58 @@
+"use client"
+
 import Image from "next/image"
 import { Bot, Users, Lightbulb } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
 
 export function About() {
+  const sectionRef = useRef<HTMLDivElement>(null)
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true)
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.15 }
+    )
+    if (sectionRef.current) observer.observe(sectionRef.current)
+    return () => observer.disconnect()
+  }, [])
+
   return (
-    <section id="about" className="border-t border-white/5 py-20 lg:py-28">
-      <div className="mx-auto max-w-7xl px-4 lg:px-8">
+    <section id="about" className="py-20 lg:py-28">
+      <div ref={sectionRef} className="mx-auto max-w-7xl px-4 lg:px-8">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           {/* Text Column */}
           <div>
-            <p className="text-sm font-semibold uppercase tracking-widest bg-gradient-to-r from-red-500 to-fuchsia-500 bg-clip-text text-transparent">
+            <p
+              className="text-base font-semibold uppercase tracking-widest bg-gradient-to-r from-blue-400 to-sky-400 bg-clip-text text-transparent md:text-lg transition-all duration-700"
+              style={{
+                opacity: visible ? 1 : 0,
+                transform: visible ? "translateY(0)" : "translateY(20px)",
+              }}
+            >
               About the Event
             </p>
-            <h2 className="mt-3 text-balance text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+            <h2
+              className="mt-3 text-balance text-3xl font-bold tracking-tight text-foreground md:text-4xl transition-all duration-700 delay-100"
+              style={{
+                opacity: visible ? 1 : 0,
+                transform: visible ? "translateY(0)" : "translateY(20px)",
+              }}
+            >
               Where Robotics Meets Innovation
             </h2>
-            <p className="mt-6 leading-relaxed text-muted-foreground">
+            <p
+              className="mt-6 leading-relaxed text-muted-foreground transition-all duration-700 delay-200"
+              style={{
+                opacity: visible ? 1 : 0,
+                transform: visible ? "translateY(0)" : "translateY(20px)",
+              }}
+            >
               RoboTalk is an event organized by IEEE RAS NTUA Student Branch, bringing together
               students, researchers, and industry professionals to explore the latest advances
               in robotics, automation, and artificial intelligence. Join us for an inspiring day
@@ -22,9 +60,15 @@ export function About() {
             </p>
 
             <div className="mt-8 flex flex-col gap-5">
-              <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-red-500/10 border border-red-500/20">
-                  <Bot className="h-5 w-5 text-red-400" />
+              <div
+                className="flex items-start gap-4 transition-all duration-700 delay-300"
+                style={{
+                  opacity: visible ? 1 : 0,
+                  transform: visible ? "translateY(0)" : "translateY(20px)",
+                }}
+              >
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-500/10 border border-blue-500/20">
+                  <Bot className="h-5 w-5 text-blue-400" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-foreground">Robotics {"&"} AI Talks</h3>
@@ -34,9 +78,15 @@ export function About() {
                 </div>
               </div>
 
-              <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-fuchsia-500/10 border border-fuchsia-500/20">
-                  <Users className="h-5 w-5 text-fuchsia-400" />
+              <div
+                className="flex items-start gap-4 transition-all duration-700 delay-[400ms]"
+                style={{
+                  opacity: visible ? 1 : 0,
+                  transform: visible ? "translateY(0)" : "translateY(20px)",
+                }}
+              >
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-sky-500/10 border border-sky-500/20">
+                  <Users className="h-5 w-5 text-sky-400" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-foreground">Networking</h3>
@@ -46,9 +96,15 @@ export function About() {
                 </div>
               </div>
 
-              <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-red-500/10 border border-red-500/20">
-                  <Lightbulb className="h-5 w-5 text-red-400" />
+              <div
+                className="flex items-start gap-4 transition-all duration-700 delay-500"
+                style={{
+                  opacity: visible ? 1 : 0,
+                  transform: visible ? "translateY(0)" : "translateY(20px)",
+                }}
+              >
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-500/10 border border-blue-500/20">
+                  <Lightbulb className="h-5 w-5 text-blue-400" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-foreground">Live Demos</h3>
@@ -61,7 +117,13 @@ export function About() {
           </div>
 
           {/* Image Column */}
-          <div className="relative overflow-hidden rounded-2xl border border-white/10 shadow-[0_0_30px_rgba(239,68,68,0.08)]">
+          <div
+            className="relative overflow-hidden rounded-2xl border border-border/40 shadow-[0_0_30px_rgba(59,130,246,0.1)] transition-all duration-700 delay-300"
+            style={{
+              opacity: visible ? 1 : 0,
+              transform: visible ? "translateY(0)" : "translateY(30px)",
+            }}
+          >
             <Image
               src="/images/Robotalk2025-5.jpg"
               alt="Engineering seminar with audience and presenter on stage"

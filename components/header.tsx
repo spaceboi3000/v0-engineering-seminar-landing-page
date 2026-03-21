@@ -59,7 +59,7 @@ export function Header() {
           </a>
           <button
             type="button"
-            className="inline-flex items-center justify-center rounded-md p-2 text-white/60 transition-colors hover:text-white md:hidden"
+            className="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground transition-colors hover:text-foreground md:hidden"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-expanded={mobileOpen}
             aria-label="Toggle navigation menu"

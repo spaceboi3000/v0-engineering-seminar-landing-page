@@ -6,34 +6,34 @@ import { ChevronLeft, ChevronRight, X } from "lucide-react"
 
 const slides = [
   {
-    src: "/images/event-1.jpg",
-    alt: "Packed auditorium at a previous RoboTalk event",
-    caption: "RoboTalk 2024 -- Record attendance with over 300 participants",
+    src: "/past_events/2023rob1.JPG",
+    alt: "RoboTalk 2023 — photo 1",
+    caption: "RoboTalk 2023",
   },
   {
-    src: "/images/event-2.jpg",
-    alt: "Speaker presenting on robotics innovations",
-    caption: "Keynote on next-gen autonomous systems",
+    src: "/past_events/2023rob2.JPG",
+    alt: "RoboTalk 2023 — photo 2",
+    caption: "RoboTalk 2023",
   },
   {
-    src: "/images/event-3.jpg",
-    alt: "Networking event with professionals discussing",
-    caption: "Networking session connecting students with industry leaders",
+    src: "/past_events/2024rob1.JPG",
+    alt: "RoboTalk 2024 — photo 1",
+    caption: "RoboTalk 2024",
   },
   {
-    src: "/images/event-4.jpg",
-    alt: "Hands-on robotics workshop",
-    caption: "Hands-on workshop: Building your first robotic arm",
+    src: "/past_events/2024rob2.JPG",
+    alt: "RoboTalk 2024 — photo 2",
+    caption: "RoboTalk 2024",
   },
   {
-    src: "/images/event-5.jpg",
-    alt: "Panel discussion with expert speakers",
-    caption: "Expert panel on the future of AI in robotics",
+    src: "/past_events/2025rob1.jpg",
+    alt: "RoboTalk 2025 — photo 1",
+    caption: "RoboTalk 2025",
   },
   {
-    src: "/images/event-6.jpg",
-    alt: "Expo floor with robotics displays",
-    caption: "Demo showcase featuring student-built robots",
+    src: "/past_events/2025rob2.JPG",
+    alt: "RoboTalk 2025 — photo 2",
+    caption: "RoboTalk 2025",
   },
 ]
 
@@ -104,19 +104,19 @@ export function PastEvents() {
         id="past-events"
         className="relative py-20 lg:py-28 overflow-hidden"
         style={{
-          background: "linear-gradient(180deg, #0c1a3a 0%, #162d6b 30%, #2563eb 65%, #60a5fa 100%)",
+          background: "linear-gradient(180deg, hsl(var(--background)) 0%, #162d6b 30%, #2563eb 65%, #60a5fa 85%, hsl(var(--background)) 100%)",
         }}
       >
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
           {/* Heading */}
           <div className="text-center">
-            <p className="text-sm font-semibold uppercase tracking-widest text-blue-200/80">
+            <p className="text-sm font-semibold uppercase tracking-widest text-ieee-blue-200/80">
               Gallery
             </p>
             <h2 className="mt-3 text-balance text-3xl font-bold tracking-tight text-white md:text-4xl">
               Past Highlights
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-blue-100/70">
+            <p className="mx-auto mt-4 max-w-2xl text-ieee-blue-100/70">
               Moments from previous RoboTalk events.
             </p>
           </div>
@@ -134,11 +134,9 @@ export function PastEvents() {
               return (
                 <div
                   key={slide.src}
-                  // THE FIX IS HERE: Added responsive negative margins (-ml-[...]) to match the widths
                   className="absolute left-1/2 top-0 w-[280px] -ml-[140px] sm:w-[340px] sm:-ml-[170px] md:w-[420px] md:-ml-[210px] lg:w-[480px] lg:-ml-[240px]"
                   style={{
                     ...style,
-                    // Removed the hardcoded marginLeft from here
                     transformStyle: "preserve-3d",
                     transition: "all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
                     willChange: "transform, opacity",
@@ -230,7 +228,7 @@ export function PastEvents() {
           </div>
 
           {/* Slide counter */}
-          <p className="mt-4 text-center text-xs font-mono tracking-wider text-blue-200/50">
+          <p className="mt-4 text-center text-xs font-mono tracking-wider text-ieee-blue-200/50">
             {String(current + 1).padStart(2, "0")} / {String(slides.length).padStart(2, "0")}
           </p>
         </div>
@@ -239,12 +237,12 @@ export function PastEvents() {
       {/* Fullscreen Image Lightbox Overlay */}
       {zoomedImage && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm transition-opacity duration-300"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-background/90 p-4 backdrop-blur-sm transition-opacity duration-300"
           onClick={() => setZoomedImage(null)}
         >
           <button
             onClick={() => setZoomedImage(null)}
-            className="absolute right-6 top-6 z-[110] rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-white/20"
+            className="absolute right-6 top-6 z-[110] rounded-full bg-muted/40 p-2 text-foreground transition-colors hover:bg-muted/60"
             aria-label="Close fullscreen image"
           >
             <X className="h-6 w-6" />
