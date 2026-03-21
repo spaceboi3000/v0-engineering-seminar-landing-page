@@ -146,7 +146,7 @@ export function About() {
           >
             {/* UPDATED: Path to the new Goethe-Institut image */}
             <Image
-              src="/images/goethe-auditorium.jpg"
+              src="/images/image_goethe.png"
               alt="Goethe-Institut Athen Auditorium"
               width={800}
               height={600}
