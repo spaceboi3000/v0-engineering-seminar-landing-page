@@ -174,18 +174,20 @@ export function PastEvents() {
               )
             })}
 
-            {/* Clickable side-slide areas */}
+            {/* Clickable side-slide areas with hydration warning suppression */}
             <button
               type="button"
               onClick={prev}
               className="absolute left-0 top-0 h-[70%] w-[30%] z-[25] cursor-pointer bg-transparent"
               aria-label="Previous slide"
+              suppressHydrationWarning
             />
             <button
               type="button"
               onClick={next}
               className="absolute right-0 top-0 h-[70%] w-[30%] z-[25] cursor-pointer bg-transparent"
               aria-label="Next slide"
+              suppressHydrationWarning
             />
           </div>
 
@@ -196,6 +198,7 @@ export function PastEvents() {
               onClick={prev}
               className="group flex h-12 w-12 items-center justify-center rounded-full border-2 border-white/30 bg-white/10 backdrop-blur-sm transition-all duration-300 hover:border-white/60 hover:bg-white/20 hover:scale-110 active:scale-95"
               aria-label="Previous slide"
+              suppressHydrationWarning
             >
               <ChevronLeft className="h-5 w-5 text-white/80 transition-colors group-hover:text-white" />
             </button>
@@ -213,6 +216,7 @@ export function PastEvents() {
                       : "w-2 bg-white/30 hover:bg-white/50"
                   }`}
                   aria-label={`Go to slide ${i + 1}`}
+                  suppressHydrationWarning
                 />
               ))}
             </div>
@@ -222,6 +226,7 @@ export function PastEvents() {
               onClick={next}
               className="group flex h-12 w-12 items-center justify-center rounded-full border-2 border-white/30 bg-white/10 backdrop-blur-sm transition-all duration-300 hover:border-white/60 hover:bg-white/20 hover:scale-110 active:scale-95"
               aria-label="Next slide"
+              suppressHydrationWarning
             >
               <ChevronRight className="h-5 w-5 text-white/80 transition-colors group-hover:text-white" />
             </button>
@@ -244,6 +249,7 @@ export function PastEvents() {
             onClick={() => setZoomedImage(null)}
             className="absolute right-6 top-6 z-[110] rounded-full bg-muted/40 p-2 text-foreground transition-colors hover:bg-muted/60"
             aria-label="Close fullscreen image"
+            suppressHydrationWarning
           >
             <X className="h-6 w-6" />
           </button>
