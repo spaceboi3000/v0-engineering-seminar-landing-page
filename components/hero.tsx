@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react"
 import { CalendarDays, MapPin, ArrowRight, ChevronDown } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 
 export function Hero() {
   const [email, setEmail] = useState("")
