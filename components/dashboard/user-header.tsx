@@ -2,6 +2,7 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { CalendarDays } from "lucide-react"
+<<<<<<< HEAD
 =======
 "use client"
 
@@ -12,6 +13,8 @@ import { Badge } from "@/components/ui/badge"
 import { CalendarDays, Settings, X, Save, Lock } from "lucide-react"
 import { createSupabaseBrowser } from "@/lib/supabase-browser"
 >>>>>>> 8629ee725163f4106b170ad75a68ab5a4eefdd4c
+=======
+>>>>>>> 951b261 (Update dashboard design with red theme and gradients)
 
 interface UserHeaderProps {
   name: string
@@ -60,6 +63,7 @@ export function UserHeader({ name, group, eventName, date }: UserHeaderProps) {
       </div>
     </header>
   )
+<<<<<<< HEAD
 }
 =======
   userId: string
@@ -197,3 +201,6 @@ export function UserHeader({ name, group, eventName, date, userId, firstName, la
   )
 }
 >>>>>>> 8629ee725163f4106b170ad75a68ab5a4eefdd4c
+=======
+}
+>>>>>>> 951b261 (Update dashboard design with red theme and gradients)

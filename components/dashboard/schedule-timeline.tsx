@@ -22,17 +22,12 @@ const typeConfig: Record<
   { icon: typeof Presentation; label: string; bg: string; text: string }
 > = {
   seminar: { icon: Presentation, label: "Seminar", bg: "bg-blue-100", text: "text-blue-600" },
-<<<<<<< HEAD
   // HIER WAR DAS PINK VERSTECKT -> Jetzt Rot!
   workshop: { icon: Wrench, label: "Workshop", bg: "bg-red-100", text: "text-red-600" },
-=======
-  workshop: { icon: Wrench, label: "Workshop", bg: "bg-pink-100", text: "text-pink-600" },
->>>>>>> 8629ee725163f4106b170ad75a68ab5a4eefdd4c
   break: { icon: Coffee, label: "Break", bg: "bg-gray-100", text: "text-gray-600" },
   networking: { icon: Users, label: "Networking", bg: "bg-purple-100", text: "text-purple-600" },
 }
 
-<<<<<<< HEAD
 const events: ScheduleEvent[] = [
   { id: "1", time: "9:00 AM", endTime: "9:30 AM", title: "Registration & Breakfast", location: "Main Lobby", type: "break" },
   { id: "2", time: "9:30 AM", endTime: "10:00 AM", title: "Opening Keynote", location: "Hall A", type: "seminar", speaker: "Dr. Sarah Chen", isNow: true },
@@ -42,9 +37,6 @@ const events: ScheduleEvent[] = [
   { id: "6", time: "1:00 PM", endTime: "2:30 PM", title: "AI & Machine Learning Seminar", location: "Hall B", type: "seminar", speaker: "Prof. James Liu" },
   { id: "7", time: "2:45 PM", endTime: "4:15 PM", title: "Design Systems Workshop", location: "Room 305", type: "workshop", speaker: "Elena Kowalski" },
 ]
-=======
-const events: ScheduleEvent[] = []
->>>>>>> 8629ee725163f4106b170ad75a68ab5a4eefdd4c
 
 const filterOptions: { label: string; value: EventType | "all" }[] = [
   { label: "All", value: "all" },
@@ -61,11 +53,7 @@ export function ScheduleTimeline() {
     <section className="flex flex-col gap-4 px-5 pb-10 lg:px-0 lg:pb-0 lg:flex-1 lg:overflow-hidden" aria-label="Today's Schedule">
       <div className="flex items-center justify-between">
         <h2 className="text-base font-semibold text-foreground lg:text-lg">Today's Schedule</h2>
-<<<<<<< HEAD
         <span className="text-xs text-muted-foreground">{events.length} events</span>
-=======
-        <span className="text-xs text-muted-foreground">Coming soon</span>
->>>>>>> 8629ee725163f4106b170ad75a68ab5a4eefdd4c
       </div>
 
       <div className="flex items-center gap-2 lg:gap-3" role="tablist">
@@ -75,12 +63,8 @@ export function ScheduleTimeline() {
             onClick={() => setFilter(opt.value)}
             className={`rounded-lg px-3.5 py-1.5 text-xs font-medium transition-all ${
               filter === opt.value
-<<<<<<< HEAD
                 // Tab-Hintergrund auf Rot geändert
                 ? "bg-red-600 text-white"
-=======
-                ? "bg-accent text-accent-foreground"
->>>>>>> 8629ee725163f4106b170ad75a68ab5a4eefdd4c
                 : "bg-secondary text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -90,29 +74,13 @@ export function ScheduleTimeline() {
       </div>
 
       <div className="flex flex-col gap-0 lg:flex-1 lg:overflow-y-auto lg:pr-2 lg:gap-3" role="list">
-<<<<<<< HEAD
         {filtered.map((event, i) => {
-=======
-        {filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
-            <div className="flex items-center justify-center size-14 rounded-2xl bg-secondary">
-              <Presentation className="size-6 text-muted-foreground" />
-            </div>
-            <p className="text-sm font-medium text-foreground">Will be announced soon</p>
-            <p className="text-xs text-muted-foreground">Check back closer to the event date</p>
-          </div>
-        ) : filtered.map((event, i) => {
->>>>>>> 8629ee725163f4106b170ad75a68ab5a4eefdd4c
           const Icon = typeConfig[event.type].icon
           const colorConfig = typeConfig[event.type]
           const isLast = i === filtered.length - 1
 
           return (
             <div key={event.id} className="flex gap-4 lg:gap-0" role="listitem">
-<<<<<<< HEAD
-=======
-              {/* Mobile Timeline Stem */}
->>>>>>> 8629ee725163f4106b170ad75a68ab5a4eefdd4c
               <div className="flex flex-col items-center pt-1 lg:hidden">
                 <div className={`flex items-center justify-center size-10 rounded-lg shrink-0 ${colorConfig.bg} ${colorConfig.text}`}>
                   <Icon className="size-5" />
@@ -120,25 +88,14 @@ export function ScheduleTimeline() {
                 {!isLast && <div className="w-px flex-1 min-h-4 bg-border" />}
               </div>
 
-<<<<<<< HEAD
               <div className={`flex flex-col gap-2 pb-5 flex-1 lg:pb-0 lg:rounded-xl lg:border lg:border-border lg:p-4 lg:flex-row lg:items-center lg:justify-between ${isLast ? "pb-0" : ""}`}>
                 <div className="flex items-start gap-3 lg:items-center">
-=======
-              {/* Content */}
-              <div className={`flex flex-col gap-2 pb-5 flex-1 lg:pb-0 lg:rounded-xl lg:border lg:border-border lg:p-4 lg:flex-row lg:items-center lg:justify-between ${isLast ? "pb-0" : ""}`}>
-                <div className="flex items-start gap-3 lg:items-center">
-                  {/* Desktop Icon - Updated to size-12 container and size-5 icon */}
->>>>>>> 8629ee725163f4106b170ad75a68ab5a4eefdd4c
                   <div className={`hidden lg:flex items-center justify-center size-12 rounded-lg shrink-0 ${colorConfig.bg} ${colorConfig.text}`}>
                     <Icon className="size-5" />
                   </div>
                   <div className="flex flex-col gap-0.5">
-<<<<<<< HEAD
                     {/* Aktives Event (isNow) ist jetzt Rot statt Accent/Pink */}
                     <h3 className={`text-sm font-medium leading-tight ${event.isNow ? "text-red-600" : "text-foreground"}`}>
-=======
-                    <h3 className={`text-sm font-medium leading-tight ${event.isNow ? "text-accent" : "text-foreground"}`}>
->>>>>>> 8629ee725163f4106b170ad75a68ab5a4eefdd4c
                       {event.title}
                     </h3>
                     {event.speaker && <p className="text-xs text-muted-foreground">{event.speaker}</p>}
@@ -154,9 +111,5 @@ export function ScheduleTimeline() {
         })}
       </div>
     </section>
-<<<<<<< HEAD
-=======
-
->>>>>>> 8629ee725163f4106b170ad75a68ab5a4eefdd4c
   )
 }

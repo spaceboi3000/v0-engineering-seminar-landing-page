@@ -15,18 +15,10 @@ export function SidebarNav() {
   const [isOpen, setIsOpen] = useState(false)
 
   const handleItemClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-<<<<<<< HEAD
     if (href === "#minigame") {
       e.preventDefault() 
       setIsOpen(false)
       window.dispatchEvent(new Event("openGame")) 
-=======
-    // If the target is the game, we manually trigger the custom event
-    if (href === "#minigame") {
-      e.preventDefault() // Prevents Next.js from blocking the jump
-      setIsOpen(false)
-      window.dispatchEvent(new Event("openGame")) // Send our signal
->>>>>>> 8629ee725163f4106b170ad75a68ab5a4eefdd4c
     } else {
       setIsOpen(false)
     }
@@ -34,27 +26,16 @@ export function SidebarNav() {
 
   return (
     <>
-<<<<<<< HEAD
       {/* DAS HAUPT-ICON (Handy-Menü) */}
       <button
         onClick={() => setIsOpen(true)}
         // HIER GEÄNDERT: "right-4" statt "left-4", damit es rechts oben in der Ecke sitzt!
         className="fixed top-4 right-4 z-40 rounded-lg bg-card p-2 text-foreground shadow-sm lg:hidden"
-=======
-      {/* Mobile Menu Button */}
-      <button
-        onClick={() => setIsOpen(true)}
-        className="fixed top-4 left-4 z-40 rounded-lg bg-card p-2 text-foreground shadow-sm lg:hidden"
->>>>>>> 8629ee725163f4106b170ad75a68ab5a4eefdd4c
         aria-label="Open Menu"
       >
         <Menu className="size-6" />
       </button>
 
-<<<<<<< HEAD
-=======
-      {/* Overlay */}
->>>>>>> 8629ee725163f4106b170ad75a68ab5a4eefdd4c
       {isOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/50 transition-opacity lg:hidden"
@@ -62,23 +43,13 @@ export function SidebarNav() {
         />
       )}
 
-<<<<<<< HEAD
       <aside className={`fixed inset-y-0 left-0 z-50 flex h-svh w-64 flex-col justify-between border-r border-border bg-card p-6 shadow-2xl transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 lg:shadow-none ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
-=======
-      {/* Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-50 flex h-svh w-64 flex-col justify-between border-r border-border bg-card p-6 shadow-2xl transition-transform duration-300 ease-in-out ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
->>>>>>> 8629ee725163f4106b170ad75a68ab5a4eefdd4c
         <div className="flex flex-col gap-8">
           
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-<<<<<<< HEAD
               <div className="flex size-9 items-center justify-center rounded-lg bg-red-100">
                 <QrCode className="size-5 text-red-600" />
-=======
-              <div className="flex size-9 items-center justify-center rounded-lg bg-blue-100">
-                <QrCode className="size-5 text-blue-600" />
->>>>>>> 8629ee725163f4106b170ad75a68ab5a4eefdd4c
               </div>
               <span className="text-lg font-bold tracking-tight text-foreground">EventPass</span>
             </div>
@@ -90,17 +61,11 @@ export function SidebarNav() {
           <nav aria-label="Main navigation" className="flex flex-col gap-1">
             {navItems.map((item) => {
               const Icon = item.icon
-<<<<<<< HEAD
-=======
-              
-              // We use <a> instead of <Link> here to allow native smooth scrolling and custom events
->>>>>>> 8629ee725163f4106b170ad75a68ab5a4eefdd4c
               return (
                 <a
                   key={item.label}
                   href={item.href}
                   onClick={(e) => handleItemClick(e, item.href)}
-<<<<<<< HEAD
                   className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                     item.active ? "bg-red-600/15 text-red-600" : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                   }`}
@@ -109,13 +74,6 @@ export function SidebarNav() {
                     className={`size-[18px] transition-opacity ${item.active ? "opacity-100" : "opacity-50 group-hover:opacity-80"}`} 
                     strokeWidth={item.active ? 2.5 : 2} 
                   />
-=======
-                  className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                    item.active ? "bg-blue-600/15 text-blue-600" : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                  }`}
-                >
-                  <Icon className="size-[18px]" strokeWidth={item.active ? 2.5 : 2} />
->>>>>>> 8629ee725163f4106b170ad75a68ab5a4eefdd4c
                   {item.label}
                 </a>
               )
@@ -124,7 +82,6 @@ export function SidebarNav() {
         </div>
 
         <div className="flex flex-col gap-2">
-<<<<<<< HEAD
           <Link href="/" className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-red-600 to-rose-500 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_0_20px_rgba(225,29,72,0.3)] transition-all hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(225,29,72,0.5)]">
             <ExternalLink className="size-4" />
             Return to Home
@@ -132,15 +89,6 @@ export function SidebarNav() {
           
           <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground">
             <LogOut className="size-[18px] opacity-50" />
-=======
-          {/* This link goes to a different page, so we keep the Next.js Link component */}
-          <Link href="/" className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-sky-500 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(14,165,233,0.5)]">
-            <ExternalLink className="size-4" />
-            Return to Home
-          </Link>
-          <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground">
-            <LogOut className="size-[18px]" />
->>>>>>> 8629ee725163f4106b170ad75a68ab5a4eefdd4c
             Sign Out
           </button>
         </div>
