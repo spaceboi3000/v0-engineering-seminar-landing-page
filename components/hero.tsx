@@ -95,7 +95,7 @@ export function Hero() {
 
         {/* Subheadline */}
         <h2 className="mx-auto mt-4 max-w-2xl text-balance text-lg text-foreground/70 md:text-xl">
-          A robotics {"&"} AI seminar by IEEE RAS NTUA
+          A Robotics {"&"} AI Event by IEEE RAS NTUA
         </h2>
 
         {/* Metadata Badges */}
@@ -115,11 +115,11 @@ export function Hero() {
           <div className="mb-4 flex flex-col items-center gap-2">
             <Link
               href="/register"
-              className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-sky-500 px-10 py-2.5 text-sm font-semibold text-white shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all hover:shadow-[0_0_30px_rgba(14,165,233,0.5)] hover:scale-105"
+              className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-sky-500 px-14 py-3.5 text-base font-semibold text-white shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all hover:shadow-[0_0_30px_rgba(14,165,233,0.5)] hover:scale-105"
             >
               Register
             </Link>
-            <span className="text-xs text-muted-foreground/50">or subscribe to the newsletter below</span>
+            <span className="text-xs text-muted-foreground/50">To secure your spot now</span>
           </div>
         </div>
         <div className="mx-auto max-w-md">
