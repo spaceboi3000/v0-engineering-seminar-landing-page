@@ -38,7 +38,7 @@ export default async function DashboardPage() {
         <div id="qr-code" className="mx-auto flex w-full max-w-lg flex-col gap-6 pt-10 lg:max-w-sm lg:shrink-0 lg:border-r lg:border-border lg:px-8 lg:pb-8 lg:pt-16 lg:gap-8">
           <UserHeader
             name={fullName}
-            group="A"
+            //group="A"
             eventName="RoboTalk 2026"
             date="April 25, 2026"
             userId={user.id}
@@ -59,9 +59,9 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        <div id="schedule" className="mx-auto flex w-full max-w-lg flex-col pt-6 lg:max-w-none lg:flex-1 lg:px-8 lg:pb-8 lg:pt-16">
+        {/* <div id="schedule" className="mx-auto flex w-full max-w-lg flex-col pt-6 lg:max-w-none lg:flex-1 lg:px-8 lg:pb-8 lg:pt-16">
           <ScheduleTimeline />
-        </div>
+        </div> */}
 
         <div className="w-full">
           <GameSection />
