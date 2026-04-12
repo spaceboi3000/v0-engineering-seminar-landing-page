@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card"
 import { speakers } from "@/data/speakers"
 
 const AUTOPLAY_MS = 4000
@@ -46,116 +47,126 @@ export function Speakers() {
   function handleTouchEnd(e: React.TouchEvent) {
     if (touchStartX.current === null) return
     const dx = e.changedTouches[0].clientX - touchStartX.current
-    const threshold = window.innerWidth * 0.1
-    if (Math.abs(dx) > threshold) dx < 0 ? next() : prev()
+    if (Math.abs(dx) > window.innerWidth * 0.1) dx < 0 ? next() : prev()
     touchStartX.current = null
   }
 
   const speaker = speakers[current]
 
   return (
-    <section id="speakers" className="relative py-16 lg:py-24 overflow-hidden">
-      {/* Background glows */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-32 top-1/2 -translate-y-1/2 h-[500px] w-[500px] rounded-full bg-ras-red/10 blur-[120px]" />
-        <div className="absolute -right-32 top-1/2 -translate-y-1/2 h-[500px] w-[500px] rounded-full bg-blue-600/10 blur-[120px]" />
-      </div>
-
-      <div className="relative mx-auto max-w-7xl px-4 lg:px-8">
-        {/* Heading */}
-        <div className="text-center mb-12">
-          <p className="text-sm font-semibold uppercase tracking-widest text-ras-red">
+    <section id="speakers" className="py-16 lg:py-20">
+      <div className="mx-auto max-w-7xl px-4 lg:px-8">
+        <div className="text-center">
+          <p className="text-sm font-semibold uppercase tracking-widest bg-gradient-to-r from-ras-red to-blue-500 bg-clip-text text-transparent">
             RoboTalk 2026
           </p>
-          <h2 className="mt-2 text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+          <h2 className="mt-3 text-balance text-3xl font-bold tracking-tight text-foreground md:text-4xl">
             Ομιλητές
           </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
+            Γνώρισε τους ομιλητές του φετινού RoboTalk.
+          </p>
         </div>
 
-        {/* Slide wrapper */}
-        <div
-          className="relative mx-auto max-w-3xl"
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-        >
-          {/* Card */}
+        <Card className="relative mx-auto mt-12 max-w-4xl border-white/10 bg-white/[0.03] backdrop-blur-sm overflow-hidden z-0">
+          {/* Grid background */}
           <div
-            key={current}
-            style={{ transition: "transform 350ms ease, opacity 350ms ease" }}
-            className={`${
-              animating
-                ? direction === "left"
-                  ? "-translate-x-8 opacity-0"
-                  : "translate-x-8 opacity-0"
-                : "translate-x-0 opacity-100"
-            }`}
-          >
-            <div className="flex flex-col sm:flex-row gap-6 rounded-2xl border border-border/40 bg-card/60 backdrop-blur-sm p-6 shadow-lg">
+            className="absolute inset-0 opacity-[0.03] pointer-events-none -z-10"
+            style={{
+              backgroundImage: `linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)`,
+              backgroundSize: "40px 40px",
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-transparent via-blue-950/20 to-black/80 pointer-events-none -z-10" />
+          {/* Glows */}
+          <div className="absolute -top-20 left-1/4 h-40 w-1/3 -translate-x-1/2 rounded-full bg-ras-red/20 blur-[70px] pointer-events-none -z-10" />
+          <div className="absolute -top-20 right-1/4 h-40 w-1/3 translate-x-1/2 rounded-full bg-blue-500/20 blur-[70px] pointer-events-none -z-10" />
+          <div className="absolute -bottom-20 left-1/2 h-40 w-1/2 -translate-x-1/2 rounded-full bg-blue-500/20 blur-[70px] pointer-events-none -z-10" />
 
-              {/* Photo */}
-              <Link href={`/speakers/${speaker.id}`} className="group shrink-0 mx-auto sm:mx-0">
-                <div className="relative h-56 w-44 overflow-hidden rounded-xl border border-border/40 shadow-md">
-                  <Image
-                    src={speaker.photo}
-                    alt={speaker.name}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+          <CardContent className="p-6 md:p-8">
+            {/* Slide */}
+            <div
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+            >
+              <div
+                key={current}
+                style={{ transition: "transform 350ms ease, opacity 350ms ease" }}
+                className={`grid gap-6 md:grid-cols-5 ${
+                  animating
+                    ? direction === "left"
+                      ? "-translate-x-6 opacity-0"
+                      : "translate-x-6 opacity-0"
+                    : "translate-x-0 opacity-100"
+                }`}
+              >
+                {/* Photo */}
+                <div className="md:col-span-2 flex justify-center md:justify-start">
+                  <div className="relative h-80 w-60 md:h-96 md:w-full overflow-hidden rounded-xl border border-white/10 shadow-lg">
+                    <Image
+                      src={speaker.photo}
+                      alt={speaker.name}
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                  </div>
                 </div>
-              </Link>
 
-              {/* Text */}
-              <div className="flex flex-col justify-center gap-3 text-center sm:text-left">
-                <div>
-                  <h3 className="text-xl font-bold text-foreground leading-tight">{speaker.name}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">{speaker.title}</p>
+                {/* Info */}
+                <div className="md:col-span-3 flex flex-col justify-center gap-4 md:border-l md:border-white/10 md:pl-8 text-center md:text-left">
+                  <div>
+                    <h3 className="text-2xl font-bold text-foreground">{speaker.name}</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">{speaker.title}</p>
+                  </div>
+                  <p className="text-sm text-foreground/70 leading-relaxed line-clamp-5">
+                    {speaker.bio}
+                  </p>
+                  <div className="flex flex-wrap gap-3 justify-center md:justify-start">
+                    <Link
+                      href={`/speakers/${speaker.id}`}
+                      className="inline-flex items-center gap-2 self-start rounded-lg bg-gradient-to-r from-blue-600 to-sky-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all hover:shadow-[0_0_30px_rgba(14,165,233,0.5)] hover:scale-105"
+                    >
+                      More
+                    </Link>
+                  </div>
                 </div>
-                <p className="text-sm text-foreground/70 leading-relaxed line-clamp-4">
-                  {speaker.bio}
-                </p>
-                <Link
-                  href={`/speakers/${speaker.id}`}
-                  className="inline-flex items-center justify-center sm:justify-start gap-1.5 text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors"
-                >
-                  Δες βιογραφικό →
-                </Link>
               </div>
             </div>
-          </div>
 
-          {/* Controls row: arrows + dots */}
-          <div className="mt-6 flex items-center justify-center gap-4">
-            <button
-              onClick={prev}
-              className="flex size-10 items-center justify-center rounded-full border border-border/40 bg-card shadow-md transition-all hover:border-blue-500/50 hover:scale-110"
-              aria-label="Previous speaker"
-            >
-              <ChevronLeft className="size-5 text-foreground" />
-            </button>
+            {/* Controls */}
+            <div className="mt-8 flex items-center justify-center gap-4">
+              <button
+                onClick={prev}
+                className="flex size-10 items-center justify-center rounded-full border border-white/10 bg-black/40 text-white/50 transition-all hover:border-blue-500/30 hover:text-blue-400 hover:shadow-[0_0_15px_rgba(37,99,235,0.2)]"
+                aria-label="Previous speaker"
+              >
+                <ChevronLeft className="size-5" />
+              </button>
 
-            <div className="flex items-center gap-2">
-              {speakers.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => goTo(i, i > current ? "left" : "right")}
-                  className={`h-2 rounded-full transition-all duration-300 ${
-                    i === current ? "w-8 bg-ras-red" : "w-2 bg-border hover:bg-muted-foreground"
-                  }`}
-                  aria-label={`Go to speaker ${i + 1}`}
-                />
-              ))}
+              <div className="flex items-center gap-2">
+                {speakers.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => goTo(i, i > current ? "left" : "right")}
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      i === current ? "w-8 bg-ras-red" : "w-2 bg-white/20 hover:bg-white/40"
+                    }`}
+                    aria-label={`Go to speaker ${i + 1}`}
+                  />
+                ))}
+              </div>
+
+              <button
+                onClick={next}
+                className="flex size-10 items-center justify-center rounded-full border border-white/10 bg-black/40 text-white/50 transition-all hover:border-blue-500/30 hover:text-blue-400 hover:shadow-[0_0_15px_rgba(37,99,235,0.2)]"
+                aria-label="Next speaker"
+              >
+                <ChevronRight className="size-5" />
+              </button>
             </div>
-
-            <button
-              onClick={next}
-              className="flex size-10 items-center justify-center rounded-full border border-border/40 bg-card shadow-md transition-all hover:border-blue-500/50 hover:scale-110"
-              aria-label="Next speaker"
-            >
-              <ChevronRight className="size-5 text-foreground" />
-            </button>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </section>
   )

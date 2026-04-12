@@ -22,8 +22,8 @@ export default function Page() {
       <main>
         <Hero />
         <About />
-        <Speakers />
         <SectionDivider />
+        <Speakers />
         <PastEvents />
         <SectionDivider />
         <Organizers />
