@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -38,6 +38,16 @@ export function UserHeader({ name, group, eventName, date, userId, firstName, la
   const [cvUrl, setCvUrl] = useState<string | null>(null)
 
   const isLocked = new Date() > EDIT_DEADLINE
+
+  useEffect(() => {
+    function handleOpenSettings(e: Event) {
+      const tab = (e as CustomEvent).detail
+      setTab(tab === "cv" ? "cv" : "profile")
+      setOpen(true)
+    }
+    window.addEventListener("openSettings", handleOpenSettings)
+    return () => window.removeEventListener("openSettings", handleOpenSettings)
+  }, [])
 
   async function handleCvUpload() {
     if (!cvFile) return

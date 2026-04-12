@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Badge } from "@/components/ui/badge"
-import { Clock, MapPin, Presentation, Wrench, Coffee, Users } from "lucide-react"
+import { Clock, MapPin, Presentation, Wrench, Coffee, Users, FileUp } from "lucide-react"
 
 type EventType = "workshop" | "seminar" | "break" | "networking"
 
@@ -70,6 +70,20 @@ export function ScheduleTimeline() {
           </button>
         ))}
       </div>
+
+      {/* CV upload prompt */}
+      <button
+        onClick={() => window.dispatchEvent(new CustomEvent("openSettings", { detail: "cv" }))}
+        className="flex items-center gap-3 rounded-xl border border-dashed border-blue-500/30 bg-blue-500/5 px-4 py-3 text-left transition-all hover:border-blue-500/60 hover:bg-blue-500/10"
+      >
+        <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-blue-500/10">
+          <FileUp className="size-4 text-blue-400" />
+        </div>
+        <div>
+          <p className="text-sm font-medium text-foreground">Ανέβασε το βιογραφικό σου</p>
+          <p className="text-xs text-muted-foreground">Πάτα για να ανοίξεις τις ρυθμίσεις προφίλ</p>
+        </div>
+      </button>
 
       <div className="flex flex-col gap-0 lg:flex-1 lg:overflow-y-auto lg:pr-2 lg:gap-3" role="list">
         {filtered.map((event, i) => {
