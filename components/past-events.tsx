@@ -106,7 +106,8 @@ export function PastEvents() {
   function handleTouchEnd(e: React.TouchEvent) {
     if (touchStartX.current === null) return
     const dx = e.changedTouches[0].clientX - touchStartX.current
-    if (Math.abs(dx) > 40) {
+    const threshold = window.innerWidth * 0.1
+    if (Math.abs(dx) > threshold) {
       dx < 0 ? next() : prev()
     }
     touchStartX.current = null
