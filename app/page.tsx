@@ -22,11 +22,11 @@ export default function Page() {
       <main>
         <Hero />
         <About />
+        <Speakers />
+        <SectionDivider />
         <PastEvents />
         <SectionDivider />
         <Organizers />
-        <SectionDivider />
-        <Speakers />
         <SectionDivider />
         <Sponsors />
         <SectionDivider />
