@@ -112,7 +112,7 @@ export function Sponsors() {
           <div
             ref={scrollRef}
             onScroll={updateScrollButtons}
-            className="flex gap-5 overflow-x-auto scrollbar-hide px-2 py-2"
+            className="flex justify-center flex-wrap gap-5 overflow-x-auto scrollbar-hide px-2 py-2"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {sortedSponsors.map((sponsor) => {
@@ -121,33 +121,32 @@ export function Sponsors() {
                 <Link
                   key={sponsor.id}
                   href={`/sponsors/${sponsor.id}`}
-                  className="group relative flex shrink-0 w-[320px] items-start gap-4 rounded-2xl border border-border/40 bg-muted/20 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-border/60 hover:bg-muted/40 hover:shadow-[0_4px_30px_rgba(228,61,64,0.04)] cursor-pointer"
+                  className="group relative grid grid-rows-2 shrink-0 w-[320px] aspect-[4/3] rounded-2xl border border-border/40 bg-muted/20 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-border/60 hover:bg-muted/40 hover:shadow-[0_4px_30px_rgba(228,61,64,0.04)] cursor-pointer"
                 >
                   {/* Tier badge */}
                   <span
-                    className={`absolute top-3 right-3 text-[10px] font-bold uppercase tracking-widest ${tier.textClass}`}
-                    style={{ opacity: 0.85 }}
+                    className="absolute top-3 right-3 text-[10px] font-bold uppercase tracking-widest z-10"
+                    style={{ color: tier.color, opacity: 0.9 }}
                   >
                     {tier.label}
                   </span>
 
-                  {/* Logo container */}
-                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border border-border/40 bg-muted/30 p-2">
+                  {/* Logo area — top half, white bg */}
+                  <div className="relative w-full bg-white border-b border-border/40">
                     <Image
                       src={sponsor.logo}
                       alt={sponsor.name}
-                      width={48}
-                      height={48}
-                      className="h-auto w-full object-contain"
+                      fill
+                      className="object-contain p-4"
                     />
                   </div>
 
-                  {/* Text */}
-                  <div className="flex flex-col min-w-0 pt-0.5">
-                    <h3 className="text-sm font-semibold text-foreground truncate pr-16 group-hover:text-ras-red-400 transition-colors">
+                  {/* Text — bottom half */}
+                  <div className="flex flex-col justify-center gap-1.5 p-5">
+                    <h3 className="text-sm font-semibold text-foreground pr-10 group-hover:text-ras-red-400 transition-colors">
                       {sponsor.name}
                     </h3>
-                    <p className="mt-1.5 text-xs text-muted-foreground/70 leading-relaxed line-clamp-3">
+                    <p className="text-xs text-muted-foreground/70 leading-relaxed line-clamp-3">
                       {sponsor.shortDescription}
                     </p>
                   </div>

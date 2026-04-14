@@ -133,8 +133,27 @@ export function SnakeGame() {
 
   const triggerHackerModeAndContinue = () => {
     window.dispatchEvent(new Event("unlockHackerMode"))
-    setGameWon(false) 
-    setIsPlaying(true) 
+    setGameWon(false)
+    setIsPlaying(true)
+  }
+
+  const swipeTouchStart = useRef<{ x: number; y: number } | null>(null)
+
+  function handleSwipeStart(e: React.TouchEvent) {
+    swipeTouchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }
+  }
+
+  function handleSwipeEnd(e: React.TouchEvent) {
+    if (!swipeTouchStart.current || !isPlaying || gameOver || gameWon) return
+    const dx = e.changedTouches[0].clientX - swipeTouchStart.current.x
+    const dy = e.changedTouches[0].clientY - swipeTouchStart.current.y
+    swipeTouchStart.current = null
+    if (Math.abs(dx) < 20 && Math.abs(dy) < 20) return
+    if (Math.abs(dx) > Math.abs(dy)) {
+      handleMobileControl(dx > 0 ? 1 : -1, 0)
+    } else {
+      handleMobileControl(0, dy > 0 ? 1 : -1)
+    }
   }
 
   return (
@@ -154,7 +173,11 @@ export function SnakeGame() {
         </p>
       </div>
 
-      <div className="relative w-full max-w-sm overflow-hidden rounded-lg bg-slate-900 border-2 border-slate-700 aspect-square snake-board">
+      <div
+        className="relative w-full max-w-sm overflow-hidden rounded-lg bg-slate-900 border-2 border-slate-700 aspect-square snake-board"
+        onTouchStart={handleSwipeStart}
+        onTouchEnd={handleSwipeEnd}
+      >
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:5%_5%]" />
 
         {gameWon && (
@@ -230,7 +253,10 @@ export function SnakeGame() {
         <button onClick={() => handleMobileControl(1, 0)} className="flex size-12 items-center justify-center rounded-lg bg-secondary active:bg-blue-600 active:text-white"><ArrowRight /></button>
       </div>
       
-      <p className="text-xs text-muted-foreground hidden lg:block">Use Arrow Keys to control the Robot</p>
+      <p className="text-xs text-muted-foreground">
+        <span className="hidden lg:inline">Arrow Keys or swipe to control</span>
+        <span className="lg:hidden">Swipe on the board to control</span>
+      </p>
     </div>
   )
 }

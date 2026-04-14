@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { useState, useCallback } from "react"
+import { useState, useCallback, useRef } from "react"
 import { ChevronLeft, ChevronRight, X } from "lucide-react"
 
 const slides = [
@@ -82,6 +82,7 @@ export function PastEvents() {
   const [current, setCurrent] = useState(0)
   const [zoomedImage, setZoomedImage] = useState<string | null>(null)
   const total = slides.length
+  const touchStartX = useRef<number | null>(null)
 
   const prev = useCallback(() => {
     setCurrent((c) => (c - 1 + total) % total)
@@ -96,6 +97,20 @@ export function PastEvents() {
     if (diff > total / 2) diff -= total
     if (diff < -total / 2) diff += total
     return diff
+  }
+
+  function handleTouchStart(e: React.TouchEvent) {
+    touchStartX.current = e.touches[0].clientX
+  }
+
+  function handleTouchEnd(e: React.TouchEvent) {
+    if (touchStartX.current === null) return
+    const dx = e.changedTouches[0].clientX - touchStartX.current
+    const threshold = window.innerWidth * 0.1
+    if (Math.abs(dx) > threshold) {
+      dx < 0 ? next() : prev()
+    }
+    touchStartX.current = null
   }
 
   return (
@@ -125,6 +140,8 @@ export function PastEvents() {
           <div
             className="relative mx-auto mt-14 h-[340px] sm:h-[400px] md:h-[440px] lg:h-[480px]"
             style={{ perspective: "1200px" }}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
           >
             {slides.map((slide, i) => {
               const offset = getOffset(i)

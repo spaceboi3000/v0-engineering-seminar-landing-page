@@ -20,6 +20,7 @@ export default function Page() {
       <main>
         <Hero />
         <About />
+        <SectionDivider />
         <PastEvents />
         <SectionDivider />
         <Organizers />
