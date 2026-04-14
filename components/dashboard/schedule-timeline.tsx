@@ -1,8 +1,9 @@
 "use client"
 
 import { useState } from "react"
+import { createSupabaseBrowser } from "@/lib/supabase-browser"
 import { Badge } from "@/components/ui/badge"
-import { Clock, MapPin, Presentation, Wrench, Coffee, Users, FileUp } from "lucide-react"
+import { Clock, MapPin, Presentation, Wrench, Coffee, Users, FileUp, Loader2 } from "lucide-react"
 
 type EventType = "workshop" | "seminar" | "break" | "networking"
 
@@ -21,32 +22,82 @@ const typeConfig: Record<
   EventType,
   { icon: typeof Presentation; label: string; bg: string; text: string }
 > = {
-  seminar: { icon: Presentation, label: "Seminar", bg: "bg-blue-100", text: "text-blue-600" },
-  workshop: { icon: Wrench, label: "Workshop", bg: "bg-pink-100", text: "text-pink-600" },
-  break: { icon: Coffee, label: "Break", bg: "bg-gray-100", text: "text-gray-600" },
-  networking: { icon: Users, label: "Networking", bg: "bg-purple-100", text: "text-purple-600" },
+  seminar:    { icon: Presentation, label: "Seminar",    bg: "bg-blue-100",   text: "text-blue-600"   },
+  workshop:   { icon: Wrench,       label: "Workshop",   bg: "bg-pink-100",   text: "text-pink-600"   },
+  break:      { icon: Coffee,       label: "Break",      bg: "bg-gray-100",   text: "text-gray-600"   },
+  networking: { icon: Users,        label: "Networking", bg: "bg-purple-100", text: "text-purple-600" },
 }
 
 const events: ScheduleEvent[] = [
-  { id: "1", time: "9:00 AM", endTime: "9:30 AM", title: "Registration & Breakfast", location: "Main Lobby", type: "break" },
-  { id: "2", time: "9:30 AM", endTime: "10:00 AM", title: "Opening Keynote", location: "Hall A", type: "seminar", speaker: "Dr. Sarah Chen", isNow: true },
-  { id: "3", time: "10:00 AM", endTime: "11:30 AM", title: "React Workshop", location: "Room 201", type: "workshop", speaker: "Marcus Rivera" },
-  { id: "4", time: "11:30 AM", endTime: "12:00 PM", title: "Networking Session", location: "Rooftop Terrace", type: "networking" },
-  { id: "5", time: "12:00 PM", endTime: "1:00 PM", title: "Lunch Break", location: "Dining Hall", type: "break" },
-  { id: "6", time: "1:00 PM", endTime: "2:30 PM", title: "AI & Machine Learning Seminar", location: "Hall B", type: "seminar", speaker: "Prof. James Liu" },
-  { id: "7", time: "2:45 PM", endTime: "4:15 PM", title: "Design Systems Workshop", location: "Room 305", type: "workshop", speaker: "Elena Kowalski" },
+  { id: "1", time: "9:00 AM",  endTime: "9:30 AM",  title: "Registration & Breakfast",      location: "Main Lobby",      type: "break" },
+  { id: "2", time: "9:30 AM",  endTime: "10:00 AM", title: "Opening Keynote",               location: "Hall A",          type: "seminar",    speaker: "Dr. Sarah Chen", isNow: true },
+  { id: "3", time: "10:00 AM", endTime: "11:30 AM", title: "React Workshop",                location: "Room 201",        type: "workshop",   speaker: "Marcus Rivera" },
+  { id: "4", time: "11:30 AM", endTime: "12:00 PM", title: "Networking Session",            location: "Rooftop Terrace", type: "networking" },
+  { id: "5", time: "12:00 PM", endTime: "1:00 PM",  title: "Lunch Break",                   location: "Dining Hall",     type: "break" },
+  { id: "6", time: "1:00 PM",  endTime: "2:30 PM",  title: "AI & Machine Learning Seminar", location: "Hall B",          type: "seminar",    speaker: "Prof. James Liu" },
+  { id: "7", time: "2:45 PM",  endTime: "4:15 PM",  title: "Design Systems Workshop",       location: "Room 305",        type: "workshop",   speaker: "Elena Kowalski" },
 ]
 
 const filterOptions: { label: string; value: EventType | "all" }[] = [
-  { label: "All", value: "all" },
-  { label: "Seminars", value: "seminar" },
+  { label: "All",       value: "all"      },
+  { label: "Seminars",  value: "seminar"  },
   { label: "Workshops", value: "workshop" },
 ]
 
-export function ScheduleTimeline() {
+interface Props {
+  userId: string
+  enrolledIds: string[]
+}
+
+export function ScheduleTimeline({ userId, enrolledIds }: Props) {
   const [filter, setFilter] = useState<EventType | "all">("all")
+  const [enrolled, setEnrolled] = useState<Set<string>>(new Set(enrolledIds))
+  const [loading, setLoading] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   const filtered = filter === "all" ? events : events.filter((e) => e.type === filter)
+
+  async function getToken() {
+    const supabase = createSupabaseBrowser()
+    const { data: { session } } = await supabase.auth.getSession()
+    return session?.access_token ?? null
+  }
+
+  async function handleEnroll(workshopId: string) {
+    setLoading(workshopId)
+    setError(null)
+    const token = await getToken()
+    const res = await fetch("/api/enroll", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+      body: JSON.stringify({ workshopId }),
+    })
+    const data = await res.json()
+    if (!res.ok) {
+      setError(data.error ?? "Κάτι πήγε στραβά.")
+    } else {
+      setEnrolled(prev => new Set([...prev, workshopId]))
+    }
+    setLoading(null)
+  }
+
+  async function handleUnenroll(workshopId: string) {
+    setLoading(workshopId)
+    setError(null)
+    const token = await getToken()
+    const res = await fetch("/api/enroll", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+      body: JSON.stringify({ workshopId }),
+    })
+    const data = await res.json()
+    if (!res.ok) {
+      setError(data.error ?? "Κάτι πήγε στραβά.")
+    } else {
+      setEnrolled(prev => { const s = new Set(prev); s.delete(workshopId); return s })
+    }
+    setLoading(null)
+  }
 
   return (
     <section className="flex flex-col gap-4 px-5 pb-10 lg:px-0 lg:pb-0 lg:flex-1 lg:overflow-hidden" aria-label="Today's Schedule">
@@ -85,11 +136,20 @@ export function ScheduleTimeline() {
         </div>
       </button>
 
+      {error && (
+        <div className="rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2.5 text-xs text-red-400">
+          {error}
+        </div>
+      )}
+
       <div className="flex flex-col gap-0 lg:flex-1 lg:overflow-y-auto lg:pr-2 lg:gap-3" role="list">
         {filtered.map((event, i) => {
           const Icon = typeConfig[event.type].icon
           const colorConfig = typeConfig[event.type]
           const isLast = i === filtered.length - 1
+          const isWorkshop = event.type === "workshop"
+          const isEnrolled = enrolled.has(event.id)
+          const isLoading = loading === event.id
 
           return (
             <div key={event.id} className="flex gap-4 lg:gap-0" role="listitem">
@@ -104,7 +164,6 @@ export function ScheduleTimeline() {
               {/* Content */}
               <div className={`flex flex-col gap-2 pb-5 flex-1 lg:pb-0 lg:rounded-xl lg:border lg:border-border lg:p-4 lg:flex-row lg:items-center lg:justify-between ${isLast ? "pb-0" : ""}`}>
                 <div className="flex items-start gap-3 lg:items-center">
-                  {/* Desktop Icon - Updated to size-12 container and size-5 icon */}
                   <div className={`hidden lg:flex items-center justify-center size-12 rounded-lg shrink-0 ${colorConfig.bg} ${colorConfig.text}`}>
                     <Icon className="size-5" />
                   </div>
@@ -115,9 +174,27 @@ export function ScheduleTimeline() {
                     {event.speaker && <p className="text-xs text-muted-foreground">{event.speaker}</p>}
                   </div>
                 </div>
-                <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1"><Clock className="size-3" /> {event.time} - {event.endTime}</span>
-                  <span className="flex items-center gap-1"><MapPin className="size-3" /> {event.location}</span>
+
+                <div className="flex items-center gap-3 flex-wrap">
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                    <span className="flex items-center gap-1"><Clock className="size-3" /> {event.time} - {event.endTime}</span>
+                    <span className="flex items-center gap-1"><MapPin className="size-3" /> {event.location}</span>
+                  </div>
+
+                  {isWorkshop && (
+                    <button
+                      disabled={isLoading}
+                      onClick={() => isEnrolled ? handleUnenroll(event.id) : handleEnroll(event.id)}
+                      className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all disabled:opacity-60 ${
+                        isEnrolled
+                          ? "border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20"
+                          : "bg-accent text-accent-foreground hover:opacity-90"
+                      }`}
+                    >
+                      {isLoading && <Loader2 className="size-3 animate-spin" />}
+                      {isEnrolled ? "Απεγγραφή" : "Εγγραφή"}
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

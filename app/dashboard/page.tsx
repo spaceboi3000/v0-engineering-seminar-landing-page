@@ -22,6 +22,13 @@ export default async function DashboardPage() {
     .eq("id", user.id)
     .single()
 
+  const { data: enrollments } = await supabase
+    .from("enrollments")
+    .select("workshop_id")
+    .eq("user_id", user.id)
+
+  const enrolledIds = enrollments?.map((e) => e.workshop_id) ?? []
+
   const fullName = profile
     ? `${profile.first_name} ${profile.last_name}`
     : user.email ?? "Attendee"
@@ -60,7 +67,7 @@ export default async function DashboardPage() {
         </div>
 
         <div id="schedule" className="mx-auto flex w-full max-w-lg flex-col pt-6 lg:max-w-none lg:flex-1 lg:px-8 lg:pb-8 lg:pt-16">
-          <ScheduleTimeline />
+          <ScheduleTimeline userId={user.id} enrolledIds={enrolledIds} />
         </div>
 
         <div className="w-full">
