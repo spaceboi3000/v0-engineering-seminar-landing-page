@@ -13,21 +13,23 @@ export async function POST(req: Request) {
 
   const { data: workshop, error: wErr } = await db
     .from("workshops")
-    .select("start_time, end_time, title")
+    .select("start_time, end_time, title, capacity")
     .eq("id", workshopId)
     .single()
 
   if (wErr || !workshop) return NextResponse.json({ error: "Workshop not found" }, { status: 404 })
 
-  // Fetch all workshops the user is already enrolled in
-  const { data: enrolled } = await db
+  // Fetch user's confirmed (enrolled) workshops for overlap check
+  // Waitlisted enrollments don't block scheduling — user may not get in
+  const { data: userEnrollments } = await db
     .from("enrollments")
-    .select("workshop_id, workshops(start_time, end_time, title)")
+    .select("workshop_id, status, workshops(start_time, end_time, title)")
     .eq("user_id", user.id)
+    .eq("status", "enrolled")
     .neq("workshop_id", workshopId)
 
-  // Check for time overlap: overlap when start_A < end_B AND end_A > start_B
-  const conflict = enrolled?.find((e: any) => {
+  // Time overlap: start_A < end_B AND end_A > start_B
+  const conflict = userEnrollments?.find((e: any) => {
     const w = e.workshops
     return new Date(w.start_time) < new Date(workshop.end_time) &&
            new Date(w.end_time)   > new Date(workshop.start_time)
@@ -41,12 +43,22 @@ export async function POST(req: Request) {
     )
   }
 
+  // Count confirmed enrollments to check capacity
+  const { count: enrolledCount } = await db
+    .from("enrollments")
+    .select("*", { count: "exact", head: true })
+    .eq("workshop_id", workshopId)
+    .eq("status", "enrolled")
+
+  const isFull = (enrolledCount ?? 0) >= workshop.capacity
+  const status = isFull ? "waitlisted" : "enrolled"
+
   const { error } = await db
     .from("enrollments")
-    .insert({ user_id: user.id, workshop_id: workshopId })
+    .insert({ user_id: user.id, workshop_id: workshopId, status })
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ success: true })
+  return NextResponse.json({ success: true, waitlisted: isFull })
 }
 
 export async function DELETE(req: Request) {

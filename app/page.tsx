@@ -5,6 +5,8 @@ import { About } from "@/components/about"
 import { PastEvents } from "@/components/past-events"
 import { SectionDivider } from "@/components/section-divider"
 import { Organizers } from "@/components/organizers"
+import { Speakers } from "@/components/speakers"
+import { Sponsors } from "@/components/sponsors"
 import { Location } from "@/components/location"
 import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
@@ -20,6 +22,10 @@ export default function Page() {
       <main>
         <Hero />
         <About />
+        <SectionDivider />
+        <Speakers />
+        <SectionDivider />
+        <Sponsors />
         <SectionDivider />
         <PastEvents />
         <SectionDivider />

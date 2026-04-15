@@ -2,8 +2,7 @@
 
 import { useState } from "react"
 import { createSupabaseBrowser } from "@/lib/supabase-browser"
-import { Badge } from "@/components/ui/badge"
-import { Clock, MapPin, Presentation, Wrench, Coffee, Users, FileUp, Loader2 } from "lucide-react"
+import { Clock, MapPin, Presentation, Wrench, Coffee, Users, FileUp, Loader2, Users2 } from "lucide-react"
 
 type EventType = "workshop" | "seminar" | "break" | "networking"
 
@@ -16,6 +15,7 @@ interface ScheduleEvent {
   type: EventType
   speaker?: string
   isNow?: boolean
+  capacity?: number
 }
 
 const typeConfig: Record<
@@ -39,11 +39,15 @@ const filterOptions: { label: string; value: EventType | "all" }[] = [
 interface Props {
   userId: string
   enrolledIds: string[]
+  waitlistedIds: string[]
+  enrollmentCounts: Record<string, number>
 }
 
-export function ScheduleTimeline({ userId, enrolledIds }: Props) {
+export function ScheduleTimeline({ userId, enrolledIds, waitlistedIds, enrollmentCounts }: Props) {
   const [filter, setFilter] = useState<EventType | "all">("all")
   const [enrolled, setEnrolled] = useState<Set<string>>(new Set(enrolledIds))
+  const [waitlisted, setWaitlisted] = useState<Set<string>>(new Set(waitlistedIds))
+  const [counts, setCounts] = useState<Record<string, number>>(enrollmentCounts)
   const [loading, setLoading] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -67,8 +71,11 @@ export function ScheduleTimeline({ userId, enrolledIds }: Props) {
     const data = await res.json()
     if (!res.ok) {
       setError(data.error ?? "Κάτι πήγε στραβά.")
+    } else if (data.waitlisted) {
+      setWaitlisted(prev => new Set([...prev, workshopId]))
     } else {
       setEnrolled(prev => new Set([...prev, workshopId]))
+      setCounts(prev => ({ ...prev, [workshopId]: (prev[workshopId] ?? 0) + 1 }))
     }
     setLoading(null)
   }
@@ -86,7 +93,12 @@ export function ScheduleTimeline({ userId, enrolledIds }: Props) {
     if (!res.ok) {
       setError(data.error ?? "Κάτι πήγε στραβά.")
     } else {
-      setEnrolled(prev => { const s = new Set(prev); s.delete(workshopId); return s })
+      if (waitlisted.has(workshopId)) {
+        setWaitlisted(prev => { const s = new Set(prev); s.delete(workshopId); return s })
+      } else {
+        setEnrolled(prev => { const s = new Set(prev); s.delete(workshopId); return s })
+        setCounts(prev => ({ ...prev, [workshopId]: Math.max(0, (prev[workshopId] ?? 1) - 1) }))
+      }
     }
     setLoading(null)
   }
@@ -149,7 +161,10 @@ export function ScheduleTimeline({ userId, enrolledIds }: Props) {
           const isLast = i === filtered.length - 1
           const isWorkshop = event.type === "workshop"
           const isEnrolled = enrolled.has(event.id)
+          const isWaitlisted = waitlisted.has(event.id)
           const isLoading = loading === event.id
+          const enrolledCount = counts[event.id] ?? 0
+          const isFull = event.capacity !== undefined && enrolledCount >= event.capacity
 
           return (
             <div key={event.id} className="flex gap-4 lg:gap-0" role="listitem">
@@ -172,6 +187,17 @@ export function ScheduleTimeline({ userId, enrolledIds }: Props) {
                       {event.title}
                     </h3>
                     {event.speaker && <p className="text-xs text-muted-foreground">{event.speaker}</p>}
+                    {/* Capacity pill */}
+                    {isWorkshop && event.capacity !== undefined && (
+                      <span className={`mt-0.5 inline-flex w-fit items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium ${
+                        isFull
+                          ? "bg-red-500/10 text-red-400"
+                          : "bg-secondary text-muted-foreground"
+                      }`}>
+                        <Users2 className="size-2.5" />
+                        {isFull ? `Full · ${enrolledCount}/${event.capacity}` : `${enrolledCount}/${event.capacity} spots`}
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -182,18 +208,38 @@ export function ScheduleTimeline({ userId, enrolledIds }: Props) {
                   </div>
 
                   {isWorkshop && (
-                    <button
-                      disabled={isLoading}
-                      onClick={() => isEnrolled ? handleUnenroll(event.id) : handleEnroll(event.id)}
-                      className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all disabled:opacity-60 ${
-                        isEnrolled
-                          ? "border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20"
-                          : "bg-accent text-accent-foreground hover:opacity-90"
-                      }`}
-                    >
-                      {isLoading && <Loader2 className="size-3 animate-spin" />}
-                      {isEnrolled ? "Απεγγραφή" : "Εγγραφή"}
-                    </button>
+                    isEnrolled ? (
+                      <button
+                        disabled={isLoading}
+                        onClick={() => handleUnenroll(event.id)}
+                        className="flex items-center gap-1.5 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs font-semibold text-red-400 transition-all hover:bg-red-500/20 disabled:opacity-60"
+                      >
+                        {isLoading && <Loader2 className="size-3 animate-spin" />}
+                        Απεγγραφή
+                      </button>
+                    ) : isWaitlisted ? (
+                      <button
+                        disabled={isLoading}
+                        onClick={() => handleUnenroll(event.id)}
+                        className="flex items-center gap-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-1.5 text-xs font-semibold text-amber-400 transition-all hover:bg-amber-500/20 disabled:opacity-60"
+                      >
+                        {isLoading && <Loader2 className="size-3 animate-spin" />}
+                        Σε αναμονή · Ακύρωση
+                      </button>
+                    ) : (
+                      <button
+                        disabled={isLoading}
+                        onClick={() => handleEnroll(event.id)}
+                        className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all disabled:opacity-60 ${
+                          isFull
+                            ? "border border-amber-500/30 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20"
+                            : "bg-accent text-accent-foreground hover:opacity-90"
+                        }`}
+                      >
+                        {isLoading && <Loader2 className="size-3 animate-spin" />}
+                        {isFull ? "Λίστα αναμονής" : "Εγγραφή"}
+                      </button>
+                    )
                   )}
                 </div>
               </div>

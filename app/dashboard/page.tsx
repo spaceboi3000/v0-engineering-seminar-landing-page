@@ -24,10 +24,20 @@ export default async function DashboardPage() {
 
   const { data: enrollments } = await supabase
     .from("enrollments")
-    .select("workshop_id")
+    .select("workshop_id, status")
     .eq("user_id", user.id)
 
-  const enrolledIds = enrollments?.map((e) => e.workshop_id) ?? []
+  const enrolledIds   = enrollments?.filter((e) => e.status === "enrolled").map((e) => e.workshop_id) ?? []
+  const waitlistedIds = enrollments?.filter((e) => e.status === "waitlisted").map((e) => e.workshop_id) ?? []
+
+  const { data: countRows } = await supabase
+    .from("workshop_enrollment_summary")
+    .select("workshop_id, enrolled_count")
+
+  const enrollmentCounts: Record<string, number> = {}
+  for (const row of countRows ?? []) {
+    enrollmentCounts[row.workshop_id] = Number(row.enrolled_count)
+  }
 
   const fullName = profile
     ? `${profile.first_name} ${profile.last_name}`
@@ -67,7 +77,7 @@ export default async function DashboardPage() {
         </div>
 
         <div id="schedule" className="mx-auto flex w-full max-w-lg flex-col pt-6 lg:max-w-none lg:flex-1 lg:px-8 lg:pb-8 lg:pt-16">
-          <ScheduleTimeline userId={user.id} enrolledIds={enrolledIds} />
+          <ScheduleTimeline userId={user.id} enrolledIds={enrolledIds} waitlistedIds={waitlistedIds} enrollmentCounts={enrollmentCounts} />
         </div>
 
         <div className="w-full">
