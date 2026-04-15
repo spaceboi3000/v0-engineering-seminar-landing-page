@@ -93,13 +93,6 @@ export function Hero() {
       </div>
 
       <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-40 z-[5]" style={{ background: "linear-gradient(to top, hsl(var(--background)) 0%, hsl(var(--background) / 0.6) 40%, transparent 100%)" }} aria-hidden="true" />
-
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-12px); }
-        }
-      `}</style>
     </section>
   )
 }

@@ -24,6 +24,7 @@ export default function Page() {
         <About />
         <SectionDivider />
         <Speakers />
+        <SectionDivider />
         <PastEvents />
         <SectionDivider />
         <Organizers />
