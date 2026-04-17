@@ -30,15 +30,15 @@ export const TIER_CONFIG: Record<SponsorTier, {
 }> = {
   platinum: {
     label: "Platinum",
-    color: "#8cbed6",
-    textClass: "text-[#8cbed6]",
-    borderClass: "border-[#8cbed6]/60",
-    bgClass: "bg-[#8cbed6]/10",
+    color: "#a0b2c6",
+    textClass: "text-[#a0b2c6]",
+    borderClass: "border-[#a0b2c6]/60",
+    bgClass: "bg-[#a0b2c6]/10",
     metalGradient: `linear-gradient(135deg,
-      #4a8aaa 0%, #a8d8ea 10%, #ddf0f7 22%, #8cbed6 34%,
-      #5e9eb8 46%, #c2e4f0 58%, #ffffff 70%, #9acde0 82%, #3a7a9a 100%)`,
+      #6b7d91 0%, #c8d6e4 10%, #f0f5f9 22%, #a0b2c6 34%,
+      #7a8c9e 46%, #dde6ef 58%, #ffffff 70%, #b8c8d8 82%, #5a6b7d 100%)`,
     metalOverlay: "radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0) 55%)",
-    metalRing: "ring-2 ring-[#8cbed6]/60",
+    metalRing: "ring-2 ring-[#a0b2c6]/60",
   },
   gold: {
     label: "Gold",
