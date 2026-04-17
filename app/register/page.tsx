@@ -56,17 +56,22 @@ export default function RegisterPage() {
     }
 
     if (data.user) {
-      const { error: profileError } = await supabase.from("profiles").insert({
-        id: data.user.id,
-        first_name: form.firstName,
-        last_name: form.lastName,
-        university: form.university,
-        department: form.department,
-        year: form.year,
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: data.user.id,
+          firstName: form.firstName,
+          lastName: form.lastName,
+          university: form.university,
+          department: form.department,
+          year: form.year,
+        }),
       })
 
-      if (profileError) {
-        setError(profileError.message)
+      if (!res.ok) {
+        const { error: profileError } = await res.json()
+        setError(profileError)
         setLoading(false)
         return
       }
@@ -101,7 +106,7 @@ export default function RegisterPage() {
         {/* Logo */}
         <div className="flex justify-center mb-8">
           <Link href="/" className="flex items-center gap-3">
-            <Image src="/images/robotalk-logo.png" alt="RoboTalk" width={48} height={48} className="h-12 w-12 object-contain" />
+            <Image src="/images/RoboTalk ROBOT_PNG_IM.png" alt="RoboTalk" width={48} height={48} className="h-12 w-12 object-contain" />
             <span className="text-xl font-bold text-white">
               Robo<span className="bg-gradient-to-r from-blue-600 to-sky-400 bg-clip-text text-transparent">Talk</span>
             </span>

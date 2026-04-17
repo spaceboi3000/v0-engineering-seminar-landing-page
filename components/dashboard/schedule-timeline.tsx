@@ -22,7 +22,7 @@ const typeConfig: Record<
   { icon: typeof Presentation; label: string; bg: string; text: string }
 > = {
   seminar:    { icon: Presentation, label: "Seminar",    bg: "bg-blue-100",   text: "text-blue-600"   },
-  workshop:   { icon: Wrench,       label: "Workshop",   bg: "bg-pink-100",   text: "text-pink-600"   },
+  workshop:   { icon: Wrench,       label: "Workshop",   bg: "bg-red-100",    text: "text-red-600"    },
   break:      { icon: Coffee,       label: "Break",      bg: "bg-gray-100",   text: "text-gray-600"   },
   networking: { icon: Users,        label: "Networking", bg: "bg-purple-100", text: "text-purple-600" },
 }
@@ -129,7 +129,7 @@ export function ScheduleTimeline({ enrolledIds, waitlistedIds, enrollmentCounts,
             onClick={() => setFilter(opt.value)}
             className={`rounded-lg px-3.5 py-1.5 text-xs font-medium transition-all ${
               filter === opt.value
-                ? "bg-accent text-accent-foreground"
+                ? "bg-red-600 text-white"
                 : "bg-secondary text-muted-foreground hover:text-foreground"
             }`}
           >

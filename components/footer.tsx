@@ -6,7 +6,8 @@ export function Footer() {
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 md:flex-row lg:px-8">
         <div className="flex items-center gap-3">
           <Image
-            src="/images/robotalk-logo.png"
+            // UPDATED: Path matches the exact filename in your public/images folder
+            src="/images/RoboTalk ROBOT_PNG_IM.png"
             alt="RoboTalk logo"
             width={28}
             height={28}

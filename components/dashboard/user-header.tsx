@@ -97,8 +97,8 @@ export function UserHeader({ name, group, eventName, date, userId, firstName, la
       <header className="flex flex-col gap-5 px-5 pt-6 pb-2 lg:px-0 lg:pt-0 lg:pb-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3 lg:gap-4">
-            <Avatar className="size-11 bg-accent lg:size-14">
-              <AvatarFallback className="bg-accent text-accent-foreground font-semibold text-base lg:text-lg">
+            <Avatar className="size-11 bg-gradient-to-br from-red-600 to-rose-500 lg:size-14 shadow-md shadow-red-500/20">
+              <AvatarFallback className="bg-transparent text-white font-semibold text-base lg:text-lg">
                 {initials}
               </AvatarFallback>
             </Avatar>
@@ -124,7 +124,7 @@ export function UserHeader({ name, group, eventName, date, userId, firstName, la
               <span>{date}</span>
             </div>
           </div>
-          <Badge className="bg-accent/15 text-accent border-accent/25 font-semibold text-xs px-3 py-1">
+          <Badge className="bg-gradient-to-r from-red-600 to-rose-500 border-none text-white font-semibold text-xs px-3 py-1 shadow-sm shadow-red-500/20">
             Group {group}
           </Badge>
         </div>

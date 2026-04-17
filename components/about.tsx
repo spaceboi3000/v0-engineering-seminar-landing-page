@@ -1,7 +1,8 @@
 "use client"
 
+// ADDED: Imported Wrench icon for the new workshops bullet point
 import Image from "next/image"
-import { Bot, Users, Lightbulb } from "lucide-react"
+import { Bot, Users, Lightbulb, Wrench } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 
 export function About() {
@@ -78,8 +79,27 @@ export function About() {
                 </div>
               </div>
 
+              {/* NEW SECTION: Interactive Workshops */}
               <div
-                className="flex items-start gap-4 transition-all duration-700 delay-400"
+                className="flex items-start gap-4 transition-all duration-700 delay-[350ms]"
+                style={{
+                  opacity: visible ? 1 : 0,
+                  transform: visible ? "translateY(0)" : "translateY(20px)",
+                }}
+              >
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-indigo-500/10 border border-indigo-500/20">
+                  <Wrench className="h-5 w-5 text-indigo-400" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground">Interactive Workshops</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Take part in hands-on, interactive workshops organized by our team, where you will gain practical experience, collaborate with peers, and develop valuable skills through engaging, real-world activities.
+                  </p>
+                </div>
+              </div>
+
+              <div
+                className="flex items-start gap-4 transition-all duration-700 delay-[400ms]"
                 style={{
                   opacity: visible ? 1 : 0,
                   transform: visible ? "translateY(0)" : "translateY(20px)",
@@ -124,9 +144,10 @@ export function About() {
               transform: visible ? "translateY(0)" : "translateY(30px)",
             }}
           >
+            {/* UPDATED: Path to the new Goethe-Institut image */}
             <Image
-              src="/images/Robotalk2025-5.jpg"
-              alt="Engineering seminar with audience and presenter on stage"
+              src="/images/image_goethe.png"
+              alt="Goethe-Institut Athen Auditorium"
               width={800}
               height={600}
               className="h-auto w-full object-cover"

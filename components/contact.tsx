@@ -52,22 +52,23 @@ export function Contact() {
         </div>
 
         <Card className="relative mx-auto mt-12 max-w-4xl border-white/10 bg-white/[0.03] backdrop-blur-sm overflow-hidden z-0">
-
-          {/* Glass texture */}
-          <div className="absolute inset-0 pointer-events-none -z-10" style={{
-            backgroundImage: `linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 50%, rgba(0,0,0,0.08) 100%)`
-          }} />
-          <div className="absolute inset-0 pointer-events-none -z-10" style={{
-            backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.015) 2px, rgba(255,255,255,0.015) 4px)`
-          }} />
-          <div className="absolute top-0 inset-x-0 h-px bg-white/20 pointer-events-none -z-10" />
-          <div className="absolute top-0 left-0 w-1/3 h-full pointer-events-none -z-10" style={{
-            background: `linear-gradient(to right, rgba(255,255,255,0.04), transparent)`
-          }} />
-
-          {/* Glows */}
+          
+          {/* --- NEW COOL BACKGROUND: Tech Grid --- */}
+          <div 
+            className="absolute inset-0 opacity-[0.03] pointer-events-none -z-10" 
+            style={{
+              backgroundImage: `linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)`,
+              backgroundSize: '40px 40px'
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-transparent via-blue-950/20 to-black/80 pointer-events-none -z-10" />
+          
+          {/* Top glowing blue light */}
           <div className="absolute -top-20 left-1/2 h-40 w-1/2 -translate-x-1/2 rounded-full bg-blue-500/30 blur-[70px] pointer-events-none -z-10" />
+
+          {/* Bottom glowing blue light - Now perfectly matching the top light's color (blue-500) */}
           <div className="absolute -bottom-20 left-1/2 h-40 w-1/2 -translate-x-1/2 rounded-full bg-blue-500/30 blur-[70px] pointer-events-none -z-10" />
+          {/* -------------------------------- */}
 
           <CardContent className="grid gap-8 p-6 md:grid-cols-5 md:p-8 relative z-10">
             {/* Form */}
@@ -79,7 +80,8 @@ export function Contact() {
                   </p>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                /* ADDED: suppressHydrationWarning to form */
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4" suppressHydrationWarning>
                   <div>
                     <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-foreground">
                       Name
@@ -89,6 +91,8 @@ export function Contact() {
                       required
                       placeholder="Your name"
                       className="w-full rounded-lg border border-white/10 bg-black/40 px-4 py-2.5 text-sm text-white placeholder:text-white/30 transition-shadow focus:outline-none focus:shadow-[0_0_15px_rgba(37,99,235,0.2)] focus:border-blue-500/50"
+                      /* ADDED: suppressHydrationWarning to input */
+                      suppressHydrationWarning
                     />
                   </div>
                   <div>
@@ -101,6 +105,8 @@ export function Contact() {
                       required
                       placeholder="you@example.com"
                       className="w-full rounded-lg border border-white/10 bg-black/40 px-4 py-2.5 text-sm text-white placeholder:text-white/30 transition-shadow focus:outline-none focus:shadow-[0_0_15px_rgba(37,99,235,0.2)] focus:border-blue-500/50"
+                      /* ADDED: suppressHydrationWarning to input */
+                      suppressHydrationWarning
                     />
                   </div>
                   <div>
@@ -113,6 +119,8 @@ export function Contact() {
                       rows={4}
                       placeholder="How can we help?"
                       className="w-full rounded-lg border border-white/10 bg-black/40 px-4 py-2.5 text-sm text-white placeholder:text-white/30 transition-shadow focus:outline-none focus:shadow-[0_0_15px_rgba(37,99,235,0.2)] focus:border-blue-500/50 resize-none"
+                      /* ADDED: suppressHydrationWarning to textarea */
+                      suppressHydrationWarning
                     />
                   </div>
                   {error && (
@@ -122,6 +130,8 @@ export function Contact() {
                     type="submit"
                     disabled={loading}
                     className="inline-flex items-center gap-2 self-start rounded-lg bg-gradient-to-r from-blue-600 to-sky-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all hover:shadow-[0_0_30px_rgba(14,165,233,0.5)] hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
+                    /* ADDED: suppressHydrationWarning to button */
+                    suppressHydrationWarning
                   >
                     <Send className="h-4 w-4" />
                     {loading ? "Sending..." : "Send Message"}

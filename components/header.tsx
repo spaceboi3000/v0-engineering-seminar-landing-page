@@ -40,49 +40,56 @@ export function Header() {
   const authButton = user ? (
     <button
       onClick={handleLogout}
-      className="hidden items-center rounded-lg border border-white/20 px-4 py-2 text-sm font-semibold text-white/70 transition-all hover:border-white/40 hover:text-white md:inline-flex"
+      className="hidden items-center rounded-lg border border-white/20 px-4 py-2.5 text-sm font-semibold text-white/70 transition-all hover:border-white/40 hover:text-white md:inline-flex"
     >
-      Αποσύνδεση
+      Logout
     </button>
   ) : (
     <Link
       href="/login"
-      className="hidden items-center rounded-lg bg-gradient-to-r from-blue-600 to-sky-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all hover:shadow-[0_0_30px_rgba(14,165,233,0.5)] hover:scale-105 md:inline-flex"
+      className="hidden items-center rounded-lg border border-white/20 px-4 py-2.5 text-sm font-semibold text-white/80 transition-all hover:border-sky-400/50 hover:text-sky-400 md:inline-flex"
     >
-      Σύνδεση
+      Login
     </Link>
   )
 
   const mobileAuthButton = user ? (
     <button
       onClick={handleLogout}
-      className="mt-1 rounded-lg border border-white/20 px-4 py-2 text-center text-sm font-semibold text-white/70 w-full"
+      className="mt-1 w-full rounded-lg border border-white/20 px-4 py-2.5 text-center text-sm font-semibold text-white/70"
     >
-      Αποσύνδεση
+      Logout
     </button>
   ) : (
     <Link
       href="/login"
       onClick={() => setMobileOpen(false)}
-      className="mt-1 rounded-lg bg-gradient-to-r from-blue-600 to-sky-500 px-4 py-2 text-center text-sm font-semibold text-white block"
+      className="mt-1 block rounded-lg border border-white/20 px-4 py-2.5 text-center text-sm font-semibold text-white/80"
     >
-      Σύνδεση
+      Login
     </Link>
   )
 
   return (
+    // Midnight Blue background with 80% opacity
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[#081229]/80 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 lg:px-8">
-        {/* Logo */}
-        <a href="#home" className="flex items-center gap-3">
+      {/* ADDED: Slightly more vertical padding for a more spacious feel (py-2 -> py-1.5) */}
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-1.5 lg:px-8">
+        {/* Logo Section */}
+        {/* UPDATED: Larger height (h-16) and gap (gap-4) for the container */}
+        <a href="#home" className="flex items-center gap-4 h-16">
           <Image
-            src="/images/robotalk-logo.png"
+            // UPDATED: Path matches the exact filename in your public/images folder
+            src="/images/RoboTalk ROBOT_PNG_IM.png"
             alt="RoboTalk Logo"
-            width={40}
-            height={40}
-            className="h-10 w-10 object-contain"
+            width={60} // INCREASED: For better scaling
+            height={60} // INCREASED: For better scaling
+            // UPDATED: Standard logo image height increased from h-10 to h-14
+            className="h-14 w-auto object-contain" 
           />
-          <span className="text-lg font-bold tracking-tight text-foreground">
+          {/* UPDATED: Increased text size for better balance */}
+          <span className="text-xl font-bold tracking-tight text-foreground">
+            {/* Blue gradient for "Talk" */}
             Robo<span className="bg-gradient-to-r from-blue-600 to-sky-400 bg-clip-text text-transparent">Talk</span>
           </span>
         </a>
@@ -117,6 +124,8 @@ export function Header() {
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-expanded={mobileOpen}
             aria-label="Toggle navigation menu"
+            // Added suppression just in case extensions interfere with the menu button
+            suppressHydrationWarning
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>

@@ -8,8 +8,8 @@ const _inter = Inter({ subsets: ['latin'] })
 const _jetbrainsMono = JetBrains_Mono({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'RoboTalk | RAS NTUA Robotics & AI Seminar',
-  description: 'Join us for RoboTalk on April 25, 2026 at Goethe-Institut Athen. A robotics and AI seminar by IEEE RAS NTUA.',
+  title: 'RoboTalk | RAS NTUA Robotics & AI Event',
+  description: 'Join us for RoboTalk on April 25, 2026 at Goethe-Institut Athen. A Robotics and AI Event by IEEE RAS NTUA.',
 }
 
 export const viewport: Viewport = {

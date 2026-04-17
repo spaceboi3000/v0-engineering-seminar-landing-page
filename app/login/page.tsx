@@ -40,7 +40,7 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="flex justify-center mb-8">
           <Link href="/" className="flex items-center gap-3">
-            <Image src="/images/robotalk-logo.png" alt="RoboTalk" width={48} height={48} className="h-12 w-12 object-contain" />
+            <Image src="/images/RoboTalk ROBOT_PNG_IM.png" alt="RoboTalk" width={48} height={48} className="h-12 w-12 object-contain" />
             <span className="text-xl font-bold text-white">
               Robo<span className="bg-gradient-to-r from-blue-600 to-sky-400 bg-clip-text text-transparent">Talk</span>
             </span>
