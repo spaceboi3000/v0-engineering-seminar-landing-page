@@ -37,60 +37,57 @@ const slides = [
   },
 ]
 
-function getSlideStyle(offset: number): React.CSSProperties {
-  const absOffset = Math.abs(offset)
-  const direction = Math.sign(offset)
+type SlideVisuals = {
+  translateX: number
+  scale: number
+  rotateY: number
+  opacity: number
+  brightness: number
+  zIndex: number
+  pointerEvents?: "none"
+}
 
-  if (absOffset > 2) {
-    return {
-      transform: `translateX(${direction * 95}%) scale(0.45) rotateY(${-direction * 55}deg)`,
-      opacity: 0,
-      zIndex: 0,
-      pointerEvents: "none" as const,
-      filter: "brightness(0.3)",
-    }
-  }
+function getSlideVisuals(offset: number): SlideVisuals {
+  const abs = Math.abs(offset)
+  const dir = Math.sign(offset)
+  if (abs === 0)  return { translateX: 0,        scale: 1.08, rotateY: 0,          opacity: 1,    brightness: 1,   zIndex: 30 }
+  if (abs === 1)  return { translateX: dir * 62,  scale: 0.78, rotateY: -dir * 35,  opacity: 0.55, brightness: 0.6, zIndex: 20 }
+  if (abs === 2)  return { translateX: dir * 90,  scale: 0.6,  rotateY: -dir * 50,  opacity: 0.25, brightness: 0.4, zIndex: 10, pointerEvents: "none" }
+  return            { translateX: dir * 95,  scale: 0.45, rotateY: -dir * 55,  opacity: 0,    brightness: 0.3, zIndex: 0,  pointerEvents: "none" }
+}
 
-  if (absOffset === 0) {
-    return {
-      transform: "translateX(0%) scale(1.08) rotateY(0deg)",
-      opacity: 1,
-      zIndex: 30,
-      filter: "brightness(1)",
-    }
-  }
+function lerp(a: number, b: number, t: number) {
+  return a + (b - a) * t
+}
 
-  if (absOffset === 1) {
-    return {
-      transform: `translateX(${direction * 62}%) scale(0.78) rotateY(${-direction * 35}deg)`,
-      opacity: 0.55,
-      zIndex: 20,
-      filter: "brightness(0.6)",
-    }
-  }
-
+function interpolateSlideVisuals(offset: number): SlideVisuals {
+  const floor = Math.floor(offset)
+  const t = offset - floor
+  if (t === 0) return getSlideVisuals(floor)
+  const a = getSlideVisuals(floor)
+  const b = getSlideVisuals(floor + 1)
   return {
-    transform: `translateX(${direction * 90}%) scale(0.6) rotateY(${-direction * 50}deg)`,
-    opacity: 0.25,
-    zIndex: 10,
-    pointerEvents: "none" as const,
-    filter: "brightness(0.4)",
+    translateX:   lerp(a.translateX,  b.translateX,  t),
+    scale:        lerp(a.scale,       b.scale,        t),
+    rotateY:      lerp(a.rotateY,     b.rotateY,      t),
+    opacity:      lerp(a.opacity,     b.opacity,      t),
+    brightness:   lerp(a.brightness,  b.brightness,   t),
+    zIndex:       t < 0.5 ? a.zIndex : b.zIndex,
+    pointerEvents: a.pointerEvents === "none" && b.pointerEvents === "none" ? "none" : undefined,
   }
 }
+
+const DRAG_TO_SLIDE = 160 // px of drag = one full slide transition
 
 export function PastEvents() {
   const [current, setCurrent] = useState(0)
   const [zoomedImage, setZoomedImage] = useState<string | null>(null)
+  const [dragFraction, setDragFraction] = useState(0)
   const total = slides.length
   const touchStartX = useRef<number | null>(null)
 
-  const prev = useCallback(() => {
-    setCurrent((c) => (c - 1 + total) % total)
-  }, [total])
-
-  const next = useCallback(() => {
-    setCurrent((c) => (c + 1) % total)
-  }, [total])
+  const prev = useCallback(() => setCurrent((c) => (c - 1 + total) % total), [total])
+  const next = useCallback(() => setCurrent((c) => (c + 1) % total), [total])
 
   function getOffset(index: number) {
     let diff = index - current
@@ -103,15 +100,25 @@ export function PastEvents() {
     touchStartX.current = e.touches[0].clientX
   }
 
+  function handleTouchMove(e: React.TouchEvent) {
+    if (touchStartX.current === null) return
+    const dx = e.touches[0].clientX - touchStartX.current
+    // negative dx (drag left) = positive fraction = moving toward next slide
+    const fraction = Math.max(-1, Math.min(1, -dx / DRAG_TO_SLIDE))
+    setDragFraction(fraction)
+  }
+
   function handleTouchEnd(e: React.TouchEvent) {
     if (touchStartX.current === null) return
     const dx = e.changedTouches[0].clientX - touchStartX.current
-    const threshold = window.innerWidth * 0.1
-    if (Math.abs(dx) > threshold) {
+    setDragFraction(0)
+    if (Math.abs(dx) > window.innerWidth * 0.08) {
       dx < 0 ? next() : prev()
     }
     touchStartX.current = null
   }
+
+  const isDragging = dragFraction !== 0
 
   return (
     <>
@@ -141,28 +148,33 @@ export function PastEvents() {
             className="relative mx-auto mt-14 h-[340px] sm:h-[400px] md:h-[440px] lg:h-[480px]"
             style={{ perspective: "1200px" }}
             onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
             {slides.map((slide, i) => {
-              const offset = getOffset(i)
-              const style = getSlideStyle(offset)
-              const isCenter = offset === 0
+              const effectiveOffset = getOffset(i) - dragFraction
+              const v = interpolateSlideVisuals(effectiveOffset)
+              const isCenter = getOffset(i) === 0
 
               return (
                 <div
                   key={slide.src}
                   className="absolute left-1/2 top-0 w-[280px] -ml-[140px] sm:w-[340px] sm:-ml-[170px] md:w-[420px] md:-ml-[210px] lg:w-[480px] lg:-ml-[240px]"
                   style={{
-                    ...style,
+                    transform: `translateX(${v.translateX}%) scale(${v.scale}) rotateY(${v.rotateY}deg)`,
+                    opacity: v.opacity,
+                    zIndex: v.zIndex,
+                    filter: `brightness(${v.brightness})`,
+                    pointerEvents: v.pointerEvents,
                     transformStyle: "preserve-3d",
-                    transition: "all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+                    transition: isDragging ? "none" : "all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
                     willChange: "transform, opacity",
                   }}
                   aria-hidden={!isCenter}
                 >
                   {/* Image Card */}
                   <div
-                    onClick={() => isCenter && setZoomedImage(slide.src)}
+                    onClick={() => isCenter && !isDragging && setZoomedImage(slide.src)}
                     className={`overflow-hidden rounded-2xl shadow-2xl transition-all ${
                       isCenter
                         ? "ring-2 ring-white/30 shadow-[0_8px_60px_rgba(37,99,235,0.4)] cursor-zoom-in hover:scale-[1.02]"
@@ -181,7 +193,7 @@ export function PastEvents() {
                   {/* Caption */}
                   <div
                     className="mt-4 text-center transition-opacity duration-500"
-                    style={{ opacity: isCenter ? 1 : 0 }}
+                    style={{ opacity: isCenter && !isDragging ? 1 : 0 }}
                   >
                     <p className="text-sm font-medium text-white/90 sm:text-base leading-relaxed">
                       {slide.caption}
@@ -264,10 +276,10 @@ export function PastEvents() {
           >
             <X className="h-6 w-6" />
           </button>
-          
+
           <div
             className="relative h-full max-h-[85vh] w-full max-w-6xl animate-in fade-in zoom-in-95 duration-300"
-            onClick={(e) => e.stopPropagation()} 
+            onClick={(e) => e.stopPropagation()}
           >
             <Image
               src={zoomedImage}

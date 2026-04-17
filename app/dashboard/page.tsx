@@ -39,6 +39,11 @@ export default async function DashboardPage() {
     enrollmentCounts[row.workshop_id] = Number(row.enrolled_count)
   }
 
+  const { data: workshops } = await supabase
+    .from("workshops")
+    .select("id, title, speaker, location, type, start_time, end_time, capacity")
+    .order("start_time")
+
   const fullName = profile
     ? `${profile.first_name} ${profile.last_name}`
     : user.email ?? "Attendee"
@@ -77,7 +82,7 @@ export default async function DashboardPage() {
         </div>
 
         <div id="schedule" className="mx-auto flex w-full max-w-lg flex-col pt-6 lg:max-w-none lg:flex-1 lg:px-8 lg:pb-8 lg:pt-16">
-          <ScheduleTimeline userId={user.id} enrolledIds={enrolledIds} waitlistedIds={waitlistedIds} enrollmentCounts={enrollmentCounts} />
+          <ScheduleTimeline userId={user.id} enrolledIds={enrolledIds} waitlistedIds={waitlistedIds} enrollmentCounts={enrollmentCounts} workshops={workshops ?? []} />
         </div>
 
         <div className="w-full">

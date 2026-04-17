@@ -6,16 +6,15 @@ import { Clock, MapPin, Presentation, Wrench, Coffee, Users, FileUp, Loader2, Us
 
 type EventType = "workshop" | "seminar" | "break" | "networking"
 
-interface ScheduleEvent {
+interface WorkshopRow {
   id: string
-  time: string
-  endTime: string
   title: string
+  speaker: string | null
   location: string
   type: EventType
-  speaker?: string
-  isNow?: boolean
-  capacity?: number
+  start_time: string
+  end_time: string
+  capacity: number
 }
 
 const typeConfig: Record<
@@ -28,8 +27,6 @@ const typeConfig: Record<
   networking: { icon: Users,        label: "Networking", bg: "bg-purple-100", text: "text-purple-600" },
 }
 
-const events: ScheduleEvent[] = []
-
 const filterOptions: { label: string; value: EventType | "all" }[] = [
   { label: "All",       value: "all"      },
   { label: "Seminars",  value: "seminar"  },
@@ -41,15 +38,30 @@ interface Props {
   enrolledIds: string[]
   waitlistedIds: string[]
   enrollmentCounts: Record<string, number>
+  workshops: WorkshopRow[]
 }
 
-export function ScheduleTimeline({ userId, enrolledIds, waitlistedIds, enrollmentCounts }: Props) {
+export function ScheduleTimeline({ enrolledIds, waitlistedIds, enrollmentCounts, workshops }: Props) {
   const [filter, setFilter] = useState<EventType | "all">("all")
   const [enrolled, setEnrolled] = useState<Set<string>>(new Set(enrolledIds))
   const [waitlisted, setWaitlisted] = useState<Set<string>>(new Set(waitlistedIds))
   const [counts, setCounts] = useState<Record<string, number>>(enrollmentCounts)
   const [loading, setLoading] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+
+  const fmt = (iso: string) =>
+    new Date(iso).toLocaleTimeString("el-GR", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Athens" })
+
+  const events = workshops.map((w) => ({
+    id: w.id,
+    title: w.title,
+    speaker: w.speaker ?? undefined,
+    location: w.location,
+    type: w.type,
+    time: fmt(w.start_time),
+    endTime: fmt(w.end_time),
+    capacity: w.capacity,
+  }))
 
   const filtered = filter === "all" ? events : events.filter((e) => e.type === filter)
 
@@ -183,7 +195,7 @@ export function ScheduleTimeline({ userId, enrolledIds, waitlistedIds, enrollmen
                     <Icon className="size-5" />
                   </div>
                   <div className="flex flex-col gap-0.5">
-                    <h3 className={`text-sm font-medium leading-tight ${event.isNow ? "text-accent" : "text-foreground"}`}>
+                    <h3 className="text-sm font-medium leading-tight text-foreground">
                       {event.title}
                     </h3>
                     {event.speaker && <p className="text-xs text-muted-foreground">{event.speaker}</p>}
