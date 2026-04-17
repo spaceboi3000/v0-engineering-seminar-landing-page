@@ -6,32 +6,32 @@ import { ChevronLeft, ChevronRight, X } from "lucide-react"
 
 const slides = [
   {
-    src: "/past_events/2023rob1.JPG",
+    src: "/past_events/2023rob1.webp",
     alt: "RoboTalk 2023 — photo 1",
     caption: "RoboTalk 2023",
   },
   {
-    src: "/past_events/2023rob2.JPG",
+    src: "/past_events/2023rob2.webp",
     alt: "RoboTalk 2023 — photo 2",
     caption: "RoboTalk 2023",
   },
   {
-    src: "/past_events/2024rob1.JPG",
+    src: "/past_events/2024rob1.webp",
     alt: "RoboTalk 2024 — photo 1",
     caption: "RoboTalk 2024",
   },
   {
-    src: "/past_events/2024rob2.JPG",
+    src: "/past_events/2024rob2.webp",
     alt: "RoboTalk 2024 — photo 2",
     caption: "RoboTalk 2024",
   },
   {
-    src: "/past_events/2025rob1.jpg",
+    src: "/past_events/2025rob1.webp",
     alt: "RoboTalk 2025 — photo 1",
     caption: "RoboTalk 2025",
   },
   {
-    src: "/past_events/2025rob2.JPG",
+    src: "/past_events/2025rob2.webp",
     alt: "RoboTalk 2025 — photo 2",
     caption: "RoboTalk 2025",
   },
