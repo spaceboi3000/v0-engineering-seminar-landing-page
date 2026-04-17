@@ -55,7 +55,7 @@ export default async function DashboardPage() {
     <div className="relative min-h-svh bg-background lg:flex lg:flex-row scroll-smooth" id="dashboard">
       <WinOverlay />
       <div className="flex flex-1 flex-col lg:flex-row lg:min-h-svh flex-wrap">
-        <div id="qr-code" className="mx-auto flex w-full max-w-lg flex-col gap-6 pt-10 lg:max-w-sm lg:shrink-0 lg:border-r lg:border-border lg:px-8 lg:pb-8 lg:pt-16 lg:gap-8">
+        <div id="qr-code" className="mx-auto flex w-full max-w-lg flex-col gap-6 pt-10 lg:max-w-md lg:shrink-0 lg:border-r lg:border-border lg:px-8 lg:pb-8 lg:pt-16 lg:gap-8">
           <UserHeader
             name={fullName}
             group="A"
