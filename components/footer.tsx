@@ -27,8 +27,14 @@ export function Footer() {
           <a href="#about" className="text-xs text-white/40 transition-colors hover:text-sky-400">
             About
           </a>
+          <a href="#speakers" className="text-xs text-white/40 transition-colors hover:text-sky-400">
+            Speakers
+          </a>
           <a href="#past-events" className="text-xs text-white/40 transition-colors hover:text-sky-400">
             Gallery
+          </a>
+          <a href="#sponsors" className="text-xs text-white/40 transition-colors hover:text-sky-400">
+            Sponsors
           </a>
           <a href="#location" className="text-xs text-white/40 transition-colors hover:text-sky-400">
             Location

@@ -119,7 +119,7 @@ export function ScheduleTimeline({ enrolledIds, waitlistedIds, enrollmentCounts,
     <section className="flex flex-col gap-4 px-5 pb-10 lg:px-0 lg:pb-0 lg:flex-1 lg:overflow-hidden" aria-label="Today's Schedule">
       <div className="flex items-center justify-between">
         <h2 className="text-base font-semibold text-foreground lg:text-lg">Today's Schedule</h2>
-        <span className="text-xs text-muted-foreground">Coming soon</span>
+        <span className="text-xs text-muted-foreground">{events.length} events</span>
       </div>
 
       <div className="flex items-center gap-2 lg:gap-3" role="tablist">
@@ -159,15 +159,7 @@ export function ScheduleTimeline({ enrolledIds, waitlistedIds, enrollmentCounts,
       )}
 
       <div className="flex flex-col gap-0 lg:flex-1 lg:overflow-y-auto lg:pr-2 lg:gap-3" role="list">
-        {filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
-            <div className="flex items-center justify-center size-14 rounded-2xl bg-secondary">
-              <Presentation className="size-6 text-muted-foreground" />
-            </div>
-            <p className="text-sm font-medium text-foreground">Will be announced soon</p>
-            <p className="text-xs text-muted-foreground">Check back closer to the event date</p>
-          </div>
-        ) : filtered.map((event, i) => {
+        {filtered.map((event, i) => {
           const Icon = typeConfig[event.type].icon
           const colorConfig = typeConfig[event.type]
           const isLast = i === filtered.length - 1

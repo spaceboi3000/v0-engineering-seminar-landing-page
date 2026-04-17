@@ -124,9 +124,15 @@ export function UserHeader({ name, group, eventName, date, userId, firstName, la
               <span>{date}</span>
             </div>
           </div>
-          <Badge className="bg-gradient-to-r from-red-600 to-rose-500 border-none text-white font-semibold text-xs px-3 py-1 shadow-sm shadow-red-500/20">
-            Group {group}
-          </Badge>
+          {group !== "Not set" ? (
+            <Badge className="bg-gradient-to-r from-red-600 to-rose-500 border-none text-white font-semibold text-xs px-3 py-1 shadow-sm shadow-red-500/20">
+              Group {group}
+            </Badge>
+          ) : (
+            <Badge className="bg-secondary border-border text-muted-foreground font-medium text-xs px-3 py-1">
+              No group
+            </Badge>
+          )}
         </div>
       </header>
 
