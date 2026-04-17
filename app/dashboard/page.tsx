@@ -4,7 +4,7 @@ import { createSupabaseServer } from "@/lib/supabase-server"
 import { UserHeader } from "@/components/dashboard/user-header"
 import { QrCheckinCard } from "@/components/dashboard/qr-checkin-card"
 import { ScheduleTimeline } from "@/components/dashboard/schedule-timeline"
-import { SidebarNav } from "@/components/dashboard/sidebar-nav"
+
 import { BottomNav } from "@/components/dashboard/bottom-nav"
 import { GameSection } from "@/components/dashboard/game-section"
 import { WinOverlay } from "@/components/dashboard/winoverlay"
@@ -54,8 +54,6 @@ export default async function DashboardPage() {
   return (
     <div className="relative min-h-svh bg-background lg:flex lg:flex-row scroll-smooth" id="dashboard">
       <WinOverlay />
-      <SidebarNav />
-
       <div className="flex flex-1 flex-col lg:flex-row lg:min-h-svh flex-wrap">
         <div id="qr-code" className="mx-auto flex w-full max-w-lg flex-col gap-6 pt-10 lg:max-w-sm lg:shrink-0 lg:border-r lg:border-border lg:px-8 lg:pb-8 lg:pt-16 lg:gap-8">
           <UserHeader

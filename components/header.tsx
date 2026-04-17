@@ -12,7 +12,8 @@ const navLinks = [
   { label: "Home", href: "#home" },
   { label: "About", href: "#about" },
   { label: "Speakers", href: "#speakers" },
-  { label: "Past Events", href: "#past-events" },
+  { label: "Gallery", href: "#past-events" },
+  { label: "Sponsors", href: "#sponsors" },
   { label: "Location", href: "#location" },
   { label: "Contact", href: "#contact" },
 ]

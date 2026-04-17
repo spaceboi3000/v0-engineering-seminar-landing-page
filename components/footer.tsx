@@ -28,7 +28,7 @@ export function Footer() {
             About
           </a>
           <a href="#past-events" className="text-xs text-white/40 transition-colors hover:text-sky-400">
-            Past Events
+            Gallery
           </a>
           <a href="#location" className="text-xs text-white/40 transition-colors hover:text-sky-400">
             Location

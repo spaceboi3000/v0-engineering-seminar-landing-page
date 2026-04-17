@@ -136,7 +136,7 @@ export function PastEvents() {
               Gallery
             </p>
             <h2 className="mt-3 text-balance text-3xl font-bold tracking-tight text-white md:text-4xl">
-              Past Highlights
+              Gallery
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-ieee-blue-100/70">
               Moments from previous RoboTalk events.
