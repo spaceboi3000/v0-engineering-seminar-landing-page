@@ -191,7 +191,7 @@ export function ScheduleTimeline({ assignedGroup, enrolledIds, waitlistedIds, en
   const [waitlisted, setWaitlisted] = useState<Set<string>>(new Set(waitlistedIds))
   const [counts, setCounts] = useState<Record<string, number>>(enrollmentCounts)
   const [loading, setLoading] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<{ workshopId: string; message: string } | null>(null)
 
   const events: ProcessedEvent[] = workshops.map((w) => ({
     id: w.id,
@@ -237,7 +237,7 @@ export function ScheduleTimeline({ assignedGroup, enrolledIds, waitlistedIds, en
     })
     const data = await res.json()
     if (!res.ok) {
-      setError(data.error ?? "Something went wrong.")
+      setError({ workshopId, message: data.error ?? "Κάτι πήγε στραβά." })
     } else if (data.waitlisted) {
       setWaitlisted((prev) => new Set([...prev, workshopId]))
     } else {
@@ -258,7 +258,7 @@ export function ScheduleTimeline({ assignedGroup, enrolledIds, waitlistedIds, en
     })
     const data = await res.json()
     if (!res.ok) {
-      setError(data.error ?? "Something went wrong.")
+      setError({ workshopId, message: data.error ?? "Κάτι πήγε στραβά." })
     } else {
       if (waitlisted.has(workshopId)) {
         setWaitlisted((prev) => { const s = new Set(prev); s.delete(workshopId); return s })
@@ -280,6 +280,8 @@ export function ScheduleTimeline({ assignedGroup, enrolledIds, waitlistedIds, en
     const enrolledCount = counts[event.id] ?? 0
     const isFull = event.capacity < 9999 && enrolledCount >= event.capacity
 
+    const hasError = error?.workshopId === event.id
+
     return (
       <div className="flex flex-col gap-1.5 mt-2">
         {event.capacity < 9999 && (
@@ -289,6 +291,11 @@ export function ScheduleTimeline({ assignedGroup, enrolledIds, waitlistedIds, en
             <Users2 className="size-2.5" />
             {isFull ? `Full · ${enrolledCount}/${event.capacity}` : `${enrolledCount}/${event.capacity} spots`}
           </span>
+        )}
+        {hasError && (
+          <div className="rounded-lg border border-red-500/20 bg-red-500/10 px-2.5 py-1.5 text-[10px] sm:text-xs text-red-400">
+            {error.message}
+          </div>
         )}
         {isEnrolled ? (
           <button disabled={isLoading} onClick={() => handleUnenroll(event.id)}
@@ -384,7 +391,7 @@ export function ScheduleTimeline({ assignedGroup, enrolledIds, waitlistedIds, en
       </button>
 
       {error && (
-        <div className="rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2.5 text-xs text-red-400">{error}</div>
+        <div className="rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2.5 text-xs text-red-400">{error.message}</div>
       )}
 
       {/* ── Timeline list ── */}
