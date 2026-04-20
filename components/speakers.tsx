@@ -108,6 +108,7 @@ export function Speakers() {
                       src={speaker.photo}
                       alt={speaker.name}
                       fill
+                      sizes="(max-width: 768px) 240px, 300px"
                       className="object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />

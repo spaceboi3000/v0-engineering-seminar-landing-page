@@ -140,6 +140,7 @@ export function Sponsors() {
                       src={sponsor.logo}
                       alt={sponsor.name}
                       fill
+                      sizes="(max-width: 640px) 80vw, (max-width: 1024px) 40vw, 280px"
                       className="object-contain p-4"
                     />
                   </div>

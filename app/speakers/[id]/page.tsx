@@ -34,6 +34,7 @@ export default async function SpeakerPage({ params }: { params: Promise<{ id: st
               src={speaker.photo}
               alt={speaker.name}
               fill
+              sizes="144px"
               className="object-cover"
               onError={undefined}
             />

@@ -17,6 +17,7 @@ export function Hero() {
           src="/images/Robotalk2025-4.webp"
           alt=""
           fill
+          sizes="100vw"
           className="object-cover"
           priority
         />
