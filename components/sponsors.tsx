@@ -69,8 +69,8 @@ export function Sponsors() {
 
         <div
           className="relative group/carousel"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
+          onPointerEnter={(e) => { if (e.pointerType === "mouse") setIsPaused(true) }}
+          onPointerLeave={(e) => { if (e.pointerType === "mouse") setIsPaused(false) }}
         >
           {/* Left arrow */}
           <button
@@ -121,7 +121,7 @@ export function Sponsors() {
                 <Link
                   key={sponsor.id}
                   href={`/sponsors/${sponsor.id}`}
-                  className="group flex flex-col shrink-0 w-[320px] rounded-2xl border border-border/40 bg-muted/20 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-border/60 hover:bg-muted/40 hover:shadow-[0_4px_30px_rgba(228,61,64,0.04)] cursor-pointer"
+                  className="group flex flex-col shrink-0 w-[320px] rounded-2xl border border-border/40 bg-muted/20 overflow-hidden transition-[border-color,background-color,box-shadow] duration-300 [@media(hover:hover)]:hover:-translate-y-1 [@media(hover:hover)]:transition-all hover:border-border/60 hover:bg-muted/40 hover:shadow-[0_4px_30px_rgba(228,61,64,0.04)] cursor-pointer"
                 >
                   {/* Tier strip */}
                   <div

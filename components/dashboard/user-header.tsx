@@ -84,16 +84,42 @@ export function UserHeader({ name, group, eventName, date, userId, firstName, la
     setCvError(null)
     setCvSuccess(false)
     const supabase = createSupabaseBrowser()
-    const path = `${userId}/cv.pdf`
+
+    // Build a clean filename: FirstNameLastNameCV.pdf
+    const cleanFirst = firstName.replace(/\s+/g, "")
+    const cleanLast = lastName.replace(/\s+/g, "")
+    let baseName = `${cleanFirst}${cleanLast}CV`
+
+    // Check if another user already uses the same base name
+    const { data: existing } = await supabase
+      .from("cv_uploads")
+      .select("user_id, file_path")
+      .like("file_path", `${baseName}%`)
+      .neq("user_id", userId)
+      .limit(1)
+    if (existing && existing.length > 0) {
+      baseName = `${baseName}_${userId.slice(0, 4)}`
+    }
+    const path = `${baseName}.pdf`
+
+    // Delete previous file if it had a different path
+    const { data: prevRecord } = await supabase
+      .from("cv_uploads")
+      .select("file_path")
+      .eq("user_id", userId)
+      .single()
+    if (prevRecord && prevRecord.file_path !== path) {
+      await supabase.storage.from("cvs").remove([prevRecord.file_path])
+    }
 
     // 1. Upload file to storage
     const { error: storageError } = await supabase.storage.from("cvs").upload(path, cvFile, { upsert: true })
     if (storageError) { setCvError(storageError.message); setCvUploading(false); return }
 
-    // 2. Upsert metadata record — uploaded_at is preserved on re-upload, updated_at always refreshed
+    // 2. Upsert metadata record
     const now = new Date().toISOString()
     const { error: dbError } = await supabase.from("cv_uploads").upsert(
-      { user_id: userId, file_path: path, original_filename: cvFile.name, file_size_bytes: cvFile.size, updated_at: now },
+      { user_id: userId, file_path: path, original_filename: `${baseName}.pdf`, file_size_bytes: cvFile.size, updated_at: now },
       { onConflict: "user_id" }
     )
     if (dbError) console.error("cv_uploads upsert:", dbError.message)
@@ -101,7 +127,7 @@ export function UserHeader({ name, group, eventName, date, userId, firstName, la
     // 3. Get signed URL for immediate preview
     const { data } = await supabase.storage.from("cvs").createSignedUrl(path, 3600)
     if (data) setCvUrl(data.signedUrl)
-    setCvMeta({ filename: cvFile.name, size: cvFile.size, uploadedAt: now })
+    setCvMeta({ filename: `${baseName}.pdf`, size: cvFile.size, uploadedAt: now })
     setCvSuccess(true)
     setCvUploading(false)
   }
