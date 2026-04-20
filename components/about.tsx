@@ -144,9 +144,8 @@ export function About() {
               transform: visible ? "translateY(0)" : "translateY(30px)",
             }}
           >
-            {/* UPDATED: Path to the new Goethe-Institut image */}
             <Image
-              src="/images/image_goethe.png"
+              src="/images/image_goethe.webp"
               alt="Goethe-Institut Athen Auditorium"
               width={800}
               height={600}

@@ -47,7 +47,7 @@ export function Hero() {
         <div className="mx-auto mb-10 flex justify-center">
           <div className="animate-[float_3s_ease-in-out_infinite] drop-shadow-[0_0_40px_rgba(228,61,64,0.4)]">
             <Image
-              src="/images/RoboTalk ROBOT_PNG_IM.png"
+              src="/images/robotalk-logo.webp"
               alt="RoboTalk robot mascot"
               width={200}
               height={200}

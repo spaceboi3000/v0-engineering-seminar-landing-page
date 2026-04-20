@@ -80,8 +80,7 @@ export function Header() {
         {/* UPDATED: Larger height (h-16) and gap (gap-4) for the container */}
         <a href="#home" className="flex items-center gap-4 h-16">
           <Image
-            // UPDATED: Path matches the exact filename in your public/images folder
-            src="/images/RoboTalk ROBOT_PNG_IM.png"
+            src="/images/robotalk-logo.webp"
             alt="RoboTalk Logo"
             width={60} // INCREASED: For better scaling
             height={60} // INCREASED: For better scaling
