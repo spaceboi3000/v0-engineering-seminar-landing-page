@@ -8,6 +8,15 @@ import { Badge } from "@/components/ui/badge"
 import { CalendarDays, Settings, X, Save, Lock, Upload, FileText, CheckCircle2, ExternalLink } from "lucide-react"
 import { createSupabaseBrowser } from "@/lib/supabase-browser"
 
+function fmtSize(bytes: number) {
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`
+  return `${(bytes / 1024 / 1024).toFixed(1)} MB`
+}
+
+function fmtDate(iso: string) {
+  return new Date(iso).toLocaleDateString("el-GR", { day: "numeric", month: "short", year: "numeric" })
+}
+
 interface UserHeaderProps {
   name: string
   group: string
@@ -36,6 +45,7 @@ export function UserHeader({ name, group, eventName, date, userId, firstName, la
   const [cvSuccess, setCvSuccess] = useState(false)
   const [cvError, setCvError] = useState<string | null>(null)
   const [cvUrl, setCvUrl] = useState<string | null>(null)
+  const [cvMeta, setCvMeta] = useState<{ filename: string; size: number; uploadedAt: string } | null>(null)
 
   const isLocked = new Date() > EDIT_DEADLINE
 
@@ -49,26 +59,55 @@ export function UserHeader({ name, group, eventName, date, userId, firstName, la
     return () => window.removeEventListener("openSettings", handleOpenSettings)
   }, [])
 
+  // Auto-load CV info whenever the CV tab is opened
+  useEffect(() => {
+    if (open && tab === "cv") loadCvInfo()
+  }, [open, tab]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  async function loadCvInfo() {
+    const supabase = createSupabaseBrowser()
+    const { data: record } = await supabase
+      .from("cv_uploads")
+      .select("file_path, original_filename, file_size_bytes, updated_at")
+      .eq("user_id", userId)
+      .single()
+    if (!record) { setCvUrl(null); setCvMeta(null); return }
+    setCvMeta({ filename: record.original_filename, size: record.file_size_bytes, uploadedAt: record.updated_at })
+    const { data } = await supabase.storage.from("cvs").createSignedUrl(record.file_path, 3600)
+    if (data) setCvUrl(data.signedUrl)
+  }
+
   async function handleCvUpload() {
     if (!cvFile) return
+    if (cvFile.size > 5 * 1024 * 1024) { setCvError("Το αρχείο δεν πρέπει να υπερβαίνει τα 5 MB."); return }
     setCvUploading(true)
     setCvError(null)
     setCvSuccess(false)
     const supabase = createSupabaseBrowser()
     const path = `${userId}/cv.pdf`
-    const { error } = await supabase.storage.from("cvs").upload(path, cvFile, { upsert: true })
-    if (error) { setCvError(error.message); setCvUploading(false); return }
-    const { data } = await supabase.storage.from("cvs").createSignedUrl(path, 60)
+
+    // 1. Upload file to storage
+    const { error: storageError } = await supabase.storage.from("cvs").upload(path, cvFile, { upsert: true })
+    if (storageError) { setCvError(storageError.message); setCvUploading(false); return }
+
+    // 2. Upsert metadata record — uploaded_at is preserved on re-upload, updated_at always refreshed
+    const now = new Date().toISOString()
+    const { error: dbError } = await supabase.from("cv_uploads").upsert(
+      { user_id: userId, file_path: path, original_filename: cvFile.name, file_size_bytes: cvFile.size, updated_at: now },
+      { onConflict: "user_id" }
+    )
+    if (dbError) console.error("cv_uploads upsert:", dbError.message)
+
+    // 3. Get signed URL for immediate preview
+    const { data } = await supabase.storage.from("cvs").createSignedUrl(path, 3600)
     if (data) setCvUrl(data.signedUrl)
+    setCvMeta({ filename: cvFile.name, size: cvFile.size, uploadedAt: now })
     setCvSuccess(true)
     setCvUploading(false)
   }
 
-  async function loadCvUrl() {
-    const supabase = createSupabaseBrowser()
-    const { data } = await supabase.storage.from("cvs").createSignedUrl(`${userId}/cv.pdf`, 60)
-    if (data) setCvUrl(data.signedUrl)
-  }
+  // kept for the manual "check" button
+  async function loadCvUrl() { await loadCvInfo() }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setForm(f => ({ ...f, [e.target.name]: e.target.value }))
@@ -239,6 +278,21 @@ export function UserHeader({ name, group, eventName, date, userId, firstName, la
                     />
                   </div>
                 </div>
+
+                {/* Already-uploaded CV info (shown when not just uploaded) */}
+                {cvMeta && cvUrl && !cvSuccess && (
+                  <div className="flex items-start gap-3 rounded-xl border border-green-500/20 bg-green-500/5 px-4 py-3">
+                    <CheckCircle2 className="size-4 text-green-400 shrink-0 mt-0.5" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium text-green-400">Βιογραφικό ανεβασμένο</p>
+                      <p className="text-xs text-muted-foreground truncate mt-0.5">{cvMeta.filename}</p>
+                      <p className="text-xs text-muted-foreground">{fmtSize(cvMeta.size)} · {fmtDate(cvMeta.uploadedAt)}</p>
+                    </div>
+                    <a href={cvUrl} target="_blank" className="text-xs text-blue-400 hover:text-blue-300 shrink-0 transition-colors">
+                      Προβολή
+                    </a>
+                  </div>
+                )}
 
                 {cvSuccess && (
                   <div className="flex items-center gap-2 rounded-lg bg-green-500/10 px-3 py-2">

@@ -24,12 +24,12 @@ His thinking is regularly appearing on various global printed, online and tv med
       { label: "LinkedIn", url: "https://www.linkedin.com/in/charalamposioannou/" },
     ],
   },
-  {
-    id: "giorgos-hatjipavlis",
-    name: "Γιώργος Χατζηπαύλης",
-    title: "",
-    photo: "/images/speakers/giorgos_hatjipavlis.jpg",
-    bio: "",
-    links: [],
-  },
+  // {
+  //   id: "giorgos-hatjipavlis",
+  //   name: "Γιώργος Χατζηπαύλης",
+  //   title: "",
+  //   photo: "/images/speakers/giorgos_hatjipavlis.jpg",
+  //   bio: "",
+  //   links: [],
+  // },
 ]

@@ -121,18 +121,21 @@ export function Sponsors() {
                 <Link
                   key={sponsor.id}
                   href={`/sponsors/${sponsor.id}`}
-                  className="group relative grid grid-rows-2 shrink-0 w-[320px] aspect-[4/3] rounded-2xl border border-border/40 bg-muted/20 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-border/60 hover:bg-muted/40 hover:shadow-[0_4px_30px_rgba(228,61,64,0.04)] cursor-pointer"
+                  className="group flex flex-col shrink-0 w-[320px] rounded-2xl border border-border/40 bg-muted/20 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-border/60 hover:bg-muted/40 hover:shadow-[0_4px_30px_rgba(228,61,64,0.04)] cursor-pointer"
                 >
-                  {/* Tier badge */}
-                  <span
-                    className="absolute top-3 right-3 text-[10px] font-bold uppercase tracking-widest z-10"
-                    style={{ color: tier.color, opacity: 0.9 }}
+                  {/* Tier strip */}
+                  <div
+                    className="flex items-center justify-center py-2 text-[11px] font-bold uppercase tracking-widest text-black shrink-0"
+                    style={{ backgroundColor: tier.color }}
                   >
                     {tier.label}
-                  </span>
+                  </div>
 
-                  {/* Logo area — top half, white bg */}
-                  <div className="relative w-full bg-white border-b border-border/40">
+                  {/* Logo area */}
+                  <div
+                    className="relative h-[140px] w-full border-b border-border/40"
+                    style={{ background: sponsor.logoBg ?? "white" }}
+                  >
                     <Image
                       src={sponsor.logo}
                       alt={sponsor.name}
@@ -141,9 +144,9 @@ export function Sponsors() {
                     />
                   </div>
 
-                  {/* Text — bottom half */}
+                  {/* Text */}
                   <div className="flex flex-col justify-center gap-1.5 p-5">
-                    <h3 className="text-sm font-semibold text-foreground pr-10 group-hover:text-ras-red-400 transition-colors">
+                    <h3 className="text-sm font-semibold text-foreground group-hover:text-ras-red-400 transition-colors">
                       {sponsor.name}
                     </h3>
                     <p className="text-xs text-muted-foreground/70 leading-relaxed line-clamp-3">

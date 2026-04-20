@@ -68,7 +68,8 @@ export function Speakers() {
           </p>
         </div>
 
-        <Card className="relative mx-auto mt-12 max-w-4xl border-white/10 bg-white/[0.03] backdrop-blur-sm overflow-hidden z-0">
+        <div className="relative mx-auto mt-12 max-w-4xl">
+        <Card className="relative border-white/10 bg-white/[0.03] backdrop-blur-sm overflow-hidden z-0">
           {/* Grid background */}
           <div
             className="absolute inset-0 opacity-[0.03] pointer-events-none -z-10"
@@ -167,6 +168,7 @@ export function Speakers() {
             </div>
           </CardContent>
         </Card>
+        </div>
       </div>
     </section>
   )

@@ -41,7 +41,7 @@ export default async function DashboardPage() {
 
   const { data: workshops } = await supabase
     .from("workshops")
-    .select("id, title, speaker, location, type, start_time, end_time, capacity")
+    .select("id, title, speaker, location, type, start_time, end_time, capacity, group_label, conflict_group")
     .order("start_time")
 
   const fullName = profile
@@ -80,7 +80,7 @@ export default async function DashboardPage() {
         </div>
 
         <div id="schedule" className="mx-auto flex w-full max-w-lg flex-col pt-6 lg:max-w-none lg:flex-1 lg:px-8 lg:pb-8 lg:pt-16">
-          <ScheduleTimeline userId={user.id} enrolledIds={enrolledIds} waitlistedIds={waitlistedIds} enrollmentCounts={enrollmentCounts} workshops={workshops ?? []} />
+          <ScheduleTimeline userId={user.id} assignedGroup={profile?.assigned_group ?? "Not set"} enrolledIds={enrolledIds} waitlistedIds={waitlistedIds} enrollmentCounts={enrollmentCounts} workshops={workshops ?? []} />
         </div>
 
         <div className="w-full">

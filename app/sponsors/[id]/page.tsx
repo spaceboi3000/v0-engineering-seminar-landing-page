@@ -78,8 +78,29 @@ export default async function SponsorPage({ params }: SponsorPageProps) {
 
           {/* Description */}
           <div className="mx-auto max-w-2xl">
-            <h2 className="text-lg font-semibold text-foreground/90 mb-4">About</h2>
-            <p className="text-base text-muted-foreground leading-relaxed whitespace-pre-line">{sponsor.longDescription}</p>
+            {sponsor.longDescriptionEl ? (
+              <div className="flex flex-col gap-8">
+                <div>
+                  <h2 className="text-lg font-semibold text-foreground/90 mb-4 flex items-center gap-2">
+                    About
+                    <span className="text-xs font-medium text-muted-foreground border border-border/40 rounded px-1.5 py-0.5">EN</span>
+                  </h2>
+                  <p className="text-base text-muted-foreground leading-relaxed whitespace-pre-line">{sponsor.longDescription}</p>
+                </div>
+                <div className="border-t border-border/30 pt-8">
+                  <h2 className="text-lg font-semibold text-foreground/90 mb-4 flex items-center gap-2">
+                    Σχετικά
+                    <span className="text-xs font-medium text-muted-foreground border border-border/40 rounded px-1.5 py-0.5">ΕΛ</span>
+                  </h2>
+                  <p className="text-base text-muted-foreground leading-relaxed whitespace-pre-line">{sponsor.longDescriptionEl}</p>
+                </div>
+              </div>
+            ) : (
+              <>
+                <h2 className="text-lg font-semibold text-foreground/90 mb-4">About</h2>
+                <p className="text-base text-muted-foreground leading-relaxed whitespace-pre-line">{sponsor.longDescription}</p>
+              </>
+            )}
           </div>
 
           {/* Links section */}

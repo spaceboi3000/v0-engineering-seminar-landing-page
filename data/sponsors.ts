@@ -5,8 +5,10 @@ export interface Sponsor {
   name: string
   tier: SponsorTier
   logo: string            // path to logo image
+  logoBg?: string         // logo area background color (defaults to white)
   shortDescription: string
   longDescription: string
+  longDescriptionEl?: string
   website: string
   contactEmail?: string
   socialLinks?: {
@@ -80,6 +82,46 @@ export const TIER_CONFIG: Record<SponsorTier, {
 
 export const sponsors: Sponsor[] = [
   {
+    id: "asso-subsea",
+    name: "ASSO Subsea",
+    tier: "platinum",
+    logo: "/images/sponsors/asso-subsea-logo.png",
+    shortDescription: "A Group of Companies founded in 1976, specializing in the installation and protection of submarine cables for energy infrastructure worldwide.",
+    longDescription: `Asso.subsea is a Group of Companies founded in 1976, specializing in the installation and protection of submarine cables. The company owns and operates its own fleet of specialized vessels, on which cables are loaded and used to connect two points — such as countries, islands, or offshore platforms for wind farms. In addition to its fleet, the Group designs, builds, and maintains the subsea robotic equipment used in its projects at its own technical base.
+
+Asso has participated in 207 submarine cable installation and protection projects worldwide. The duration of each project can reach up to three years, depending on its size and complexity.
+
+Asso employs more than 1,000 people, including both onshore staff and seafarers.
+
+In a rapidly evolving energy market, with increasing demand for innovative, safe, and reliable solutions, Asso has earned its place among the leading players in the global submarine utilities installation market. Our goal is to continuously meet future market challenges by delivering safe and smart solutions.`,
+    longDescriptionEl: `Η Asso.subsea είναι Όμιλος Εταιρειών, ιδρύθηκε το 1976 και το αντικείμενό της είναι η πόντιση και προστασία υποβρύχιων καλωδίων. Η Asso διαθέτει το δικό της στόλο, ένα στόλο με ειδικού τύπου πλοία, όπου φορτώνεται πάνω το καλώδιο και ενώνουν δύο σημεία μεταξύ τους με το καλώδιο αυτό π.χ. χώρες, νησιά ή πλατφόρμες για θαλάσσια αιολικά πάρκα. Εκτός από το στόλο, για τις ανάγκες των έργων, στην τεχνική βάση του Ομίλου κατασκευάζονται και συντηρούνται τα υποβρύχια ρομποτικά μηχανήματα που χρησιμοποιούνται στα έργα.
+
+Κατά τη διάρκεια της πολυετούς εμπειρία της, η Asso έχει συμμετάσχει σε 207 έργα εγκατάστασης & προστασίας υποβρύχιων καλωδίων σε όλο τον κόσμο. Η διάρκεια κάθε έργου μπορεί να φτάσει και τα 3 χρόνια ανάλογα με το μέγεθος και την πολυπλοκότητα.
+
+Η Asso απασχολεί περισσότερους από 1000 ανθρώπους και αυτό περιλαμβάνει όσους εργάζονται στη στεριά αλλά και τους ναυτικούς.
+
+Σε μια ταχέως μεταβαλλόμενη αγορά ενέργειας και μια αυξανόμενη ζήτηση για καινοτόμες, ασφαλείς και αξιόπιστες λύσεις, η Asso έχει κερδίσει μια θέση μεταξύ των σημαντικότερων παικτών στην παγκόσμια αγορά εγκατάστασης υποβρύχιων υπηρεσιών κοινής ωφελείας. Στόχος μας είναι να ανταποκρινόμαστε πάντα στις μελλοντικές προκλήσεις της αγοράς, παρέχοντας ασφαλείς και έξυπνες λύσεις.`,
+    website: "https://www.assogroup.com/",
+  },
+  {
+    id: "gekterna",
+    name: "GEK TERNA",
+    tier: "platinum",
+    logo: "/images/sponsors/gekterna-logo.svg",
+    shortDescription: "One of Greece's largest business groups, active in construction, energy, concessions, and real estate across 4 continents.",
+    longDescription: `GEK TERNA is one of the largest and most dynamic business groups in Greece, listed on the Athens Stock Exchange. Through its subsidiaries, the Group operates across four major pillars: Construction, Energy, Concessions, and Real Estate.
+
+TERNA S.A., the Group's flagship construction company founded in 1972, is the largest construction firm in Greece and one of the most active in Southeast Europe — delivering major infrastructure projects including road and railway networks, ports, airports, hospitals, museums, dams, and industrial facilities across more than 35 countries.
+
+In the energy sector, GEK TERNA operates through TERNA ENERGY, a leading renewables company with a portfolio spanning wind, solar, hydro, and energy storage, as well as through Heron, which supplies electricity and natural gas to consumers and businesses throughout Greece.
+
+The Group is also the largest investor in the concessions sector in Greece, managing a diversified and low-risk portfolio of motorway and infrastructure concessions that serve millions of travelers annually.
+
+With a presence on four continents and a commitment to sustainable development, innovation, and social responsibility, GEK TERNA continues to shape the infrastructure and energy landscape of Greece and beyond.`,
+    website: "https://www.gekterna.com/el/",
+    socialLinks: { linkedin: "https://gr.linkedin.com/company/gek-terna" },
+  },
+  {
     id: "isense-iccs",
     name: "ISENSE Group -ICCS",
     tier: "platinum",
@@ -106,6 +148,11 @@ With a track record of 200+ successful EU and national projects, a highly skille
 SABO S.A. is one of the leading companies worldwide specialized in providing turnkey solutions for the Heavy Clay Industry. It also stands out in other areas of industrial sectors by providing Automation and Robotic Systems for material handling and packaging, turnkey electrical solutions and industrial automation, equipment and services for heavy industrial units, as well as customized equipment and integrated solutions for the management of Solid Waste.
 
 Technical know-how and innovation, high-quality standards, qualified and experienced personnel along with strong after-sales support services, are the key competitive advantages of the company.`,
+    longDescriptionEl: `Η SABO S.A., ελληνική εταιρεία ιδρυθείσα το 1984, δραστηριοποιείται σε περισσότερες από 64 χώρες παγκοσμίως, εξάγοντας το 90% του ετήσιου κύκλου εργασιών της. Η εταιρεία είναι μέλος του Ομίλου SABO με έδρα το Βασιλικό της Εύβοιας στην Ελλάδα και με θυγατρικές στη Βραζιλία, τη Ρουμανία και την Ιταλία.
+
+Η SABO είναι μια από τις ηγέτιδες επιχειρήσεις παγκοσμίως, με ειδίκευση στην παροχή ολοκληρωμένων λύσεων για την κεραμοποιία. Ξεχωρίζει επίσης και σε άλλους βιομηχανικούς τομείς, παρέχοντας συστήματα αυτοματοποίησης και ρομποτικές εφαρμογές για τη διακίνηση και τη συσκευασία προϊόντων, ολοκληρωμένες ηλεκτρολογικές λύσεις και βιομηχανικούς αυτοματισμούς, εξοπλισμό και υπηρεσίες για μονάδες βαριάς βιομηχανίας, καθώς και εξατομικευμένες λύσεις σε εξοπλισμό και ολοκληρωμένες γραμμές για τη διαχείριση στερεών αποβλήτων.
+
+Η τεχνογνωσία και καινοτομία, τα πρότυπα υψηλής ποιότητας, το ειδικευμένο και έμπειρο προσωπικό, καθώς και οι ισχυρές υπηρεσίες υποστήριξης μετά την πώληση, αποτελούν τα βασικά ανταγωνιστικά πλεονεκτήματα της εταιρείας.`,
     website: "https://el.sabo.gr/",
   },
   {
