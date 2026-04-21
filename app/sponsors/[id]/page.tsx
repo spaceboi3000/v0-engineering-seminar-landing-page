@@ -1,6 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
+import { ArrowLeft } from "lucide-react"
 import { sponsors, TIER_CONFIG } from "@/data/sponsors"
 
 interface SponsorPageProps {
@@ -19,7 +20,16 @@ export default async function SponsorPage({ params }: SponsorPageProps) {
   const tier = TIER_CONFIG[sponsor.tier]
 
   return (
-    <main className="min-h-screen text-foreground">
+    <main className="relative min-h-screen text-foreground">
+
+      {/* Floating back button */}
+      <Link
+        href="/"
+        className="fixed top-4 left-4 z-50 flex items-center justify-center size-10 rounded-full bg-black/10 backdrop-blur-md border border-black/10 text-black/60 transition-all hover:bg-black/20 hover:text-black"
+        aria-label="Back to home"
+      >
+        <ArrowLeft className="size-5" />
+      </Link>
 
       {/* ── Section 1: Metallic header ── */}
       <div style={{ backgroundImage: tier.metalGradient }} className={`w-full relative overflow-hidden ${tier.metalRing}`}>
@@ -29,20 +39,6 @@ export default async function SponsorPage({ params }: SponsorPageProps) {
         <div className="absolute inset-0 pointer-events-none opacity-[0.08] mix-blend-overlay" style={{
           backgroundImage: `repeating-linear-gradient(135deg, rgba(0,0,0,0.6) 0px, rgba(0,0,0,0.6) 1px, rgba(255,255,255,0) 1px, rgba(255,255,255,0) 3px)`
         }} />
-        {/* Back link */}
-        <div className="absolute top-6 left-0 w-full px-4 lg:px-8">
-          <div className="mx-auto max-w-4xl">
-            <Link
-              href="/#sponsors"
-              className="inline-flex items-center gap-2 text-sm font-medium text-black/60 hover:text-black transition-colors"
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              Back to Event
-            </Link>
-          </div>
-        </div>
 
         {/* Logo + name */}
         <div className="mx-auto max-w-4xl px-4 lg:px-8 pt-20 pb-16 flex flex-col items-center text-center gap-6">

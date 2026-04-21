@@ -85,7 +85,7 @@ export const sponsors: Sponsor[] = [
     id: "gekterna",
     name: "GEK TERNA",
     tier: "platinum",
-    logo: "/images/sponsors/gekterna-logo.svg",
+    logo: "/images/sponsors/gekterna-logo.webp",
     shortDescription: "One of Greece's largest business groups, active in construction, energy, concessions, and real estate across 4 continents.",
     longDescription: `GEK TERNA is one of the largest and most dynamic business groups in Greece, listed on the Athens Stock Exchange. Through its subsidiaries, the Group operates across four major pillars: Construction, Energy, Concessions, and Real Estate.
 
@@ -103,7 +103,7 @@ With a presence on four continents and a commitment to sustainable development, 
     id: "asso-subsea",
     name: "ASSO Subsea",
     tier: "platinum",
-    logo: "/images/sponsors/asso-subsea-logo.png",
+    logo: "/images/sponsors/asso-subsea-logo.webp",
     shortDescription: "A Group of Companies founded in 1976, specializing in the installation and protection of submarine cables for energy infrastructure worldwide.",
     longDescription: `Asso.subsea is a Group of Companies founded in 1976, specializing in the installation and protection of submarine cables. The company owns and operates its own fleet of specialized vessels, on which cables are loaded and used to connect two points — such as countries, islands, or offshore platforms for wind farms. In addition to its fleet, the Group designs, builds, and maintains the subsea robotic equipment used in its projects at its own technical base.
 
@@ -125,7 +125,7 @@ In a rapidly evolving energy market, with increasing demand for innovative, safe
     id: "isense-iccs",
     name: "ISENSE Group -ICCS",
     tier: "platinum",
-    logo: "/images/sponsors/isense-logo.png",
+    logo: "/images/sponsors/isense-logo.webp",
     shortDescription: "Advancing research and inovation in the fields of electrical, electronic and computer engineering & technologies",
     longDescription: `Since its establishment in 2002, I-SENSE has evolved into a leading European hub for basic and applied research in electrical, electronic, and computer engineering—combining academic excellence, technological innovation, and a strong collaborative spirit.
 
@@ -158,7 +158,7 @@ Technical know-how and innovation, high-quality standards, qualified and experie
   {
     id: "heron",
     name: "HERON",
-    tier: "silver",
+    tier: "platinum",
     logo: "/images/sponsors/heron-logo.webp",
     shortDescription: "The Hellenic Robotics Center of Excellence — advancing robotics science and technology in the AI era.",
     longDescription: `HERON is a visionary project that aims to create the first Robotics Center of Excellence in Greece for advancing the science and technology of robotics in the AI era, coupled with industrial innovation. Its main goals include pursuing world-class research in diverse areas that reflect current and emerging challenges of national and EU value, including agriculture, marine, safety, transportation, and healthcare, founding Makerspaces, establishing and mobilizing the Hellenic Robotics Ecosystem, collaborating with the Diaspora, supporting education and training, and creating an AI-powered robotics center in Southeast Europe. The envisioned transformations are expected to result in major benefits to the economy, the technology, and the social well-being.`,
@@ -177,7 +177,7 @@ Technical know-how and innovation, high-quality standards, qualified and experie
     id: "strategis",
     name: "STRATEGIS Maritime ICT Cluster",
     tier: "silver",
-    logo: "/images/sponsors/strategis-logo.png",
+    logo: "/images/sponsors/strategis-logo.webp",
     shortDescription: "A Piraeus-based maritime cluster connecting companies, research institutions, and stakeholders to drive Digital Shipping, Smart Ports, and Blue Economy growth.",
     longDescription: `The Strategis Maritime ICT Cluster (SMICT) located in Piraeus with a global perspective, includes a network of companies, public and private organizations, research & academic institutions, and other stakeholders from the Greek Shipping Hub that focuses on emerging technologies enabling the Digital Shipping, Smart Ports, and sustainable growth in the Blue Economy.
 

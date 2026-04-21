@@ -14,17 +14,15 @@ export default async function SpeakerPage({ params }: { params: Promise<{ id: st
   if (!speaker) notFound()
 
   return (
-    <main className="min-h-screen bg-background">
-      {/* Back button */}
-      <div className="mx-auto max-w-3xl px-4 pt-8 lg:px-8">
-        <Link
-          href="/#speakers"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <ArrowLeft className="size-4" />
-          Πίσω στους ομιλητές
-        </Link>
-      </div>
+    <main className="relative min-h-screen bg-background">
+      {/* Floating back button */}
+      <Link
+        href="/"
+        className="fixed top-4 left-4 z-50 flex items-center justify-center size-10 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-white/70 transition-all hover:bg-white/20 hover:text-white"
+        aria-label="Back to home"
+      >
+        <ArrowLeft className="size-5" />
+      </Link>
 
       <div className="mx-auto max-w-3xl px-4 py-10 lg:px-8">
         {/* Header card */}

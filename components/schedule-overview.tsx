@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { getSupabase } from "@/lib/supabase"
 import { Clock, MapPin, Presentation, Wrench, Coffee, Users } from "lucide-react"
 
@@ -56,7 +57,10 @@ export async function ScheduleOverview() {
 
                 {/* Card */}
                 <div className="flex-1 pb-4">
-                  <div className="rounded-xl border border-border/60 p-3 sm:p-4 flex items-center gap-3">
+                  <Link
+                    href={w.type === "seminar" ? "/#speakers" : "/register"}
+                    className="block rounded-xl border border-border/60 p-3 sm:p-4 flex items-center gap-3 transition-colors hover:border-border hover:bg-white/[0.02]"
+                  >
                     <div className={`flex items-center justify-center size-9 sm:size-10 rounded-lg shrink-0 ${cfg.bg} ${cfg.text}`}>
                       <Icon className="size-4 sm:size-5" />
                     </div>
@@ -68,7 +72,7 @@ export async function ScheduleOverview() {
                         <span className="flex items-center gap-1"><MapPin className="size-3" />{w.location}</span>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 </div>
               </div>
             )

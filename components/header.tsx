@@ -41,14 +41,14 @@ export function Header() {
   const authButton = user ? (
     <button
       onClick={handleLogout}
-      className="hidden items-center rounded-lg border border-white/20 px-4 py-2.5 text-sm font-semibold text-white/70 transition-all hover:border-white/40 hover:text-white md:inline-flex"
+      className="hidden items-center rounded-lg border border-white/20 px-4 py-2.5 text-sm font-semibold text-white/70 transition-all hover:border-white/40 hover:text-white lg:inline-flex"
     >
       Logout
     </button>
   ) : (
     <Link
       href="/login"
-      className="hidden items-center rounded-lg border border-white/20 px-4 py-2.5 text-sm font-semibold text-white/80 transition-all hover:border-sky-400/50 hover:text-sky-400 md:inline-flex"
+      className="hidden items-center rounded-lg border border-white/20 px-4 py-2.5 text-sm font-semibold text-white/80 transition-all hover:border-sky-400/50 hover:text-sky-400 lg:inline-flex"
     >
       Login
     </Link>
@@ -95,7 +95,7 @@ export function Header() {
         </a>
 
         {/* Desktop Nav */}
-        <nav className="hidden items-center gap-8 md:flex" aria-label="Main navigation">
+        <nav className="hidden items-center gap-8 lg:flex" aria-label="Main navigation">
           {navLinks.map((link) => (
             <a
               key={link.href}
@@ -120,45 +120,52 @@ export function Header() {
           {authButton}
           <button
             type="button"
-            className="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground transition-colors hover:text-foreground md:hidden"
+            className="inline-flex items-center justify-center size-10 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-white/70 transition-all hover:bg-white/20 hover:text-white lg:hidden"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-expanded={mobileOpen}
             aria-label="Toggle navigation menu"
-            // Added suppression just in case extensions interfere with the menu button
             suppressHydrationWarning
           >
-            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {mobileOpen ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Nav */}
-      {mobileOpen && (
-        <nav className="border-t border-white/10 bg-[#081229]/95 px-4 pb-4 pt-2 backdrop-blur-xl md:hidden" aria-label="Mobile navigation">
-          <div className="flex flex-col gap-3">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="rounded-md px-3 py-2 text-sm font-medium text-white/60 transition-colors hover:bg-white/10 hover:text-sky-400"
-                onClick={() => setMobileOpen(false)}
-              >
-                {link.label}
-              </a>
-            ))}
-            {user && (
-              <Link
-                href="/dashboard"
-                onClick={() => setMobileOpen(false)}
-                className="rounded-md px-3 py-2 text-sm font-medium text-white/60 transition-colors hover:bg-white/10 hover:text-sky-400"
-              >
-                My Account
-              </Link>
-            )}
-            {mobileAuthButton}
-          </div>
+      {/* Mobile Nav — slides in from the right */}
+      <div
+        className={`fixed inset-0 z-40 lg:hidden transition-opacity duration-300 ${mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
+        aria-hidden={!mobileOpen}
+      >
+        {/* Backdrop */}
+        <div className="absolute inset-0 bg-black/40" onClick={() => setMobileOpen(false)} />
+
+        {/* Panel */}
+        <nav
+          className={`absolute top-0 right-0 h-full w-72 bg-[#081229]/95 backdrop-blur-xl border-l border-white/10 px-6 pt-20 pb-8 flex flex-col gap-1 transition-transform duration-300 ease-out ${mobileOpen ? "translate-x-0" : "translate-x-full"}`}
+          aria-label="Mobile navigation"
+        >
+          {navLinks.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              className="rounded-lg px-3 py-2.5 text-sm font-medium text-white/60 transition-colors hover:bg-white/10 hover:text-sky-400"
+              onClick={() => setMobileOpen(false)}
+            >
+              {link.label}
+            </a>
+          ))}
+          {user && (
+            <Link
+              href="/dashboard"
+              onClick={() => setMobileOpen(false)}
+              className="rounded-lg px-3 py-2.5 text-sm font-medium text-white/60 transition-colors hover:bg-white/10 hover:text-sky-400"
+            >
+              My Account
+            </Link>
+          )}
+          <div className="mt-auto">{mobileAuthButton}</div>
         </nav>
-      )}
+      </div>
     </header>
   )
 }
