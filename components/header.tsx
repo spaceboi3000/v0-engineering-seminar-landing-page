@@ -141,7 +141,8 @@ export function Header() {
 
         {/* Panel */}
         <nav
-          className={`absolute top-0 right-0 h-full w-72 bg-[#081229] border-l-2 border-blue-500 shadow-[-20px_0_60px_rgba(59,130,246,0.4)] px-6 pt-20 pb-8 flex flex-col gap-1 transition-transform duration-300 ease-out ${mobileOpen ? "translate-x-0" : "translate-x-full"}`}
+          style={{ backgroundColor: "#081229" }}
+          className={`absolute top-0 right-0 h-full w-72 border-l-2 border-sky-400 shadow-[0_0_30px_rgba(56,189,248,0.4),-20px_0_60px_rgba(56,189,248,0.15)] px-6 pt-20 pb-8 flex flex-col gap-1 transition-transform duration-300 ease-out ${mobileOpen ? "translate-x-0" : "translate-x-full"}`}
           aria-label="Mobile navigation"
         >
           {navLinks.map((link) => (
