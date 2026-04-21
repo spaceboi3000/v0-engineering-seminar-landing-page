@@ -163,7 +163,7 @@ export function Sponsors() {
         {/* "Become a Sponsor" CTA */}
         <div className="mt-8 flex justify-center">
           <a
-            href="mailto:sponsors@example.com"
+            href="mailto:ras.ntua@gmail.com"
             className="inline-flex items-center gap-2 rounded-full border border-dashed border-border/60 px-6 py-3 text-sm font-medium text-muted-foreground transition-all hover:border-border hover:bg-muted/30 hover:text-foreground/80"
           >
             <span className="text-lg leading-none">+</span> Become a Sponsor

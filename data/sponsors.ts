@@ -82,6 +82,24 @@ export const TIER_CONFIG: Record<SponsorTier, {
 
 export const sponsors: Sponsor[] = [
   {
+    id: "gekterna",
+    name: "GEK TERNA",
+    tier: "platinum",
+    logo: "/images/sponsors/gekterna-logo.svg",
+    shortDescription: "One of Greece's largest business groups, active in construction, energy, concessions, and real estate across 4 continents.",
+    longDescription: `GEK TERNA is one of the largest and most dynamic business groups in Greece, listed on the Athens Stock Exchange. Through its subsidiaries, the Group operates across four major pillars: Construction, Energy, Concessions, and Real Estate.
+
+TERNA S.A., the Group's flagship construction company founded in 1972, is the largest construction firm in Greece and one of the most active in Southeast Europe — delivering major infrastructure projects including road and railway networks, ports, airports, hospitals, museums, dams, and industrial facilities across more than 35 countries.
+
+In the energy sector, GEK TERNA operates through TERNA ENERGY, a leading renewables company with a portfolio spanning wind, solar, hydro, and energy storage, as well as through Heron, which supplies electricity and natural gas to consumers and businesses throughout Greece.
+
+The Group is also the largest investor in the concessions sector in Greece, managing a diversified and low-risk portfolio of motorway and infrastructure concessions that serve millions of travelers annually.
+
+With a presence on four continents and a commitment to sustainable development, innovation, and social responsibility, GEK TERNA continues to shape the infrastructure and energy landscape of Greece and beyond.`,
+    website: "https://www.gekterna.com/el/",
+    socialLinks: { linkedin: "https://gr.linkedin.com/company/gek-terna" },
+  },
+  {
     id: "asso-subsea",
     name: "ASSO Subsea",
     tier: "platinum",
@@ -102,24 +120,6 @@ In a rapidly evolving energy market, with increasing demand for innovative, safe
 
 Σε μια ταχέως μεταβαλλόμενη αγορά ενέργειας και μια αυξανόμενη ζήτηση για καινοτόμες, ασφαλείς και αξιόπιστες λύσεις, η Asso έχει κερδίσει μια θέση μεταξύ των σημαντικότερων παικτών στην παγκόσμια αγορά εγκατάστασης υποβρύχιων υπηρεσιών κοινής ωφελείας. Στόχος μας είναι να ανταποκρινόμαστε πάντα στις μελλοντικές προκλήσεις της αγοράς, παρέχοντας ασφαλείς και έξυπνες λύσεις.`,
     website: "https://www.assogroup.com/",
-  },
-  {
-    id: "gekterna",
-    name: "GEK TERNA",
-    tier: "platinum",
-    logo: "/images/sponsors/gekterna-logo.svg",
-    shortDescription: "One of Greece's largest business groups, active in construction, energy, concessions, and real estate across 4 continents.",
-    longDescription: `GEK TERNA is one of the largest and most dynamic business groups in Greece, listed on the Athens Stock Exchange. Through its subsidiaries, the Group operates across four major pillars: Construction, Energy, Concessions, and Real Estate.
-
-TERNA S.A., the Group's flagship construction company founded in 1972, is the largest construction firm in Greece and one of the most active in Southeast Europe — delivering major infrastructure projects including road and railway networks, ports, airports, hospitals, museums, dams, and industrial facilities across more than 35 countries.
-
-In the energy sector, GEK TERNA operates through TERNA ENERGY, a leading renewables company with a portfolio spanning wind, solar, hydro, and energy storage, as well as through Heron, which supplies electricity and natural gas to consumers and businesses throughout Greece.
-
-The Group is also the largest investor in the concessions sector in Greece, managing a diversified and low-risk portfolio of motorway and infrastructure concessions that serve millions of travelers annually.
-
-With a presence on four continents and a commitment to sustainable development, innovation, and social responsibility, GEK TERNA continues to shape the infrastructure and energy landscape of Greece and beyond.`,
-    website: "https://www.gekterna.com/el/",
-    socialLinks: { linkedin: "https://gr.linkedin.com/company/gek-terna" },
   },
   {
     id: "isense-iccs",

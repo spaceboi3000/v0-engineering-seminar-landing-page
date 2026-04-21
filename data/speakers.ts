@@ -24,12 +24,36 @@ His thinking is regularly appearing on various global printed, online and tv med
       { label: "LinkedIn", url: "https://www.linkedin.com/in/charalamposioannou/" },
     ],
   },
-  // {
-  //   id: "giorgos-hatjipavlis",
-  //   name: "Γιώργος Χατζηπαύλης",
-  //   title: "",
-  //   photo: "/images/speakers/giorgos_hatjipavlis.jpg",
-  //   bio: "",
-  //   links: [],
-  // },
+  {
+    id: "eve-psalti",
+    name: "Eve Psalti",
+    title: "Senior Executive @ Microsoft AI · Board Member & Startup Advisor",
+    photo: "/images/speakers/eve_psalti.webp",
+    bio: `In today's rapidly evolving digital landscape, businesses must innovate to stay ahead. AI is no longer just an advantage—it's a necessity for optimizing operations, enhancing decision-making, and driving growth.
+
+Eve's presentation explores how AI transforms business operations through AI in Business Operations, Model Catalog, Finetuning Tools, and Responsible AI Tools — ensuring ethical AI usage with bias detection, transparency, and regulatory compliance.
+
+By leveraging AI's full potential, businesses can streamline workflows, enhance customer experiences, and drive innovation at scale. This presentation will showcase real-world applications and strategies to effectively integrate AI into your organization, paving the way for a smarter and more competitive future.`,
+    links: [],
+  },
+  {
+    id: "elena-kallona",
+    name: "Elena Kallona",
+    title: "VP Automation & Warehouse Equipment EMEA & Managing Director Greece, Jungheinrich",
+    photo: "/images/speakers/elena_kalona.webp",
+    bio: `Η τεχνητή νοημοσύνη δεν αλλάζει απλώς τα επαγγέλματα — επαναπροσδιορίζει το τι σημαίνει να αποφασίζεις, να δημιουργείς και τελικά να ηγείσαι. Σε αυτή τη συζήτηση με την Ρηνέτα Μήτση, δεν μιλούν για το αν το AI θα επηρεάσει το μέλλον της εργασίας, αλλά για το ποιός διαμορφώνει αυτό το μέλλον και με ποιούς κανόνες.
+
+Όταν οι αλγόριθμοι γίνονται συνεργάτες, όταν η αυτοματοποίηση αλλάζει τη βιομηχανία και όταν η βιωσιμότητα γίνεται στρατηγική ανάγκη, οι νέοι μηχανικοί και επιστήμονες καλούνται να απαντήσουν: ποια είναι η ευθύνη του ανθρώπου μέσα σε ευφυή συστήματα; Πώς σχεδιάζουμε τεχνολογία που δεν είναι μόνο αποδοτική αλλά και δίκαιη;`,
+    links: [],
+  },
+  {
+    id: "rineta-mitsi",
+    name: "Rineta Mitsi",
+    title: "Corporate Affairs & Sustainability Director, Goody's-everest Group · General Secretary of CAPA",
+    photo: "/images/speakers/rineta_mitsi.webp",
+    bio: `Στο πνεύμα του Robotalk, η συζήτηση με την Έλενα Καλλονά λειτουργεί ως ανοιχτό debate για τη σχέση ανθρώπου και μηχανής — όχι ως τεχνολογική πρόβλεψη, αλλά ως πρόσκληση για επανασχεδιασμό του ίδιου του μέλλοντος.
+
+Who Leads When Machines Think? Η τεχνητή νοημοσύνη δεν αλλάζει απλώς τα επαγγέλματα — επαναπροσδιορίζει το τι σημαίνει να αποφασίζεις, να δημιουργείς και τελικά να ηγείσαι.`,
+    links: [],
+  },
 ]

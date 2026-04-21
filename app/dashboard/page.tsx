@@ -41,7 +41,7 @@ export default async function DashboardPage() {
 
   const { data: workshops } = await supabase
     .from("workshops")
-    .select("id, title, speaker, location, type, start_time, end_time, capacity, group_label, conflict_group")
+    .select("id, title, speaker, location, type, start_time, end_time, capacity, group_label, conflict_group, description")
     .order("start_time")
 
   const fullName = profile

@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { createSupabaseBrowser } from "@/lib/supabase-browser"
-import { Clock, MapPin, Presentation, Wrench, Coffee, Users, FileUp, Loader2, Users2 } from "lucide-react"
+import { Clock, MapPin, Presentation, Wrench, Coffee, Users, FileUp, Loader2, Users2, X, ChevronDown } from "lucide-react"
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -21,6 +21,7 @@ interface WorkshopRow {
   capacity: number
   group_label: string | null
   conflict_group: string | null
+  description: string | null
 }
 
 interface ProcessedEvent {
@@ -36,6 +37,7 @@ interface ProcessedEvent {
   capacity: number
   groupLabel: string | null
   conflictGroup: string | null
+  description: string | null
 }
 
 type ScheduleRow =
@@ -192,6 +194,7 @@ export function ScheduleTimeline({ assignedGroup, enrolledIds, waitlistedIds, en
   const [counts, setCounts] = useState<Record<string, number>>(enrollmentCounts)
   const [loading, setLoading] = useState<string | null>(null)
   const [error, setError] = useState<{ workshopId: string; message: string } | null>(null)
+  const [selectedEvent, setSelectedEvent] = useState<ProcessedEvent | null>(null)
 
   const events: ProcessedEvent[] = workshops.map((w) => ({
     id: w.id,
@@ -206,6 +209,7 @@ export function ScheduleTimeline({ assignedGroup, enrolledIds, waitlistedIds, en
     capacity: w.capacity,
     groupLabel: w.group_label,
     conflictGroup: w.conflict_group,
+    description: w.description,
   }))
 
   const scheduleRows = buildScheduleRows(events)
@@ -328,10 +332,14 @@ export function ScheduleTimeline({ assignedGroup, enrolledIds, waitlistedIds, en
   function CompactCard({ event, highlight }: { event: ProcessedEvent; highlight?: boolean }) {
     const Icon = typeConfig[event.type].icon
     const cfg = typeConfig[event.type]
+    const hasDesc = !!event.description
     return (
-      <div className={`flex flex-col gap-1.5 rounded-xl border p-3 sm:p-4 transition-all ${
-        highlight ? "border-blue-500/50 bg-blue-500/5 shadow-[0_0_12px_rgba(59,130,246,0.1)]" : "border-border"
-      }`}>
+      <div
+        className={`flex flex-col gap-1.5 rounded-xl border p-3 sm:p-4 transition-all ${
+          highlight ? "border-blue-500/50 bg-blue-500/5 shadow-[0_0_12px_rgba(59,130,246,0.1)]" : "border-border"
+        } ${hasDesc ? "cursor-pointer active:scale-[0.98] hover:border-muted-foreground/40" : ""}`}
+        onClick={hasDesc ? () => setSelectedEvent(event) : undefined}
+      >
         <div className="flex items-start gap-2.5">
           <div className={`flex items-center justify-center size-8 sm:size-9 rounded-lg shrink-0 ${cfg.bg} ${cfg.text}`}>
             <Icon className="size-4" />
@@ -352,6 +360,38 @@ export function ScheduleTimeline({ assignedGroup, enrolledIds, waitlistedIds, en
             Group {event.groupLabel}{highlight ? " · You" : ""}
           </span>
         )}
+        {hasDesc && <span className="flex items-center gap-1 text-[10px] text-muted-foreground/60 mt-0.5"><ChevronDown className="size-2.5" />Tap for details</span>}
+      </div>
+    )
+  }
+
+  /* Description modal */
+  function DescriptionModal() {
+    if (!selectedEvent) return null
+    const cfg = typeConfig[selectedEvent.type]
+    const Icon = cfg.icon
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setSelectedEvent(null)}>
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+        <div className="relative w-full max-w-lg max-h-[80vh] overflow-y-auto rounded-2xl border border-border bg-background p-5 sm:p-6 shadow-2xl" onClick={(ev) => ev.stopPropagation()}>
+          <button onClick={() => setSelectedEvent(null)} className="absolute top-3 right-3 rounded-lg p-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
+            <X className="size-5" />
+          </button>
+          <div className="flex items-start gap-3 mb-4 pr-8">
+            <div className={`flex items-center justify-center size-10 rounded-lg shrink-0 ${cfg.bg} ${cfg.text}`}>
+              <Icon className="size-5" />
+            </div>
+            <div className="flex flex-col gap-0.5">
+              <h3 className="text-base font-semibold text-foreground">{selectedEvent.title}</h3>
+              {selectedEvent.speaker && <p className="text-sm text-muted-foreground">{selectedEvent.speaker}</p>}
+              <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
+                <span className="flex items-center gap-1"><Clock className="size-3" />{selectedEvent.time}–{selectedEvent.endTime}</span>
+                <span className="flex items-center gap-1"><MapPin className="size-3" />{selectedEvent.location}</span>
+              </div>
+            </div>
+          </div>
+          <div className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{selectedEvent.description}</div>
+        </div>
       </div>
     )
   }
@@ -409,8 +449,12 @@ export function ScheduleTimeline({ assignedGroup, enrolledIds, waitlistedIds, en
             const e = row.event
             const Icon = typeConfig[e.type].icon
             const cfg = typeConfig[e.type]
+            const hasDesc = !!e.description
             card = (
-              <div className="rounded-xl border border-border p-3 sm:p-4 flex items-center gap-3">
+              <div
+                className={`rounded-xl border border-border p-3 sm:p-4 flex items-center gap-3 transition-all ${hasDesc ? "cursor-pointer active:scale-[0.98] hover:border-muted-foreground/40" : ""}`}
+                onClick={hasDesc ? () => setSelectedEvent(e) : undefined}
+              >
                 <div className={`flex items-center justify-center size-9 sm:size-10 rounded-lg shrink-0 ${cfg.bg} ${cfg.text}`}>
                   <Icon className="size-4 sm:size-5" />
                 </div>
@@ -421,6 +465,7 @@ export function ScheduleTimeline({ assignedGroup, enrolledIds, waitlistedIds, en
                     <span className="flex items-center gap-1 shrink-0"><Clock className="size-3" />{e.time}–{e.endTime}</span>
                     <span className="flex items-center gap-1"><MapPin className="size-3 shrink-0" />{e.location}</span>
                   </div>
+                  {hasDesc && <span className="flex items-center gap-1 text-[10px] text-muted-foreground/60 mt-1"><ChevronDown className="size-3" />Tap for details</span>}
                 </div>
               </div>
             )
@@ -445,20 +490,27 @@ export function ScheduleTimeline({ assignedGroup, enrolledIds, waitlistedIds, en
                 {row.events.map((e) => {
                   const Icon = typeConfig[e.type].icon
                   const cfg = typeConfig[e.type]
+                  const hasDesc = !!e.description
                   return (
                     <div key={e.id} className="flex flex-col rounded-xl border border-border p-3 sm:p-4">
-                      <div className="flex items-start gap-2.5">
-                        <div className={`flex items-center justify-center size-8 sm:size-9 rounded-lg shrink-0 ${cfg.bg} ${cfg.text}`}>
-                          <Icon className="size-4" />
+                      <div
+                        className={hasDesc ? "cursor-pointer active:scale-[0.98] transition-all" : ""}
+                        onClick={hasDesc ? () => setSelectedEvent(e) : undefined}
+                      >
+                        <div className="flex items-start gap-2.5">
+                          <div className={`flex items-center justify-center size-8 sm:size-9 rounded-lg shrink-0 ${cfg.bg} ${cfg.text}`}>
+                            <Icon className="size-4" />
+                          </div>
+                          <div className="flex flex-col gap-0.5 min-w-0">
+                            <h3 className="text-xs sm:text-sm font-medium leading-tight text-foreground">{e.title}</h3>
+                            {e.speaker && <p className="text-[10px] sm:text-xs text-muted-foreground">{e.speaker}</p>}
+                          </div>
                         </div>
-                        <div className="flex flex-col gap-0.5 min-w-0">
-                          <h3 className="text-xs sm:text-sm font-medium leading-tight text-foreground">{e.title}</h3>
-                          {e.speaker && <p className="text-[10px] sm:text-xs text-muted-foreground">{e.speaker}</p>}
+                        <div className="flex items-center justify-between gap-1 text-[10px] sm:text-xs text-muted-foreground mt-2">
+                          <span className="flex items-center gap-1 shrink-0"><Clock className="size-2.5 sm:size-3" />{e.time}–{e.endTime}</span>
+                          <span className="flex items-center gap-1 truncate"><MapPin className="size-2.5 sm:size-3 shrink-0" />{e.location}</span>
                         </div>
-                      </div>
-                      <div className="flex items-center justify-between gap-1 text-[10px] sm:text-xs text-muted-foreground mt-2">
-                        <span className="flex items-center gap-1 shrink-0"><Clock className="size-2.5 sm:size-3" />{e.time}–{e.endTime}</span>
-                        <span className="flex items-center gap-1 truncate"><MapPin className="size-2.5 sm:size-3 shrink-0" />{e.location}</span>
+                        {hasDesc && <span className="flex items-center gap-1 text-[10px] text-muted-foreground/60 mt-1"><ChevronDown className="size-2.5" />Tap for details</span>}
                       </div>
                       <EnrollButton event={e} />
                     </div>
@@ -480,8 +532,13 @@ export function ScheduleTimeline({ assignedGroup, enrolledIds, waitlistedIds, en
                     const e = sr.left
                     const Icon = typeConfig[e.type].icon
                     const cfg = typeConfig[e.type]
+                    const hasDesc = !!e.description
                     return (
-                      <div key={e.id} className="flex flex-col rounded-xl border border-border p-3 sm:p-4">
+                      <div
+                        key={e.id}
+                        className={`flex flex-col rounded-xl border border-border p-3 sm:p-4 transition-all ${hasDesc ? "cursor-pointer active:scale-[0.98] hover:border-muted-foreground/40" : ""}`}
+                        onClick={hasDesc ? () => setSelectedEvent(e) : undefined}
+                      >
                         <div className="flex items-start gap-2.5">
                           <div className={`flex items-center justify-center size-8 sm:size-9 rounded-lg shrink-0 ${cfg.bg} ${cfg.text}`}>
                             <Icon className="size-4" />
@@ -495,30 +552,40 @@ export function ScheduleTimeline({ assignedGroup, enrolledIds, waitlistedIds, en
                           <span className="flex items-center gap-1 shrink-0"><Clock className="size-2.5 sm:size-3" />{e.time}–{e.endTime}</span>
                           <span className="flex items-center gap-1 truncate"><MapPin className="size-2.5 sm:size-3 shrink-0" />{e.location}</span>
                         </div>
+                        {hasDesc && <span className="flex items-center gap-1 text-[10px] text-muted-foreground/60 mt-1"><ChevronDown className="size-2.5" />Tap for details</span>}
                       </div>
                     )
                   })}
                 </div>
                 {/* Right: spanning workshop */}
-                {spanningEvent && (
-                  <div className="flex flex-col rounded-xl border border-border p-3 sm:p-4">
-                    <div className="flex items-start gap-2.5">
-                      <div className={`flex items-center justify-center size-8 sm:size-9 rounded-lg shrink-0 ${typeConfig[spanningEvent.type].bg} ${typeConfig[spanningEvent.type].text}`}>
-                        <Wrench className="size-4" />
+                {spanningEvent && (() => {
+                  const hasDesc = !!spanningEvent.description
+                  return (
+                    <div className="flex flex-col rounded-xl border border-border p-3 sm:p-4">
+                      <div
+                        className={hasDesc ? "cursor-pointer active:scale-[0.98] transition-all" : ""}
+                        onClick={hasDesc ? () => setSelectedEvent(spanningEvent) : undefined}
+                      >
+                        <div className="flex items-start gap-2.5">
+                          <div className={`flex items-center justify-center size-8 sm:size-9 rounded-lg shrink-0 ${typeConfig[spanningEvent.type].bg} ${typeConfig[spanningEvent.type].text}`}>
+                            <Wrench className="size-4" />
+                          </div>
+                          <div className="flex flex-col gap-0.5 min-w-0">
+                            <h3 className="text-xs sm:text-sm font-medium leading-tight text-foreground">{spanningEvent.title}</h3>
+                            {spanningEvent.speaker && <p className="text-[10px] sm:text-xs text-muted-foreground">{spanningEvent.speaker}</p>}
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between gap-1 text-[10px] sm:text-xs text-muted-foreground mt-2">
+                          <span className="flex items-center gap-1 shrink-0"><Clock className="size-2.5 sm:size-3" />{spanningEvent.time}–{spanningEvent.endTime}</span>
+                          <span className="flex items-center gap-1 truncate"><MapPin className="size-2.5 sm:size-3 shrink-0" />{spanningEvent.location}</span>
+                        </div>
+                        {hasDesc && <span className="flex items-center gap-1 text-[10px] text-muted-foreground/60 mt-1"><ChevronDown className="size-2.5" />Tap for details</span>}
                       </div>
-                      <div className="flex flex-col gap-0.5 min-w-0">
-                        <h3 className="text-xs sm:text-sm font-medium leading-tight text-foreground">{spanningEvent.title}</h3>
-                        {spanningEvent.speaker && <p className="text-[10px] sm:text-xs text-muted-foreground">{spanningEvent.speaker}</p>}
-                      </div>
+                      <div className="flex-1" />
+                      <EnrollButton event={spanningEvent} />
                     </div>
-                    <div className="flex items-center justify-between gap-1 text-[10px] sm:text-xs text-muted-foreground mt-2">
-                      <span className="flex items-center gap-1 shrink-0"><Clock className="size-2.5 sm:size-3" />{spanningEvent.time}–{spanningEvent.endTime}</span>
-                      <span className="flex items-center gap-1 truncate"><MapPin className="size-2.5 sm:size-3 shrink-0" />{spanningEvent.location}</span>
-                    </div>
-                    <div className="flex-1" />
-                    <EnrollButton event={spanningEvent} />
-                  </div>
-                )}
+                  )
+                })()}
               </div>
             )
           }
@@ -539,6 +606,7 @@ export function ScheduleTimeline({ assignedGroup, enrolledIds, waitlistedIds, en
           )
         })}
       </div>
+      <DescriptionModal />
     </section>
   )
 }
