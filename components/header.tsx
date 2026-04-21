@@ -72,101 +72,97 @@ export function Header() {
   )
 
   return (
-    // Midnight Blue background with 80% opacity
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#081229]/80 backdrop-blur-xl">
-      {/* ADDED: Slightly more vertical padding for a more spacious feel (py-2 -> py-1.5) */}
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-1.5 lg:px-8">
-        {/* Logo Section */}
-        {/* UPDATED: Larger height (h-16) and gap (gap-4) for the container */}
-        <a href="#home" className="flex items-center gap-4 h-16">
-          <Image
-            src="/images/robotalk-logo.webp"
-            alt="RoboTalk Logo"
-            width={60} // INCREASED: For better scaling
-            height={60} // INCREASED: For better scaling
-            // UPDATED: Standard logo image height increased from h-10 to h-14
-            className="h-14 w-auto object-contain" 
-          />
-          {/* UPDATED: Increased text size for better balance */}
-          <span className="text-xl font-bold tracking-tight text-foreground">
-            {/* Blue gradient for "Talk" */}
-            Robo<span className="bg-gradient-to-r from-blue-600 to-sky-400 bg-clip-text text-transparent">Talk</span>
-          </span>
-        </a>
+    <>
+      {/* Header bar */}
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#081229]/80 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-1.5 lg:px-8">
+          {/* Logo */}
+          <a href="#home" className="flex items-center gap-4 h-16">
+            <Image
+              src="/images/robotalk-logo.webp"
+              alt="RoboTalk Logo"
+              width={60}
+              height={60}
+              className="h-14 w-auto object-contain"
+            />
+            <span className="text-xl font-bold tracking-tight text-foreground">
+              Robo<span className="bg-gradient-to-r from-blue-600 to-sky-400 bg-clip-text text-transparent">Talk</span>
+            </span>
+          </a>
 
-        {/* Desktop Nav */}
-        <nav className="hidden items-center gap-8 lg:flex" aria-label="Main navigation">
-          {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="text-sm font-medium text-white/60 transition-colors hover:text-sky-400"
-            >
-              {link.label}
-            </a>
-          ))}
-          {user && (
-            <Link
-              href="/dashboard"
-              className="text-sm font-medium text-white/60 transition-colors hover:text-sky-400"
-            >
-              My Account
-            </Link>
-          )}
-        </nav>
+          {/* Desktop Nav */}
+          <nav className="hidden items-center gap-8 lg:flex" aria-label="Main navigation">
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="text-sm font-medium text-white/60 transition-colors hover:text-sky-400"
+              >
+                {link.label}
+              </a>
+            ))}
+            {user && (
+              <Link
+                href="/dashboard"
+                className="text-sm font-medium text-white/60 transition-colors hover:text-sky-400"
+              >
+                My Account
+              </Link>
+            )}
+          </nav>
 
-        {/* CTA + Mobile Toggle */}
-        <div className="flex items-center gap-3">
-          {authButton}
-          <button
-            type="button"
-            className="inline-flex items-center justify-center size-10 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-white/70 transition-all hover:bg-white/20 hover:text-white lg:hidden"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-expanded={mobileOpen}
-            aria-label="Toggle navigation menu"
-            suppressHydrationWarning
-          >
-            {mobileOpen ? <X className="size-5" /> : <Menu className="size-5" />}
-          </button>
+          {/* CTA + Mobile Toggle */}
+          <div className="flex items-center gap-3">
+            {authButton}
+            <button
+              type="button"
+              className="inline-flex items-center justify-center size-10 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-white/70 transition-all hover:bg-white/20 hover:text-white lg:hidden"
+              onClick={() => setMobileOpen(!mobileOpen)}
+              aria-expanded={mobileOpen}
+              aria-label="Toggle navigation menu"
+              suppressHydrationWarning
+            >
+              {mobileOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+            </button>
+          </div>
         </div>
-      </div>
+      </header>
 
-      {/* Mobile Nav — slides in from the right */}
-      <div
-        className={`fixed inset-0 z-40 lg:hidden transition-opacity duration-300 ${mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
-        aria-hidden={!mobileOpen}
-      >
-        {/* Backdrop */}
-        <div className="absolute inset-0 bg-black/40" onClick={() => setMobileOpen(false)} />
+      {/* Mobile Nav — rendered OUTSIDE header so it isn't affected by header opacity */}
+      {mobileOpen && (
+        <div className="fixed inset-0 z-[60] lg:hidden" aria-hidden={!mobileOpen}>
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/50" onClick={() => setMobileOpen(false)} />
 
-        {/* Panel */}
-        <nav
-          style={{ backgroundColor: "#081229" }}
-          className={`absolute top-0 right-0 h-full w-72 border-l-2 border-sky-400 shadow-[0_0_30px_rgba(56,189,248,0.4),-20px_0_60px_rgba(56,189,248,0.15)] px-6 pt-20 pb-8 flex flex-col gap-1 transition-transform duration-300 ease-out ${mobileOpen ? "translate-x-0" : "translate-x-full"}`}
-          aria-label="Mobile navigation"
-        >
-          {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="rounded-lg px-3 py-2.5 text-sm font-medium text-white/60 transition-colors hover:bg-white/10 hover:text-sky-400"
-              onClick={() => setMobileOpen(false)}
-            >
-              {link.label}
-            </a>
-          ))}
-          {user && (
-            <Link
-              href="/dashboard"
-              onClick={() => setMobileOpen(false)}
-              className="rounded-lg px-3 py-2.5 text-sm font-medium text-white/60 transition-colors hover:bg-white/10 hover:text-sky-400"
-            >
-              My Account
-            </Link>
-          )}
-          <div className="mt-auto">{mobileAuthButton}</div>
-        </nav>
-      </div>
-    </header>
+          {/* Panel — fully opaque */}
+          <nav
+            className="absolute top-0 right-0 h-full w-72 bg-[#081229] border-l-2 border-sky-400 px-6 pt-20 pb-8 flex flex-col gap-1"
+            style={{ backgroundColor: "#081229", boxShadow: "0 0 30px rgba(56,189,248,0.4), -20px 0 60px rgba(56,189,248,0.15)" }}
+            aria-label="Mobile navigation"
+          >
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="rounded-lg px-3 py-2.5 text-sm font-medium text-white/60 transition-colors hover:bg-white/10 hover:text-sky-400"
+                onClick={() => setMobileOpen(false)}
+              >
+                {link.label}
+              </a>
+            ))}
+            {user && (
+              <Link
+                href="/dashboard"
+                onClick={() => setMobileOpen(false)}
+                className="rounded-lg px-3 py-2.5 text-sm font-medium text-white/60 transition-colors hover:bg-white/10 hover:text-sky-400"
+              >
+                My Account
+              </Link>
+            )}
+            <div className="mt-auto">{mobileAuthButton}</div>
+          </nav>
+        </div>
+      )}
+    </>
   )
 }
