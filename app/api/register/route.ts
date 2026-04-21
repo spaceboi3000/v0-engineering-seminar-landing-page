@@ -2,21 +2,36 @@ import { NextResponse } from "next/server"
 import { getSupabase } from "@/lib/supabase"
 
 export async function POST(req: Request) {
-  const { userId, firstName, lastName, university, department, year } = await req.json()
+  const body = await req.json()
+  const { userId, firstName, lastName, role } = body
 
-  if (!userId || !firstName || !lastName || !university || !department || !year) {
+  if (!userId || !firstName || !lastName) {
     return NextResponse.json({ error: "Missing fields." }, { status: 400 })
   }
 
-  if (
-    typeof userId !== "string" ||
-    typeof firstName !== "string" ||
-    typeof lastName !== "string" ||
-    typeof university !== "string" ||
-    typeof department !== "string" ||
-    typeof year !== "string"
-  ) {
+  if (typeof userId !== "string" || typeof firstName !== "string" || typeof lastName !== "string") {
     return NextResponse.json({ error: "Invalid field types." }, { status: 400 })
+  }
+
+  const registrationRole = role === "company" ? "company" : "student"
+
+  // Validate role-specific fields
+  if (registrationRole === "student") {
+    const { university, department, year } = body
+    if (!university || !department || !year) {
+      return NextResponse.json({ error: "Missing student fields." }, { status: 400 })
+    }
+    if (typeof university !== "string" || typeof department !== "string" || typeof year !== "string") {
+      return NextResponse.json({ error: "Invalid field types." }, { status: 400 })
+    }
+  } else {
+    const { company, position } = body
+    if (!company || !position) {
+      return NextResponse.json({ error: "Missing company fields." }, { status: 400 })
+    }
+    if (typeof company !== "string" || typeof position !== "string") {
+      return NextResponse.json({ error: "Invalid field types." }, { status: 400 })
+    }
   }
 
   const db = getSupabase()
@@ -39,14 +54,28 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Profile already exists." }, { status: 409 })
   }
 
-  const { error } = await db.from("profiles").insert({
-    id: userId,
-    first_name: firstName,
-    last_name: lastName,
-    university,
-    department,
-    year,
-  })
+  const profileData = registrationRole === "student"
+    ? {
+        id: userId,
+        first_name: firstName,
+        last_name: lastName,
+        role: "student",
+        university: body.university,
+        department: body.department,
+        year: body.year,
+      }
+    : {
+        id: userId,
+        first_name: firstName,
+        last_name: lastName,
+        role: "company",
+        company: body.company,
+        position: body.position,
+        university: body.company,
+        department: body.position,
+      }
+
+  const { error } = await db.from("profiles").insert(profileData)
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })

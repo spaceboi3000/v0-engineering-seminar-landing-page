@@ -1,15 +1,16 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { createSupabaseBrowser } from "@/lib/supabase-browser"
 
 const YEARS = ["1ο", "2ο", "3ο", "4ο", "5ο", "6ο+"]
 
+type RegistrationType = "student" | "company"
+
 export default function RegisterPage() {
-  const router = useRouter()
+  const [tab, setTab] = useState<RegistrationType>("student")
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -19,10 +20,43 @@ export default function RegisterPage() {
     email: "",
     password: "",
     confirmPassword: "",
+    company: "",
+    position: "",
   })
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
+
+  // Company autocomplete
+  const [companySuggestions, setCompanySuggestions] = useState<string[]>([])
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const suggestionsRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (form.company.length < 3) {
+      setCompanySuggestions([])
+      return
+    }
+    const timeout = setTimeout(async () => {
+      const res = await fetch(`/api/companies?q=${encodeURIComponent(form.company)}`)
+      if (res.ok) {
+        const data = await res.json()
+        setCompanySuggestions(data)
+        setShowSuggestions(data.length > 0)
+      }
+    }, 300)
+    return () => clearTimeout(timeout)
+  }, [form.company])
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (suggestionsRef.current && !suggestionsRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }))
@@ -56,17 +90,29 @@ export default function RegisterPage() {
     }
 
     if (data.user) {
+      const payload = tab === "student"
+        ? {
+            userId: data.user.id,
+            role: "student",
+            firstName: form.firstName,
+            lastName: form.lastName,
+            university: form.university,
+            department: form.department,
+            year: form.year,
+          }
+        : {
+            userId: data.user.id,
+            role: "company",
+            firstName: form.firstName,
+            lastName: form.lastName,
+            company: form.company,
+            position: form.position,
+          }
+
       const res = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: data.user.id,
-          firstName: form.firstName,
-          lastName: form.lastName,
-          university: form.university,
-          department: form.department,
-          year: form.year,
-        }),
+        body: JSON.stringify(payload),
       })
 
       if (!res.ok) {
@@ -80,6 +126,8 @@ export default function RegisterPage() {
     setSuccess(true)
     setLoading(false)
   }
+
+  const inputClass = "w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2.5 text-white placeholder-white/20 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
 
   if (success) {
     return (
@@ -117,113 +165,129 @@ export default function RegisterPage() {
           <h1 className="text-2xl font-bold text-white mb-1">Δημιουργία λογαριασμού</h1>
           <p className="text-white/50 text-sm mb-6">Συμπλήρωσε τα στοιχεία σου</p>
 
+          {/* Tab switcher */}
+          <div className="flex rounded-lg border border-white/10 p-1 mb-6">
+            <button
+              type="button"
+              onClick={() => setTab("student")}
+              className={`flex-1 rounded-md px-3 py-2 text-sm font-medium transition-all ${
+                tab === "student"
+                  ? "bg-gradient-to-r from-blue-600 to-sky-500 text-white shadow-sm"
+                  : "text-white/50 hover:text-white/70"
+              }`}
+            >
+              Φοιτητής
+            </button>
+            <button
+              type="button"
+              onClick={() => setTab("company")}
+              className={`flex-1 rounded-md px-3 py-2 text-sm font-medium transition-all ${
+                tab === "company"
+                  ? "bg-gradient-to-r from-blue-600 to-sky-500 text-white shadow-sm"
+                  : "text-white/50 hover:text-white/70"
+              }`}
+            >
+              Εταιρεία
+            </button>
+          </div>
+
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            {/* Common fields: name */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm text-white/70 mb-1.5">Όνομα</label>
-                <input
-                  name="firstName"
-                  type="text"
-                  required
-                  value={form.firstName}
-                  onChange={handleChange}
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2.5 text-white placeholder-white/20 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  placeholder="Νίκος"
-                />
+                <input name="firstName" type="text" required value={form.firstName} onChange={handleChange} className={inputClass} placeholder="Νίκος" />
               </div>
               <div>
                 <label className="block text-sm text-white/70 mb-1.5">Επώνυμο</label>
-                <input
-                  name="lastName"
-                  type="text"
-                  required
-                  value={form.lastName}
-                  onChange={handleChange}
-                  className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2.5 text-white placeholder-white/20 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  placeholder="Παπαδόπουλος"
-                />
+                <input name="lastName" type="text" required value={form.lastName} onChange={handleChange} className={inputClass} placeholder="Παπαδόπουλος" />
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm text-white/70 mb-1.5">Πανεπιστήμιο</label>
-              <input
-                name="university"
-                type="text"
-                required
-                value={form.university}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2.5 text-white placeholder-white/20 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                placeholder="ΕΜΠ"
-              />
-            </div>
+            {/* Student-specific fields */}
+            {tab === "student" && (
+              <>
+                <div>
+                  <label className="block text-sm text-white/70 mb-1.5">Πανεπιστήμιο</label>
+                  <input name="university" type="text" required value={form.university} onChange={handleChange} className={inputClass} placeholder="ΕΜΠ" />
+                </div>
+                <div>
+                  <label className="block text-sm text-white/70 mb-1.5">Σχολή / Τμήμα</label>
+                  <input name="department" type="text" required value={form.department} onChange={handleChange} className={inputClass} placeholder="Ηλεκτρολόγων Μηχανικών" />
+                </div>
+                <div>
+                  <label className="block text-sm text-white/70 mb-1.5">Έτος σπουδών</label>
+                  <select
+                    name="year"
+                    required
+                    value={form.year}
+                    onChange={handleChange}
+                    className="w-full rounded-lg border border-white/10 bg-[#081229] px-4 py-2.5 text-white text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  >
+                    <option value="" disabled>Επίλεξε έτος</option>
+                    {YEARS.map((y) => (
+                      <option key={y} value={y}>{y}</option>
+                    ))}
+                  </select>
+                </div>
+              </>
+            )}
 
-            <div>
-              <label className="block text-sm text-white/70 mb-1.5">Σχολή / Τμήμα</label>
-              <input
-                name="department"
-                type="text"
-                required
-                value={form.department}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2.5 text-white placeholder-white/20 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                placeholder="Ηλεκτρολόγων Μηχανικών"
-              />
-            </div>
+            {/* Company-specific fields */}
+            {tab === "company" && (
+              <>
+                <div className="relative" ref={suggestionsRef}>
+                  <label className="block text-sm text-white/70 mb-1.5">Εταιρεία</label>
+                  <input
+                    name="company"
+                    type="text"
+                    required
+                    value={form.company}
+                    onChange={handleChange}
+                    onFocus={() => companySuggestions.length > 0 && setShowSuggestions(true)}
+                    className={inputClass}
+                    placeholder="Όνομα εταιρείας"
+                    autoComplete="off"
+                  />
+                  {showSuggestions && companySuggestions.length > 0 && (
+                    <div className="absolute z-10 mt-1 w-full rounded-lg border border-white/10 bg-[#0d1a3a] shadow-xl overflow-hidden">
+                      {companySuggestions.map((name) => (
+                        <button
+                          key={name}
+                          type="button"
+                          onClick={() => {
+                            setForm((f) => ({ ...f, company: name }))
+                            setShowSuggestions(false)
+                          }}
+                          className="w-full text-left px-4 py-2.5 text-sm text-white/80 hover:bg-white/10 transition-colors"
+                        >
+                          {name}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm text-white/70 mb-1.5">Θέση</label>
+                  <input name="position" type="text" required value={form.position} onChange={handleChange} className={inputClass} placeholder="Software Engineer" />
+                </div>
+              </>
+            )}
 
-            <div>
-              <label className="block text-sm text-white/70 mb-1.5">Έτος σπουδών</label>
-              <select
-                name="year"
-                required
-                value={form.year}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-white/10 bg-[#081229] px-4 py-2.5 text-white text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-              >
-                <option value="" disabled>Επίλεξε έτος</option>
-                {YEARS.map((y) => (
-                  <option key={y} value={y}>{y}</option>
-                ))}
-              </select>
-            </div>
-
+            {/* Common fields: email + password */}
             <div>
               <label className="block text-sm text-white/70 mb-1.5">Email</label>
-              <input
-                name="email"
-                type="email"
-                required
-                value={form.email}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2.5 text-white placeholder-white/20 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                placeholder="you@example.com"
-              />
+              <input name="email" type="email" required value={form.email} onChange={handleChange} className={inputClass} placeholder="you@example.com" />
             </div>
 
             <div>
               <label className="block text-sm text-white/70 mb-1.5">Κωδικός</label>
-              <input
-                name="password"
-                type="password"
-                required
-                value={form.password}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2.5 text-white placeholder-white/20 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                placeholder="••••••••"
-              />
+              <input name="password" type="password" required value={form.password} onChange={handleChange} className={inputClass} placeholder="••••••••" />
             </div>
 
             <div>
               <label className="block text-sm text-white/70 mb-1.5">Επιβεβαίωση κωδικού</label>
-              <input
-                name="confirmPassword"
-                type="password"
-                required
-                value={form.confirmPassword}
-                onChange={handleChange}
-                className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2.5 text-white placeholder-white/20 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                placeholder="••••••••"
-              />
+              <input name="confirmPassword" type="password" required value={form.confirmPassword} onChange={handleChange} className={inputClass} placeholder="••••••••" />
             </div>
 
             {error && (

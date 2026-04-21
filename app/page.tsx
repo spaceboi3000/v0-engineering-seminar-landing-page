@@ -2,6 +2,7 @@ import { Suspense } from "react"
 import { Header } from "@/components/header"
 import { Hero } from "@/components/hero"
 import { About } from "@/components/about"
+import { ScheduleOverview } from "@/components/schedule-overview"
 import { PastEvents } from "@/components/past-events"
 import { SectionDivider } from "@/components/section-divider"
 import { Organizers } from "@/components/organizers"
@@ -22,6 +23,8 @@ export default function Page() {
       <main>
         <Hero />
         <About />
+        <SectionDivider />
+        <ScheduleOverview />
         <SectionDivider />
         <Speakers />
         <SectionDivider />

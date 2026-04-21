@@ -56,4 +56,12 @@ By leveraging AI's full potential, businesses can streamline workflows, enhance 
 Who Leads When Machines Think? Η τεχνητή νοημοσύνη δεν αλλάζει απλώς τα επαγγέλματα — επαναπροσδιορίζει το τι σημαίνει να αποφασίζεις, να δημιουργείς και τελικά να ηγείσαι.`,
     links: [],
   },
+  {
+    id: "giorgos-hadjipavlis",
+    name: "Giorgos Hadjipavlis",
+    title: "Researcher, i-SENSE Group ICCS · CCAM Team",
+    photo: "/images/speakers/giorgos_hadjipavlis.webp",
+    bio: `Ο Χατζηπαυλής Γιώργος είναι ηλεκτρονικός μηχανικός και μηχανικός Η/Υ απόφοιτος του Πολυτεχνείου Κρήτης. Εργάστηκε στην Ελλάδα στις oxygenbroadband, ekt-digital ως kernel, system and firmware engineer αναλαμβάνοντας ρόλους σχεδιάσης, συγγραφής και συντήρησης λογισμικού για τα λειτουργικά συστήματα και τις εφαρμογές προϊόντων διαδικτυακού εξοπλισμού και ψηφιακής τηλεόρασης (modem/router, set top boxes). Από το 2018 είναι μέλος του εργαστηρίου i-sense του ΕΠΙΣΕΥ στην ομάδα CCAM (Connected Cooperative Automated Mobility) αρχικά με συμμετοχή σε έργα βιομηχανικού χαρακτήρα (BMW SmartAccess 2020) και εν συνεχεία σε ερευνητικά ευρωπαϊκά. Tο 2021 ανέλαβε την ενσωμάτωση του CARLA driving simulator για την εξυπηρέτηση των ερευνητικών εργασιών της ομάδας CCAM ενώ από το 2022 ασχολείται και με την ανάπτυξη και συντήρηση δικτύων Distributed Ledger Technologies (DLT) και χρήσης τους σε mobility και health data spaces. Είναι ο υπεύθυνος συντήρησης των ερευνητικών οχημάτων τις ομάδας τόσο σε επίπεδο hardware (sensors, in-vehicle network, zonal architecture) όσο και software (ros2, autoware, automotive grade linux, covesa vss). Στα ερευνητικά του ενδιαφέροντα βρίσκονται τα operating systems, build systems, risc-v αρχιτεκτονικές, ασύρματες ad hoc επικοινωνίες και driving simulators. Επίσης τα τελευταία χρόνια και βασισμένος στα πλαίσια της συνεργασίας της ομάδας CCAM με καθηγητές της σχολής ΗΜΜΥ του ΕΜΠ, συμμετέχει στις ακαδημαϊκές υποχρεώσεις της σχολής εκδίδοντας διπλωματικές που άπτονται των ερευνητικών θεμάτων της ομάδας CCAM (συστήματα υποβοήθησης οδηγού, αυτοματοποιημένη οδήγηση).`,
+    links: [],
+  },
 ]
