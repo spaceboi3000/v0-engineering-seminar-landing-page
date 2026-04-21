@@ -8,6 +8,19 @@ import { Badge } from "@/components/ui/badge"
 import { CalendarDays, Settings, X, Save, Lock, Upload, FileText, CheckCircle2, ExternalLink } from "lucide-react"
 import { createSupabaseBrowser } from "@/lib/supabase-browser"
 
+const GREEK_TO_LATIN: Record<string, string> = {
+  Α:"A",Β:"B",Γ:"G",Δ:"D",Ε:"E",Ζ:"Z",Η:"I",Θ:"Th",Ι:"I",Κ:"K",Λ:"L",Μ:"M",
+  Ν:"N",Ξ:"X",Ο:"O",Π:"P",Ρ:"R",Σ:"S",Τ:"T",Υ:"Y",Φ:"F",Χ:"Ch",Ψ:"Ps",Ω:"O",
+  α:"a",β:"b",γ:"g",δ:"d",ε:"e",ζ:"z",η:"i",θ:"th",ι:"i",κ:"k",λ:"l",μ:"m",
+  ν:"n",ξ:"x",ο:"o",π:"p",ρ:"r",σ:"s",ς:"s",τ:"t",υ:"y",φ:"f",χ:"ch",ψ:"ps",ω:"o",
+  Ά:"A",Έ:"E",Ή:"I",Ί:"I",Ό:"O",Ύ:"Y",Ώ:"O",ά:"a",έ:"e",ή:"i",ί:"i",ό:"o",ύ:"y",ώ:"o",
+  ϊ:"i",ϋ:"y",ΐ:"i",ΰ:"y",
+}
+
+function greekToLatin(str: string): string {
+  return str.replace(/./g, (ch) => GREEK_TO_LATIN[ch] ?? ch)
+}
+
 function fmtSize(bytes: number) {
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`
@@ -85,9 +98,9 @@ export function UserHeader({ name, group, eventName, date, userId, firstName, la
     setCvSuccess(false)
     const supabase = createSupabaseBrowser()
 
-    // Build a clean filename: FirstNameLastNameCV.pdf
-    const cleanFirst = firstName.replace(/\s+/g, "")
-    const cleanLast = lastName.replace(/\s+/g, "")
+    // Build a clean ASCII filename: FirstNameLastNameCV.pdf
+    const cleanFirst = greekToLatin(firstName).replace(/[^a-zA-Z0-9]/g, "")
+    const cleanLast = greekToLatin(lastName).replace(/[^a-zA-Z0-9]/g, "")
     let baseName = `${cleanFirst}${cleanLast}CV`
 
     // Check if another user already uses the same base name
@@ -269,24 +282,10 @@ export function UserHeader({ name, group, eventName, date, userId, firstName, la
             {/* CV tab */}
             {tab === "cv" && (
               <div className="flex flex-col gap-4">
-                {/* Template link */}
-                <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-4">
-                  <div className="flex items-start gap-3">
-                    <FileText className="size-5 text-blue-400 shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-sm font-medium text-foreground">Πρότυπο βιογραφικού</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">Χρησιμοποίησε το πρότυπό μας για να φτιάξεις το βιογραφικό σου.</p>
-                      <Link href="/cv-template" target="_blank"
-                        className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors">
-                        Άνοιγμα προτύπου <ExternalLink className="size-3" />
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-
                 {/* Upload area */}
                 <div>
-                  <p className="text-xs text-muted-foreground mb-2">Ανέβασε το βιογραφικό σου (PDF, max 5MB)</p>
+                  <p className="text-sm font-medium text-foreground mb-1">Ανέβασε το βιογραφικό σου</p>
+                  <p className="text-xs text-muted-foreground mb-3">Αν έχεις ήδη έτοιμο βιογραφικό, ανέβασέ το απευθείας. Αν όχι, μπορείς να χρησιμοποιήσεις το πρότυπό μας.</p>
                   <div
                     onClick={() => fileRef.current?.click()}
                     className="flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border hover:border-blue-500/50 bg-secondary/50 py-6 cursor-pointer transition-colors"
@@ -343,6 +342,20 @@ export function UserHeader({ name, group, eventName, date, userId, firstName, la
                 <button onClick={loadCvUrl} className="text-xs text-muted-foreground hover:text-foreground transition-colors text-center">
                   Έλεγξε αν έχεις ήδη ανεβάσει βιογραφικό →
                 </button>
+
+                {/* Template link — secondary option */}
+                <div className="border-t border-border/40 pt-3 mt-1">
+                  <div className="flex items-center gap-2.5">
+                    <FileText className="size-4 text-muted-foreground shrink-0" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">Δεν έχεις βιογραφικό;</p>
+                      <Link href="/cv-template" target="_blank"
+                        className="inline-flex items-center gap-1 text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors">
+                        Φτιάξε ένα με το πρότυπό μας <ExternalLink className="size-3" />
+                      </Link>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           </div>
