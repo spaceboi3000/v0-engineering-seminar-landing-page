@@ -1,11 +1,11 @@
 import { redirect } from "next/navigation"
 import Link from "next/link"
+import { ArrowLeft } from "lucide-react"
 import { createSupabaseServer } from "@/lib/supabase-server"
 import { UserHeader } from "@/components/dashboard/user-header"
 import { QrCheckinCard } from "@/components/dashboard/qr-checkin-card"
 import { ScheduleTimeline } from "@/components/dashboard/schedule-timeline"
 
-import { BottomNav } from "@/components/dashboard/bottom-nav"
 import { GameSection } from "@/components/dashboard/game-section"
 import { WinOverlay } from "@/components/dashboard/winoverlay"
 import { GameButton } from "@/components/dashboard/game-button"
@@ -88,7 +88,14 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      <BottomNav />
+      {/* Mobile floating back button */}
+      <Link
+        href="/"
+        className="fixed top-4 left-4 z-50 flex items-center justify-center size-10 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-white/70 transition-all hover:bg-white/20 hover:text-white lg:hidden"
+        aria-label="Back to home"
+      >
+        <ArrowLeft className="size-5" />
+      </Link>
     </div>
   )
 }

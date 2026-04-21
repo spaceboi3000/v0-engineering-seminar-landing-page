@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { CalendarDays, Settings, X, Save, Lock, Upload, FileText, CheckCircle2, ExternalLink } from "lucide-react"
+import { CalendarDays, Settings, X, Save, Lock, Upload, FileText, CheckCircle2, ExternalLink, LogOut, Trash2 } from "lucide-react"
 import { createSupabaseBrowser } from "@/lib/supabase-browser"
 
 const GREEK_TO_LATIN: Record<string, string> = {
@@ -57,7 +57,6 @@ export function UserHeader({ name, group, eventName, date, userId, firstName, la
   const [cvUploading, setCvUploading] = useState(false)
   const [cvSuccess, setCvSuccess] = useState(false)
   const [cvError, setCvError] = useState<string | null>(null)
-  const [cvUrl, setCvUrl] = useState<string | null>(null)
   const [cvMeta, setCvMeta] = useState<{ filename: string; size: number; uploadedAt: string } | null>(null)
 
   const isLocked = new Date() > EDIT_DEADLINE
@@ -84,10 +83,8 @@ export function UserHeader({ name, group, eventName, date, userId, firstName, la
       .select("file_path, original_filename, file_size_bytes, updated_at")
       .eq("user_id", userId)
       .single()
-    if (!record) { setCvUrl(null); setCvMeta(null); return }
+    if (!record) { setCvMeta(null); return }
     setCvMeta({ filename: record.original_filename, size: record.file_size_bytes, uploadedAt: record.updated_at })
-    const { data } = await supabase.storage.from("cvs").createSignedUrl(record.file_path, 3600)
-    if (data) setCvUrl(data.signedUrl)
   }
 
   async function handleCvUpload() {
@@ -103,17 +100,7 @@ export function UserHeader({ name, group, eventName, date, userId, firstName, la
     const cleanLast = greekToLatin(lastName).replace(/[^a-zA-Z0-9]/g, "")
     let baseName = `${cleanFirst}${cleanLast}CV`
 
-    // Check if another user already uses the same base name
-    const { data: existing } = await supabase
-      .from("cv_uploads")
-      .select("user_id, file_path")
-      .like("file_path", `${baseName}%`)
-      .neq("user_id", userId)
-      .limit(1)
-    if (existing && existing.length > 0) {
-      baseName = `${baseName}_${userId.slice(0, 4)}`
-    }
-    const path = `${baseName}.pdf`
+    const path = `${userId}/${baseName}.pdf`
 
     // Delete previous file if it had a different path
     const { data: prevRecord } = await supabase
@@ -129,24 +116,52 @@ export function UserHeader({ name, group, eventName, date, userId, firstName, la
     const { error: storageError } = await supabase.storage.from("cvs").upload(path, cvFile, { upsert: true })
     if (storageError) { setCvError(storageError.message); setCvUploading(false); return }
 
-    // 2. Upsert metadata record
+    // 2. Upsert metadata record — try update first, then insert
     const now = new Date().toISOString()
-    const { error: dbError } = await supabase.from("cv_uploads").upsert(
-      { user_id: userId, file_path: path, original_filename: `${baseName}.pdf`, file_size_bytes: cvFile.size, updated_at: now },
-      { onConflict: "user_id" }
-    )
-    if (dbError) console.error("cv_uploads upsert:", dbError.message)
+    const row = { user_id: userId, file_path: path, original_filename: `${baseName}.pdf`, file_size_bytes: cvFile.size, updated_at: now }
 
-    // 3. Get signed URL for immediate preview
-    const { data } = await supabase.storage.from("cvs").createSignedUrl(path, 3600)
-    if (data) setCvUrl(data.signedUrl)
-    setCvMeta({ filename: `${baseName}.pdf`, size: cvFile.size, uploadedAt: now })
+    const { data: existing } = await supabase
+      .from("cv_uploads")
+      .select("id")
+      .eq("user_id", userId)
+      .single()
+
+    let dbError
+    if (existing) {
+      const res = await supabase.from("cv_uploads").update(row).eq("user_id", userId)
+      dbError = res.error
+    } else {
+      const res = await supabase.from("cv_uploads").insert(row)
+      dbError = res.error
+    }
+    if (dbError) { setCvError(dbError.message); setCvUploading(false); return }
+
+    // 3. Update meta for immediate UI feedback
+    setCvMeta({ filename: `${cleanFirst}${cleanLast}CV.pdf`, size: cvFile.size, uploadedAt: now })
     setCvSuccess(true)
     setCvUploading(false)
   }
 
-  // kept for the manual "check" button
-  async function loadCvUrl() { await loadCvInfo() }
+  async function handleCvDelete() {
+    if (!window.confirm("Είσαι σίγουρος/η ότι θέλεις να διαγράψεις το βιογραφικό σου;")) return
+    const supabase = createSupabaseBrowser()
+    // Delete from storage
+    if (cvMeta) {
+      const { data: record } = await supabase
+        .from("cv_uploads")
+        .select("file_path")
+        .eq("user_id", userId)
+        .single()
+      if (record) {
+        await supabase.storage.from("cvs").remove([record.file_path])
+      }
+    }
+    // Delete metadata row
+    await supabase.from("cv_uploads").delete().eq("user_id", userId)
+    setCvMeta(null)
+    setCvFile(null)
+    setCvSuccess(false)
+  }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setForm(f => ({ ...f, [e.target.name]: e.target.value }))
@@ -185,13 +200,26 @@ export function UserHeader({ name, group, eventName, date, userId, firstName, la
               <h1 className="text-lg font-semibold text-foreground leading-tight lg:text-xl break-words">{name}</h1>
             </div>
           </div>
-          <button
-            onClick={() => setOpen(true)}
-            className="flex items-center justify-center size-10 rounded-lg bg-secondary text-muted-foreground hover:text-foreground transition-colors"
-            aria-label="Settings"
-          >
-            <Settings className="size-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setOpen(true)}
+              className="flex items-center justify-center size-10 rounded-lg bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Settings"
+            >
+              <Settings className="size-5" />
+            </button>
+            <button
+              onClick={async () => {
+                const supabase = createSupabaseBrowser()
+                await supabase.auth.signOut()
+                router.push("/")
+              }}
+              className="flex items-center justify-center size-10 rounded-lg bg-secondary text-muted-foreground hover:text-red-400 transition-colors"
+              aria-label="Logout"
+            >
+              <LogOut className="size-5" />
+            </button>
+          </div>
         </div>
 
         <div className="flex items-center justify-between rounded-xl bg-secondary px-4 py-3">
@@ -282,80 +310,119 @@ export function UserHeader({ name, group, eventName, date, userId, firstName, la
             {/* CV tab */}
             {tab === "cv" && (
               <div className="flex flex-col gap-4">
-                {/* Upload area */}
-                <div>
-                  <p className="text-sm font-medium text-foreground mb-1">Ανέβασε το βιογραφικό σου</p>
-                  <p className="text-xs text-muted-foreground mb-3">Αν έχεις ήδη έτοιμο βιογραφικό, ανέβασέ το απευθείας. Αν όχι, μπορείς να χρησιμοποιήσεις το πρότυπό μας.</p>
-                  <div
-                    onClick={() => fileRef.current?.click()}
-                    className="flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border hover:border-blue-500/50 bg-secondary/50 py-6 cursor-pointer transition-colors"
-                  >
-                    <Upload className="size-6 text-muted-foreground" />
-                    <p className="text-xs text-muted-foreground">
-                      {cvFile ? cvFile.name : "Κλικ για επιλογή αρχείου"}
-                    </p>
-                    <input
-                      ref={fileRef}
-                      type="file"
-                      accept=".pdf"
-                      className="hidden"
-                      onChange={e => { setCvFile(e.target.files?.[0] ?? null); setCvSuccess(false) }}
-                    />
-                  </div>
-                </div>
-
-                {/* Already-uploaded CV info (shown when not just uploaded) */}
-                {cvMeta && cvUrl && !cvSuccess && (
-                  <div className="flex items-start gap-3 rounded-xl border border-green-500/20 bg-green-500/5 px-4 py-3">
-                    <CheckCircle2 className="size-4 text-green-400 shrink-0 mt-0.5" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-medium text-green-400">Βιογραφικό ανεβασμένο</p>
-                      <p className="text-xs text-muted-foreground truncate mt-0.5">{cvMeta.filename}</p>
-                      <p className="text-xs text-muted-foreground">{fmtSize(cvMeta.size)} · {fmtDate(cvMeta.uploadedAt)}</p>
-                    </div>
-                    <a href={cvUrl} target="_blank" className="text-xs text-blue-400 hover:text-blue-300 shrink-0 transition-colors">
-                      Προβολή
-                    </a>
-                  </div>
-                )}
-
-                {cvSuccess && (
-                  <div className="flex items-center gap-2 rounded-lg bg-green-500/10 px-3 py-2">
-                    <CheckCircle2 className="size-4 text-green-400" />
-                    <p className="text-xs text-green-400">Το βιογραφικό ανέβηκε επιτυχώς!</p>
-                    {cvUrl && (
-                      <a href={cvUrl} target="_blank" className="ml-auto text-xs text-blue-400 hover:text-blue-300 underline">
+                {cvMeta ? (
+                  <>
+                    {/* Uploaded CV — show file info with view & delete */}
+                    <div className="flex items-center gap-3 rounded-xl border border-green-500/20 bg-green-500/5 px-4 py-3">
+                      <FileText className="size-5 text-green-400 shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-foreground truncate">{cvMeta.filename}</p>
+                        <p className="text-xs text-muted-foreground">{fmtSize(cvMeta.size)} · {fmtDate(cvMeta.uploadedAt)}</p>
+                      </div>
+                      <a href="/api/cv" target="_blank" className="text-xs text-blue-400 hover:text-blue-300 shrink-0 transition-colors">
                         Προβολή
                       </a>
-                    )}
-                  </div>
-                )}
-
-                {cvError && <p className="text-xs text-red-400 bg-red-500/10 rounded-lg px-3 py-2">{cvError}</p>}
-
-                <button onClick={handleCvUpload} disabled={!cvFile || cvUploading}
-                  className="flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-sky-500 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:scale-[1.02] disabled:opacity-60 disabled:cursor-not-allowed">
-                  <Upload className="size-4" />
-                  {cvUploading ? "Ανέβασμα..." : "Ανέβασμα βιογραφικού"}
-                </button>
-
-                <button onClick={loadCvUrl} className="text-xs text-muted-foreground hover:text-foreground transition-colors text-center">
-                  Έλεγξε αν έχεις ήδη ανεβάσει βιογραφικό →
-                </button>
-
-                {/* Template link — secondary option */}
-                <div className="border-t border-border/40 pt-3 mt-1">
-                  <div className="flex items-center gap-2.5">
-                    <FileText className="size-4 text-muted-foreground shrink-0" />
-                    <div>
-                      <p className="text-xs text-muted-foreground">Δεν έχεις βιογραφικό;</p>
-                      <Link href="/cv-template" target="_blank"
-                        className="inline-flex items-center gap-1 text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors">
-                        Φτιάξε ένα με το πρότυπό μας <ExternalLink className="size-3" />
-                      </Link>
+                      <button
+                        onClick={handleCvDelete}
+                        className="flex items-center justify-center size-8 rounded-lg text-muted-foreground hover:bg-red-500/10 hover:text-red-400 transition-colors shrink-0"
+                        aria-label="Διαγραφή βιογραφικού"
+                      >
+                        <Trash2 className="size-4" />
+                      </button>
                     </div>
-                  </div>
-                </div>
+
+                    {/* Replace option */}
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-2">Αντικατάσταση βιογραφικού:</p>
+                      <div
+                        onClick={() => fileRef.current?.click()}
+                        className="flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border hover:border-blue-500/50 bg-secondary/50 py-4 cursor-pointer transition-colors"
+                      >
+                        <Upload className="size-5 text-muted-foreground" />
+                        <p className="text-xs text-muted-foreground">
+                          {cvFile ? cvFile.name : "Κλικ για επιλογή αρχείου"}
+                        </p>
+                        <input
+                          ref={fileRef}
+                          type="file"
+                          accept=".pdf"
+                          className="hidden"
+                          onChange={e => { setCvFile(e.target.files?.[0] ?? null); setCvSuccess(false) }}
+                        />
+                      </div>
+                    </div>
+
+                    {cvSuccess && (
+                      <div className="flex items-center gap-2 rounded-lg bg-green-500/10 px-3 py-2">
+                        <CheckCircle2 className="size-4 text-green-400" />
+                        <p className="text-xs text-green-400">Το βιογραφικό ανέβηκε επιτυχώς!</p>
+                      </div>
+                    )}
+
+                    {cvError && <p className="text-xs text-red-400 bg-red-500/10 rounded-lg px-3 py-2">{cvError}</p>}
+
+                    {cvFile && (
+                      <button onClick={handleCvUpload} disabled={cvUploading}
+                        className="flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-sky-500 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:scale-[1.02] disabled:opacity-60 disabled:cursor-not-allowed">
+                        <Upload className="size-4" />
+                        {cvUploading ? "Ανέβασμα..." : "Αντικατάσταση"}
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {/* No CV uploaded — show upload area */}
+                    <div>
+                      <p className="text-sm font-medium text-foreground mb-1">Ανέβασε το βιογραφικό σου</p>
+                      <p className="text-xs text-muted-foreground mb-3">Αν έχεις ήδη έτοιμο βιογραφικό, ανέβασέ το απευθείας. Αν όχι, μπορείς να χρησιμοποιήσεις το πρότυπό μας.</p>
+                      <div
+                        onClick={() => fileRef.current?.click()}
+                        className="flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border hover:border-blue-500/50 bg-secondary/50 py-6 cursor-pointer transition-colors"
+                      >
+                        <Upload className="size-6 text-muted-foreground" />
+                        <p className="text-xs text-muted-foreground">
+                          {cvFile ? cvFile.name : "Κλικ για επιλογή αρχείου"}
+                        </p>
+                        <input
+                          ref={fileRef}
+                          type="file"
+                          accept=".pdf"
+                          className="hidden"
+                          onChange={e => { setCvFile(e.target.files?.[0] ?? null); setCvSuccess(false) }}
+                        />
+                      </div>
+                    </div>
+
+                    {cvSuccess && (
+                      <div className="flex items-center gap-2 rounded-lg bg-green-500/10 px-3 py-2">
+                        <CheckCircle2 className="size-4 text-green-400" />
+                        <p className="text-xs text-green-400">Το βιογραφικό ανέβηκε επιτυχώς!</p>
+                      </div>
+                    )}
+
+                    {cvError && <p className="text-xs text-red-400 bg-red-500/10 rounded-lg px-3 py-2">{cvError}</p>}
+
+                    <button onClick={handleCvUpload} disabled={!cvFile || cvUploading}
+                      className="flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-sky-500 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:scale-[1.02] disabled:opacity-60 disabled:cursor-not-allowed">
+                      <Upload className="size-4" />
+                      {cvUploading ? "Ανέβασμα..." : "Ανέβασμα βιογραφικού"}
+                    </button>
+
+                    {/* Template link */}
+                    <div className="border-t border-border/40 pt-3 mt-1">
+                      <div className="flex items-center gap-2.5">
+                        <FileText className="size-4 text-muted-foreground shrink-0" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">Δεν έχεις βιογραφικό;</p>
+                          <Link href="/cv-template" target="_blank"
+                            className="inline-flex items-center gap-1 text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors">
+                            Φτιάξε ένα με το πρότυπό μας <ExternalLink className="size-3" />
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             )}
           </div>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { createSupabaseBrowser } from "@/lib/supabase-browser"
 import { Clock, MapPin, Presentation, Wrench, Coffee, Users, FileUp, Loader2, Users2, X, ChevronDown } from "lucide-react"
 
@@ -187,7 +187,7 @@ function getRowKey(row: ScheduleRow, i: number): string {
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 
-export function ScheduleTimeline({ assignedGroup, enrolledIds, waitlistedIds, enrollmentCounts, workshops }: Props) {
+export function ScheduleTimeline({ userId, assignedGroup, enrolledIds, waitlistedIds, enrollmentCounts, workshops }: Props) {
   const [filter, setFilter] = useState<EventType | "all">("all")
   const [enrolled, setEnrolled] = useState<Set<string>>(new Set(enrolledIds))
   const [waitlisted, setWaitlisted] = useState<Set<string>>(new Set(waitlistedIds))
@@ -195,6 +195,16 @@ export function ScheduleTimeline({ assignedGroup, enrolledIds, waitlistedIds, en
   const [loading, setLoading] = useState<string | null>(null)
   const [error, setError] = useState<{ workshopId: string; message: string } | null>(null)
   const [selectedEvent, setSelectedEvent] = useState<ProcessedEvent | null>(null)
+  const [hasCv, setHasCv] = useState(false)
+
+  useEffect(() => {
+    createSupabaseBrowser()
+      .from("cv_uploads")
+      .select("id")
+      .eq("user_id", userId)
+      .single()
+      .then(({ data }) => { if (data) setHasCv(true) })
+  }, [userId])
 
   const events: ProcessedEvent[] = workshops.map((w) => ({
     id: w.id,
@@ -416,19 +426,21 @@ export function ScheduleTimeline({ assignedGroup, enrolledIds, waitlistedIds, en
         ))}
       </div>
 
-      {/* CV upload prompt */}
-      <button
-        onClick={() => window.dispatchEvent(new CustomEvent("openSettings", { detail: "cv" }))}
-        className="flex items-center gap-3 rounded-xl border border-dashed border-blue-500/30 bg-blue-500/5 px-4 py-3 text-left transition-all hover:border-blue-500/60 hover:bg-blue-500/10"
-      >
-        <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-blue-500/10">
-          <FileUp className="size-4 text-blue-400" />
-        </div>
-        <div>
-          <p className="text-sm font-medium text-foreground">Upload your CV</p>
-          <p className="text-xs text-muted-foreground">Tap to open profile settings</p>
-        </div>
-      </button>
+      {/* CV upload prompt — hidden once a CV is uploaded */}
+      {!hasCv && (
+        <button
+          onClick={() => window.dispatchEvent(new CustomEvent("openSettings", { detail: "cv" }))}
+          className="flex items-center gap-3 rounded-xl border border-dashed border-blue-500/30 bg-blue-500/5 px-4 py-3 text-left transition-all hover:border-blue-500/60 hover:bg-blue-500/10"
+        >
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-blue-500/10">
+            <FileUp className="size-4 text-blue-400" />
+          </div>
+          <div>
+            <p className="text-sm font-medium text-foreground">Upload your CV</p>
+            <p className="text-xs text-muted-foreground">Tap to open profile settings</p>
+          </div>
+        </button>
+      )}
 
       {error && (
         <div className="rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2.5 text-xs text-red-400">{error.message}</div>
