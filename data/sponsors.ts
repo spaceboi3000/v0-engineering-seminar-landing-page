@@ -141,7 +141,7 @@ With a track record of 200+ successful EU and national projects, a highly skille
     id: "sabo",
     name: "SABO S.A.",
     tier: "gold",
-    logo: "/images/sponsors/SABO-logo.avif",
+    logo: "/images/sponsors/sabo-logo.webp",
     shortDescription: "Greek industry leader since 1984, providing turnkey automation, robotics, and heavy clay solutions across 64+ countries.",
     longDescription: `SABO S.A., a Greek company founded in 1984, operates in more than 64 countries worldwide, exporting 90% of its annual turnover. The company is a member of SABO GROUP with headquarters located in Vassiliko of Evia in Greece and subsidiaries in Brazil, Romania and Italy.
 
