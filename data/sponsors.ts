@@ -16,6 +16,8 @@ export interface Sponsor {
     twitter?: string
     github?: string
   }
+  /** Contact recruiter info */
+  contactRecruiter?: { name: string; email: string; note?: string }
   /** If a speaker from this sponsor is presenting, link to their anchor/section */
   speakerSlug?: string
 }
@@ -114,12 +116,14 @@ Asso employs more than 1,000 people, including both onshore staff and seafarers.
 In a rapidly evolving energy market, with increasing demand for innovative, safe, and reliable solutions, Asso has earned its place among the leading players in the global submarine utilities installation market. Our goal is to continuously meet future market challenges by delivering safe and smart solutions.`,
     longDescriptionEl: `Η Asso.subsea είναι Όμιλος Εταιρειών, ιδρύθηκε το 1976 και το αντικείμενό της είναι η πόντιση και προστασία υποβρύχιων καλωδίων. Η Asso διαθέτει το δικό της στόλο, ένα στόλο με ειδικού τύπου πλοία, όπου φορτώνεται πάνω το καλώδιο και ενώνουν δύο σημεία μεταξύ τους με το καλώδιο αυτό π.χ. χώρες, νησιά ή πλατφόρμες για θαλάσσια αιολικά πάρκα. Εκτός από το στόλο, για τις ανάγκες των έργων, στην τεχνική βάση του Ομίλου κατασκευάζονται και συντηρούνται τα υποβρύχια ρομποτικά μηχανήματα που χρησιμοποιούνται στα έργα.
 
-Κατά τη διάρκεια της πολυετούς εμπειρία της, η Asso έχει συμμετάσχει σε 207 έργα εγκατάστασης & προστασίας υποβρύχιων καλωδίων σε όλο τον κόσμο. Η διάρκεια κάθε έργου μπορεί να φτάσει και τα 3 χρόνια ανάλογα με το μέγεθος και την πολυπλοκότητα.
+Κατά τη διάρκεια της πολυετούς εμπειρίας της, η Asso έχει συμμετάσχει σε 207 έργα εγκατάστασης & προστασίας υποβρύχιων καλωδίων σε όλο τον κόσμο. Η διάρκεια κάθε έργου μπορεί να φτάσει και τα 3 χρόνια ανάλογα με το μέγεθος και την πολυπλοκότητα.
 
 Η Asso απασχολεί περισσότερους από 1000 ανθρώπους και αυτό περιλαμβάνει όσους εργάζονται στη στεριά αλλά και τους ναυτικούς.
 
 Σε μια ταχέως μεταβαλλόμενη αγορά ενέργειας και μια αυξανόμενη ζήτηση για καινοτόμες, ασφαλείς και αξιόπιστες λύσεις, η Asso έχει κερδίσει μια θέση μεταξύ των σημαντικότερων παικτών στην παγκόσμια αγορά εγκατάστασης υποβρύχιων υπηρεσιών κοινής ωφελείας. Στόχος μας είναι να ανταποκρινόμαστε πάντα στις μελλοντικές προκλήσεις της αγοράς, παρέχοντας ασφαλείς και έξυπνες λύσεις.`,
     website: "https://www.assogroup.com/",
+    contactRecruiter: { name: "Lida Petropoulou", email: "lpetropoulou@assogroup.com", note: "Μας ενδιαφέρουν και οι πρακτικές και οι μόνιμες συνεργασίες" },
+    speakerSlug: "athanasios-manouilidis",
   },
   {
     id: "isense-iccs",
@@ -141,7 +145,7 @@ With a track record of 200+ successful EU and national projects, a highly skille
     id: "sabo",
     name: "SABO S.A.",
     tier: "gold",
-    logo: "/images/sponsors/sabo-logo.webp",
+    logo: "/images/sponsors/sab",
     shortDescription: "Greek industry leader since 1984, providing turnkey automation, robotics, and heavy clay solutions across 64+ countries.",
     longDescription: `SABO S.A., a Greek company founded in 1984, operates in more than 64 countries worldwide, exporting 90% of its annual turnover. The company is a member of SABO GROUP with headquarters located in Vassiliko of Evia in Greece and subsidiaries in Brazil, Romania and Italy.
 

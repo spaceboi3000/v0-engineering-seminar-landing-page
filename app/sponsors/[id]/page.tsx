@@ -182,6 +182,29 @@ export default async function SponsorPage({ params }: SponsorPageProps) {
               </div>
             )}
 
+            {/* Contact recruiter */}
+            {sponsor.contactRecruiter && (
+              <div className="rounded-xl border border-border/40 bg-muted/20 px-5 py-4 mt-2">
+                <div className="flex items-center gap-3">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground shrink-0">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                  </svg>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground">Contact Recruiter: {sponsor.contactRecruiter.name}</p>
+                    <a href={`mailto:${sponsor.contactRecruiter.email}`} className="text-xs text-blue-400 hover:text-blue-300 transition-colors">
+                      {sponsor.contactRecruiter.email}
+                    </a>
+                    {sponsor.contactRecruiter.note && (
+                      <p className="text-xs text-muted-foreground mt-1 italic">{sponsor.contactRecruiter.note}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Speaker link */}
             {sponsor.speakerSlug && (
               <Link
