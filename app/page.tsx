@@ -9,6 +9,7 @@ import { Organizers } from "@/components/organizers"
 import { Speakers } from "@/components/speakers"
 import { Sponsors } from "@/components/sponsors"
 import { Location } from "@/components/location"
+import { Stats } from "@/components/stats"
 import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
 import { ConfirmationToast } from "@/components/confirmation-toast"
@@ -23,6 +24,7 @@ export default function Page() {
       <main>
         <Hero />
         <About />
+        <Stats />
         <SectionDivider />
         <ScheduleOverview />
         <SectionDivider />
