@@ -2,6 +2,7 @@ import { redirect } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { createSupabaseServer } from "@/lib/supabase-server"
+import { getSupabase } from "@/lib/supabase"
 import { UserHeader } from "@/components/dashboard/user-header"
 import { QrCheckinCard } from "@/components/dashboard/qr-checkin-card"
 import { ScheduleTimeline } from "@/components/dashboard/schedule-timeline"
@@ -22,7 +23,9 @@ export default async function DashboardPage() {
     .eq("id", user.id)
     .single()
 
-  const { data: enrollments } = await supabase
+  const db = getSupabase()
+
+  const { data: enrollments } = await db
     .from("enrollments")
     .select("workshop_id, status")
     .eq("user_id", user.id)
@@ -30,7 +33,7 @@ export default async function DashboardPage() {
   const enrolledIds   = enrollments?.filter((e) => e.status === "enrolled").map((e) => e.workshop_id) ?? []
   const waitlistedIds = enrollments?.filter((e) => e.status === "waitlisted").map((e) => e.workshop_id) ?? []
 
-  const { data: countRows } = await supabase
+  const { data: countRows } = await db
     .from("workshop_enrollment_summary")
     .select("workshop_id, enrolled_count")
 
@@ -39,7 +42,7 @@ export default async function DashboardPage() {
     enrollmentCounts[row.workshop_id] = Number(row.enrolled_count)
   }
 
-  const { data: workshops } = await supabase
+  const { data: workshops } = await db
     .from("workshops")
     .select("id, title, speaker, location, type, start_time, end_time, capacity, group_label, conflict_group, description")
     .order("start_time")
