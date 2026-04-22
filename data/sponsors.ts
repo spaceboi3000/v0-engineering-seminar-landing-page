@@ -18,8 +18,8 @@ export interface Sponsor {
   }
   /** Contact recruiter info */
   contactRecruiter?: { name: string; email: string; note?: string }
-  /** If a speaker from this sponsor is presenting, link to their anchor/section */
-  speakerSlug?: string
+  /** If speakers from this sponsor are presenting, link to their anchor/section */
+  speakerSlugs?: string[]
 }
 
 export const TIER_CONFIG: Record<SponsorTier, {
@@ -123,7 +123,7 @@ In a rapidly evolving energy market, with increasing demand for innovative, safe
 Σε μια ταχέως μεταβαλλόμενη αγορά ενέργειας και μια αυξανόμενη ζήτηση για καινοτόμες, ασφαλείς και αξιόπιστες λύσεις, η Asso έχει κερδίσει μια θέση μεταξύ των σημαντικότερων παικτών στην παγκόσμια αγορά εγκατάστασης υποβρύχιων υπηρεσιών κοινής ωφελείας. Στόχος μας είναι να ανταποκρινόμαστε πάντα στις μελλοντικές προκλήσεις της αγοράς, παρέχοντας ασφαλείς και έξυπνες λύσεις.`,
     website: "https://www.assogroup.com/",
     contactRecruiter: { name: "Lida Petropoulou", email: "lpetropoulou@assogroup.com", note: "Μας ενδιαφέρουν και οι πρακτικές και οι μόνιμες συνεργασίες" },
-    speakerSlug: "athanasios-manouilidis",
+    speakerSlugs: ["athanasios-manouilidis", "elena-stergiopoulou"],
   },
   {
     id: "isense-iccs",
@@ -139,7 +139,7 @@ With a track record of 200+ successful EU and national projects, a highly skille
     website: "https://i-sense.iccs.gr/",
     contactEmail: "sponsors@example.com",
     socialLinks: { linkedin: "#", twitter: "#" },
-    speakerSlug: "dr-jane-smith",
+    speakerSlugs: ["giorgos-hadjipavlis"],
   },
   {
     id: "sabo",

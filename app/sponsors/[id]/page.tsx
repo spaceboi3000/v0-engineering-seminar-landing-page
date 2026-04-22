@@ -3,6 +3,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
 import { sponsors, TIER_CONFIG } from "@/data/sponsors"
+import { speakers } from "@/data/speakers"
 
 interface SponsorPageProps {
   params: Promise<{ id: string }>
@@ -205,24 +206,28 @@ export default async function SponsorPage({ params }: SponsorPageProps) {
               </div>
             )}
 
-            {/* Speaker link */}
-            {sponsor.speakerSlug && (
-              <Link
-                href={`/speakers#${sponsor.speakerSlug}`}
-                className="flex items-center gap-3 rounded-xl border border-ras-red/20 bg-ras-red/[0.05] px-5 py-4 transition-all hover:border-ras-red/40 hover:bg-ras-red/10 mt-2"
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-ras-red shrink-0">
-                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-                  <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-                  <line x1="12" y1="19" x2="12" y2="23" />
-                  <line x1="8" y1="23" x2="16" y2="23" />
-                </svg>
-                <div>
-                  <p className="text-sm font-medium text-ras-red">This sponsor has a speaker</p>
-                  <p className="text-xs text-muted-foreground">View in the Speakers section →</p>
-                </div>
-              </Link>
-            )}
+            {/* Speaker links */}
+            {sponsor.speakerSlugs && sponsor.speakerSlugs.length > 0 && sponsor.speakerSlugs.map((slug) => {
+              const speaker = speakers.find((s) => s.id === slug)
+              return (
+                <Link
+                  key={slug}
+                  href={`/speakers/${slug}`}
+                  className="flex items-center gap-3 rounded-xl border border-ras-red/20 bg-ras-red/[0.05] px-5 py-4 transition-all hover:border-ras-red/40 hover:bg-ras-red/10 mt-2"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-ras-red shrink-0">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                    <line x1="12" y1="19" x2="12" y2="23" />
+                    <line x1="8" y1="23" x2="16" y2="23" />
+                  </svg>
+                  <div>
+                    <p className="text-sm font-medium text-ras-red">{speaker?.name ?? slug}</p>
+                    <p className="text-xs text-muted-foreground">View speaker profile →</p>
+                  </div>
+                </Link>
+              )
+            })}
           </div>
         </div>
       </div>
