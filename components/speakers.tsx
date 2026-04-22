@@ -54,8 +54,11 @@ export function Speakers() {
   const speaker = speakers[current]
 
   return (
-    <section id="speakers" className="py-16 lg:py-20">
-      <div className="mx-auto max-w-7xl px-4 lg:px-8">
+    <section id="speakers" className="relative py-16 lg:py-20 overflow-hidden">
+      {/* Background color */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-blue-950/40 to-background" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(59,130,246,0.1),transparent_70%)]" />
+      <div className="relative mx-auto max-w-7xl px-4 lg:px-8">
         <div className="text-center">
           <p className="text-sm font-semibold uppercase tracking-widest bg-gradient-to-r from-ras-red to-blue-500 bg-clip-text text-transparent">
             RoboTalk 2026
