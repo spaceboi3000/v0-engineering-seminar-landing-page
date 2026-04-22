@@ -96,14 +96,29 @@ export function PastEvents() {
     return diff
   }
 
+  const touchStartY = useRef<number | null>(null)
+  const isHorizontalSwipe = useRef<boolean | null>(null)
+
   function handleTouchStart(e: React.TouchEvent) {
     touchStartX.current = e.touches[0].clientX
+    touchStartY.current = e.touches[0].clientY
+    isHorizontalSwipe.current = null
   }
 
   function handleTouchMove(e: React.TouchEvent) {
-    if (touchStartX.current === null) return
+    if (touchStartX.current === null || touchStartY.current === null) return
     const dx = e.touches[0].clientX - touchStartX.current
-    // negative dx (drag left) = positive fraction = moving toward next slide
+    const dy = e.touches[0].clientY - touchStartY.current
+
+    // Determine swipe direction on first significant move
+    if (isHorizontalSwipe.current === null && (Math.abs(dx) > 5 || Math.abs(dy) > 5)) {
+      isHorizontalSwipe.current = Math.abs(dx) > Math.abs(dy)
+    }
+
+    // Only handle horizontal swipes
+    if (!isHorizontalSwipe.current) return
+
+    e.preventDefault()
     const fraction = Math.max(-1, Math.min(1, -dx / DRAG_TO_SLIDE))
     setDragFraction(fraction)
   }
@@ -112,10 +127,12 @@ export function PastEvents() {
     if (touchStartX.current === null) return
     const dx = e.changedTouches[0].clientX - touchStartX.current
     setDragFraction(0)
-    if (Math.abs(dx) > window.innerWidth * 0.08) {
+    if (isHorizontalSwipe.current && Math.abs(dx) > window.innerWidth * 0.08) {
       dx < 0 ? next() : prev()
     }
     touchStartX.current = null
+    touchStartY.current = null
+    isHorizontalSwipe.current = null
   }
 
   const isDragging = dragFraction !== 0
@@ -146,7 +163,7 @@ export function PastEvents() {
           {/* Coverflow Carousel */}
           <div
             className="relative mx-auto mt-14 h-[340px] sm:h-[400px] md:h-[440px] lg:h-[480px]"
-            style={{ perspective: "1200px" }}
+            style={{ perspective: "1200px", touchAction: "pan-y" }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
