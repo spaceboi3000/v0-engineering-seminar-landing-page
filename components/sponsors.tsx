@@ -26,6 +26,10 @@ export function Sponsors() {
   }, [])
 
   useEffect(() => {
+    // Only auto-scroll on devices that support hover (mouse)
+    const hasHover = window.matchMedia("(hover: hover)").matches
+    if (!hasHover) return
+
     const el = scrollRef.current
     if (!el) return
 
@@ -77,7 +81,7 @@ export function Sponsors() {
             onClick={() => scrollBy("left")}
             disabled={!canScrollLeft}
             aria-label="Scroll sponsors left"
-            className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full border border-border/40 bg-background/70 backdrop-blur-sm flex items-center justify-center transition-all duration-300 ${
+            className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full border border-border/40 bg-background/70 backdrop-blur-sm hidden [@media(hover:hover)]:flex items-center justify-center transition-all duration-300 ${
               canScrollLeft
                 ? "opacity-0 group-hover/carousel:opacity-100 hover:border-ras-red/50 hover:bg-background/90 cursor-pointer"
                 : "opacity-0 cursor-default"
@@ -93,7 +97,7 @@ export function Sponsors() {
             onClick={() => scrollBy("right")}
             disabled={!canScrollRight}
             aria-label="Scroll sponsors right"
-            className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full border border-border/40 bg-background/70 backdrop-blur-sm flex items-center justify-center transition-all duration-300 ${
+            className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full border border-border/40 bg-background/70 backdrop-blur-sm hidden [@media(hover:hover)]:flex items-center justify-center transition-all duration-300 ${
               canScrollRight
                 ? "opacity-0 group-hover/carousel:opacity-100 hover:border-ras-red/50 hover:bg-background/90 cursor-pointer"
                 : "opacity-0 cursor-default"
@@ -104,9 +108,9 @@ export function Sponsors() {
             </svg>
           </button>
 
-          {/* Left/right fade edges */}
-          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-background/80 to-transparent z-[5]" />
-          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background/80 to-transparent z-[5]" />
+          {/* Left/right fade edges (desktop only) */}
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-background/80 to-transparent z-[5] hidden [@media(hover:hover)]:block" />
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background/80 to-transparent z-[5] hidden [@media(hover:hover)]:block" />
 
           {/* Scrollable track */}
           <div
