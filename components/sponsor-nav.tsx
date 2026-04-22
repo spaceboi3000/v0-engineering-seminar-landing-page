@@ -104,7 +104,7 @@ export function SponsorNav({ prevId, nextId, children }: SponsorNavProps) {
       {prevId && (
         <Link
           href={`/sponsors/${prevId}`}
-          className="fixed left-2 top-1/2 -translate-y-1/2 z-50 flex items-center justify-center size-11 rounded-full bg-black/20 backdrop-blur-md border border-white/20 text-white/80 transition-all hover:bg-black/40 hover:text-white shadow-lg"
+          className="fixed left-2 top-1/2 -translate-y-1/2 z-50 hidden md:flex items-center justify-center size-11 rounded-full bg-black/20 backdrop-blur-md border border-white/20 text-white/80 transition-all hover:bg-black/40 hover:text-white shadow-lg"
           aria-label="Previous sponsor"
         >
           <ChevronLeft className="size-6" />
@@ -115,7 +115,7 @@ export function SponsorNav({ prevId, nextId, children }: SponsorNavProps) {
       {nextId && (
         <Link
           href={`/sponsors/${nextId}`}
-          className="fixed right-2 top-1/2 -translate-y-1/2 z-50 flex items-center justify-center size-11 rounded-full bg-black/20 backdrop-blur-md border border-white/20 text-white/80 transition-all hover:bg-black/40 hover:text-white shadow-lg"
+          className="fixed right-2 top-1/2 -translate-y-1/2 z-50 hidden md:flex items-center justify-center size-11 rounded-full bg-black/20 backdrop-blur-md border border-white/20 text-white/80 transition-all hover:bg-black/40 hover:text-white shadow-lg"
           aria-label="Next sponsor"
         >
           <ChevronRight className="size-6" />
