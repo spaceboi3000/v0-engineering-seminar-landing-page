@@ -141,6 +141,15 @@ With a track record of 200+ successful EU and national projects, a highly skille
     socialLinks: { linkedin: "#", twitter: "#" },
     speakerSlugs: ["giorgos-hadjipavlis"],
   },
+    {
+    id: "heron",
+    name: "HERON",
+    tier: "gold",
+    logo: "/images/sponsors/heron-logo.webp",
+    shortDescription: "The Hellenic Robotics Center of Excellence — advancing robotics science and technology in the AI era.",
+    longDescription: `HERON is a visionary project that aims to create the first Robotics Center of Excellence in Greece for advancing the science and technology of robotics in the AI era, coupled with industrial innovation. Its main goals include pursuing world-class research in diverse areas that reflect current and emerging challenges of national and EU value, including agriculture, marine, safety, transportation, and healthcare, founding Makerspaces, establishing and mobilizing the Hellenic Robotics Ecosystem, collaborating with the Diaspora, supporting education and training, and creating an AI-powered robotics center in Southeast Europe. The envisioned transformations are expected to result in major benefits to the economy, the technology, and the social well-being.`,
+    website: "https://heron-coe.gr/",
+  },
   {
     id: "sabo",
     name: "SABO S.A.",
@@ -159,15 +168,7 @@ Technical know-how and innovation, high-quality standards, qualified and experie
 Η τεχνογνωσία και καινοτομία, τα πρότυπα υψηλής ποιότητας, το ειδικευμένο και έμπειρο προσωπικό, καθώς και οι ισχυρές υπηρεσίες υποστήριξης μετά την πώληση, αποτελούν τα βασικά ανταγωνιστικά πλεονεκτήματα της εταιρείας.`,
     website: "https://el.sabo.gr/",
   },
-  {
-    id: "heron",
-    name: "HERON",
-    tier: "platinum",
-    logo: "/images/sponsors/heron-logo.webp",
-    shortDescription: "The Hellenic Robotics Center of Excellence — advancing robotics science and technology in the AI era.",
-    longDescription: `HERON is a visionary project that aims to create the first Robotics Center of Excellence in Greece for advancing the science and technology of robotics in the AI era, coupled with industrial innovation. Its main goals include pursuing world-class research in diverse areas that reflect current and emerging challenges of national and EU value, including agriculture, marine, safety, transportation, and healthcare, founding Makerspaces, establishing and mobilizing the Hellenic Robotics Ecosystem, collaborating with the Diaspora, supporting education and training, and creating an AI-powered robotics center in Southeast Europe. The envisioned transformations are expected to result in major benefits to the economy, the technology, and the social well-being.`,
-    website: "https://heron-coe.gr/",
-  },
+
   {
     id: "alphamotion",
     name: "Alpha Motion",
