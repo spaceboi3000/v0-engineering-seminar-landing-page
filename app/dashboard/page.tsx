@@ -52,10 +52,10 @@ export default async function DashboardPage() {
   const attendeeId = `RAS-${user.id.slice(0, 8).toUpperCase()}`
 
   return (
-    <div className="relative min-h-svh bg-background lg:flex lg:flex-row scroll-smooth" id="dashboard">
+    <div className="relative min-h-svh bg-background lg:flex lg:flex-row scroll-smooth overflow-y-auto" id="dashboard">
       <WinOverlay />
       <div className="flex flex-1 flex-col lg:flex-row lg:min-h-svh flex-wrap">
-        <div id="qr-code" className="mx-auto flex w-full max-w-lg flex-col gap-6 pt-10 lg:max-w-md lg:shrink-0 lg:border-r lg:border-border lg:px-8 lg:pb-8 lg:pt-16 lg:gap-8">
+        <div id="qr-code" className="mx-auto flex w-full max-w-lg flex-col gap-6 px-4 pt-10 lg:max-w-md lg:shrink-0 lg:border-r lg:border-border lg:px-8 lg:pb-8 lg:pt-16 lg:gap-8">
           <UserHeader
             name={fullName}
             group={profile?.assigned_group ?? "Not set"}
@@ -79,11 +79,11 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        <div id="schedule" className="mx-auto flex w-full max-w-lg flex-col pt-6 lg:max-w-none lg:flex-1 lg:px-8 lg:pb-8 lg:pt-16">
+        <div id="schedule" className="mx-auto flex w-full max-w-lg flex-col px-4 pt-6 lg:max-w-none lg:flex-1 lg:px-8 lg:pb-8 lg:pt-16">
           <ScheduleTimeline userId={user.id} assignedGroup={profile?.assigned_group ?? "Not set"} enrolledIds={enrolledIds} waitlistedIds={waitlistedIds} enrollmentCounts={enrollmentCounts} workshops={workshops ?? []} />
         </div>
 
-        <div className="w-full">
+        <div className="w-full pb-20 lg:pb-0">
           <GameSection />
         </div>
       </div>

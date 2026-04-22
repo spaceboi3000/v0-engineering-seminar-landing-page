@@ -3,15 +3,35 @@
 import { useState, useEffect } from "react"
 import { Terminal } from "lucide-react"
 
+const STORAGE_KEY = "robotalk-hacker-unlocked"
+const THEME_KEY = "robotalk-hacker-active"
+
 export function WinOverlay() {
   const [isUnlocked, setIsUnlocked] = useState(false)
   const [isThemeActive, setIsThemeActive] = useState(false)
 
+  // Restore state from localStorage on mount
+  useEffect(() => {
+    const unlocked = localStorage.getItem(STORAGE_KEY) === "true"
+    const themeActive = localStorage.getItem(THEME_KEY) === "true"
+
+    if (unlocked) {
+      setIsUnlocked(true)
+      if (themeActive) {
+        setIsThemeActive(true)
+        document.body.classList.add("hacker-theme")
+      }
+    }
+  }, [])
+
+  // Listen for win event
   useEffect(() => {
     const enableHackerMode = () => {
       setIsUnlocked(true)
       setIsThemeActive(true)
       document.body.classList.add("hacker-theme")
+      localStorage.setItem(STORAGE_KEY, "true")
+      localStorage.setItem(THEME_KEY, "true")
     }
 
     window.addEventListener("unlockHackerMode", enableHackerMode)
@@ -22,9 +42,11 @@ export function WinOverlay() {
     if (isThemeActive) {
       document.body.classList.remove("hacker-theme")
       setIsThemeActive(false)
+      localStorage.setItem(THEME_KEY, "false")
     } else {
       document.body.classList.add("hacker-theme")
       setIsThemeActive(true)
+      localStorage.setItem(THEME_KEY, "true")
     }
   }
 
@@ -39,12 +61,12 @@ export function WinOverlay() {
             background-color: #030712 !important;
             font-family: "Courier New", Courier, monospace !important;
           }
-          
+
           body.hacker-theme * {
-            color: #22d3ee !important; 
-            border-color: #0891b2 !important; 
+            color: #22d3ee !important;
+            border-color: #0891b2 !important;
           }
-          
+
           body.hacker-theme .bg-background,
           body.hacker-theme .bg-card,
           body.hacker-theme aside,
@@ -55,32 +77,29 @@ export function WinOverlay() {
           body.hacker-theme [class*="bg-blue-"],
           body.hacker-theme [class*="bg-slate-"],
           body.hacker-theme [class*="bg-secondary"] {
-            background-color: #164e63 !important; 
+            background-color: #164e63 !important;
           }
 
           body.hacker-theme [class*="bg-gradient-to-r"] {
             background: linear-gradient(to right, #0891b2, #22d3ee) !important;
             box-shadow: 0 0 20px rgba(34, 211, 238, 0.4) !important;
-            color: #000 !important; 
+            color: #000 !important;
           }
 
-          /* --- NEU: SPEZIELLE REGELN FÜR DAS SPIEL --- */
-          /* Macht das Raster extrem dunkel, fast schwarz, für perfekten Kontrast */
+          /* --- GAME BOARD --- */
           body.hacker-theme .snake-board {
-            background-color: #000000 !important; 
+            background-color: #000000 !important;
             border-color: #0891b2 !important;
             box-shadow: inset 0 0 20px rgba(0,0,0,0.8) !important;
           }
-          
-          /* Der Körper der Schlange (Kabel) wird zu einem dunkleren Cyan */
+
           body.hacker-theme .snake-body {
-            background-color: #0891b2 !important; 
+            background-color: #0891b2 !important;
             opacity: 0.9 !important;
           }
 
-          /* Der Kopf der Schlange bleibt grell und leuchtend */
           body.hacker-theme .snake-head {
-            background-color: #22d3ee !important; 
+            background-color: #22d3ee !important;
             box-shadow: 0 0 15px rgba(34, 211, 238, 0.8) !important;
           }
 
@@ -89,10 +108,10 @@ export function WinOverlay() {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
             background: repeating-linear-gradient(
-              0deg, 
-              transparent, 
-              transparent 2px, 
-              rgba(34, 211, 238, 0.04) 2px, 
+              0deg,
+              transparent,
+              transparent 2px,
+              rgba(34, 211, 238, 0.04) 2px,
               rgba(34, 211, 238, 0.04) 4px
             );
             pointer-events: none;
