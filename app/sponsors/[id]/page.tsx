@@ -4,6 +4,7 @@ import { notFound } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
 import { sponsors, TIER_CONFIG } from "@/data/sponsors"
 import { speakers } from "@/data/speakers"
+import { SponsorNav } from "@/components/sponsor-nav"
 
 interface SponsorPageProps {
   params: Promise<{ id: string }>
@@ -19,15 +20,19 @@ export default async function SponsorPage({ params }: SponsorPageProps) {
   if (!sponsor) notFound()
 
   const tier = TIER_CONFIG[sponsor.tier]
+  const currentIndex = sponsors.findIndex((s) => s.id === id)
+  const prevSponsor = currentIndex > 0 ? sponsors[currentIndex - 1] : null
+  const nextSponsor = currentIndex < sponsors.length - 1 ? sponsors[currentIndex + 1] : null
 
   return (
+    <SponsorNav prevId={prevSponsor?.id ?? null} nextId={nextSponsor?.id ?? null}>
     <main className="relative min-h-screen text-foreground">
 
       {/* Floating back button */}
       <Link
-        href="/"
+        href="/#sponsors"
         className="fixed top-4 left-4 z-50 flex items-center justify-center size-10 rounded-full bg-black/10 backdrop-blur-md border border-black/10 text-black/60 transition-all hover:bg-black/20 hover:text-black"
-        aria-label="Back to home"
+        aria-label="Back to sponsors"
       >
         <ArrowLeft className="size-5" />
       </Link>
@@ -232,5 +237,6 @@ export default async function SponsorPage({ params }: SponsorPageProps) {
         </div>
       </div>
     </main>
+    </SponsorNav>
   )
 }

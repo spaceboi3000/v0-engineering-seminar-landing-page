@@ -203,7 +203,7 @@ export function ScheduleTimeline({ userId, assignedGroup, enrolledIds, waitliste
       .select("id")
       .eq("user_id", userId)
       .single()
-      .then(({ data }) => { if (data) setHasCv(true) })
+      .then(({ data }: { data: { id: string } | null }) => { if (data) setHasCv(true) })
   }, [userId])
 
   const events: ProcessedEvent[] = workshops.map((w) => ({

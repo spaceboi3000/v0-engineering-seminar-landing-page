@@ -25,8 +25,8 @@ export function Header() {
 
   useEffect(() => {
     const supabase = createSupabaseBrowser()
-    supabase.auth.getUser().then(({ data }) => setUser(data.user))
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    supabase.auth.getUser().then(({ data }: { data: { user: User | null } }) => setUser(data.user))
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: string, session: { user: User | null } | null) => {
       setUser(session?.user ?? null)
     })
     return () => subscription.unsubscribe()
@@ -140,6 +140,16 @@ export function Header() {
             style={{ backgroundColor: "#081229", boxShadow: "0 0 30px rgba(56,189,248,0.4), -20px 0 60px rgba(56,189,248,0.15)" }}
             aria-label="Mobile navigation"
           >
+            {/* Close button */}
+            <button
+              type="button"
+              onClick={() => setMobileOpen(false)}
+              className="absolute top-5 right-5 flex items-center justify-center size-10 rounded-full bg-white/10 border border-white/10 text-white/70 transition-all hover:bg-white/20 hover:text-white"
+              aria-label="Close menu"
+            >
+              <X className="size-5" />
+            </button>
+
             {navLinks.map((link) => (
               <a
                 key={link.href}

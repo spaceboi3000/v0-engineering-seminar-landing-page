@@ -15,7 +15,7 @@ export function ScheduleCardLink({ type, className, children }: ScheduleCardLink
   const [loggedIn, setLoggedIn] = useState<boolean | null>(null)
 
   useEffect(() => {
-    createSupabaseBrowser().auth.getUser().then(({ data }) => {
+    createSupabaseBrowser().auth.getUser().then(({ data }: { data: { user: unknown } }) => {
       setLoggedIn(!!data.user)
     })
   }, [])
