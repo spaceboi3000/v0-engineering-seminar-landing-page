@@ -45,6 +45,15 @@ _VOCATIVE_E_NAMES = {
     "Χαράλαμπος", "Πρόδρομος", "Ανάργυρος", "Σπυρίδων",
 }
 
+_ACCENT_MAP = str.maketrans("άέήίόύώΆΈΉΊΌΎΏ", "αεηιουωΑΕΗΙΟΥΩ")
+
+def _strip_accents(s: str) -> str:
+    return s.translate(_ACCENT_MAP)
+
+def _ends(name: str, suffix: str) -> bool:
+    """Check if name ends with suffix, ignoring accent differences."""
+    return _strip_accents(name).endswith(_strip_accents(suffix))
+
 def to_vocative(name: str) -> str:
     """Convert a Greek first name from nominative to vocative case.
 
@@ -55,12 +64,16 @@ def to_vocative(name: str) -> str:
     - -ος   → -ο    for all other names (Γιώργος → Γιώργο, Χρήστος → Χρήστο, Νίκος → Νίκο)
     - -ής   → -ή    (Μιχαλής → Μιχαλή)
     - -ης   → -η    (Δημήτρης → Δημήτρη, Γιάννης → Γιάννη)
-    - -ας   → -α    (Κώστας → Κώστα, Ανδρέας → Ανδρέα, Ηλίας → Ηλία)
+    - -ας   → -α    (Κώστας → Κώστα, Ανδρέας → Ανδρέα, Θωμάς → Θωμά)
     - -ις   → -ι    (Πάρις → Πάρι)
     - -εύς  → -εύ   (Οδυσσεύς → Οδυσσεύ)
-    - -ων   → -ων   (no change, rare in first names)
+    - -ούς  → -ού   (rare)
+    - -ών   → -ών   (no change, rare in first names)
     - -ώ/-α/-η/-ου  → no change (feminine names)
     - Latin/non-Greek names → no change
+
+    All suffix checks are accent-insensitive — accented variants are handled
+    automatically (e.g. -άς, -ής, -ός all match their unaccented rules).
     """
     name = name.strip()
     if not name:
@@ -70,37 +83,33 @@ def to_vocative(name: str) -> str:
         return VOCATIVE_EXCEPTIONS[name]
 
     # -ιος → -ιε (Γεώργιος, Δημήτριος, Αθανάσιος)
-    if name.endswith("ιος"):
+    if _ends(name, "ιος"):
         return name[:-3] + "ιε"
 
     # -ος → -ε for learned names, -ο for demotic
-    if name.endswith("ος"):
+    if _ends(name, "ος"):
         if name in _VOCATIVE_E_NAMES:
             return name[:-2] + "ε"
         return name[:-2] + "ο"
 
-    # -ής → -ή (Μιχαλής, Βασιλής)
-    if name.endswith("ής"):
+    # -ης → -η (Δημήτρης, Γιάννης, Θανάσης, Μιχαλής, Βασιλής)
+    if _ends(name, "ης"):
         return name[:-1]
 
-    # -ης → -η (Δημήτρης, Γιάννης, Θανάσης)
-    if name.endswith("ης"):
+    # -ας → -α (Κώστας, Ανδρέας, Ηλίας, Θωμάς, Λουκάς)
+    if _ends(name, "ας"):
         return name[:-1]
 
-    # -ας/-άς → -α/-ά (Κώστας, Ανδρέας, Ηλίας, Θωμάς, Λουκάς)
-    if name.endswith("ας") or name.endswith("άς"):
+    # -ις → -ι (Πάρις)
+    if _ends(name, "ις"):
         return name[:-1]
 
-    # -ις → -ι
-    if name.endswith("ις"):
+    # -ευς → -ευ (Οδυσσεύς)
+    if _ends(name, "ευς"):
         return name[:-1]
 
-    # -εύς → -εύ
-    if name.endswith("εύς"):
-        return name[:-1]
-
-    # -ούς → -ού (rare)
-    if name.endswith("ούς"):
+    # -ους → -ου (rare)
+    if _ends(name, "ους"):
         return name[:-1]
 
     # Everything else (feminine -α/-η/-ώ/-ου, Latin names) → unchanged
