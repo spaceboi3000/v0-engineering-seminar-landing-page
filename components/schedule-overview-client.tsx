@@ -64,7 +64,7 @@ export function ScheduleOverviewClient({ workshops }: { workshops: Workshop[] })
                       <Icon className="size-4" />
                     </div>
                     <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                      <h3 className="text-sm font-medium text-foreground truncate">{w.title}</h3>
+                      <h3 className="text-sm font-medium text-foreground break-words">{w.title}</h3>
                       <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
                         <span className="flex items-center gap-1"><Clock className="size-3" />{fmt(w.start_time)}–{fmt(w.end_time)}</span>
                         <span className="flex items-center gap-1 truncate"><MapPin className="size-3" />{w.location}</span>

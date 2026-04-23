@@ -14,6 +14,8 @@ import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
 import { ConfirmationToast } from "@/components/confirmation-toast"
 
+export const revalidate = 1200
+
 export default function Page() {
   return (
     <>
