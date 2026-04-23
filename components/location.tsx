@@ -92,16 +92,15 @@ export function Location() {
             Watch our quick guide to find the venue easily
           </p>
 
-          <div className="mt-8 mx-auto max-w-2xl">
+          <div className="mt-8 mx-auto max-w-md">
             <div className="relative">
               <div className="absolute -inset-2 rounded-2xl bg-blue-500/15 blur-2xl" />
-              <div className="relative aspect-video w-full overflow-hidden rounded-2xl border-2 border-blue-400/50 shadow-[0_0_30px_rgba(59,130,246,0.5)]">
-                {/* Replace YOUTUBE_VIDEO_ID with the actual YouTube video ID */}
+              <div className="relative w-full overflow-hidden rounded-2xl border-2 border-blue-400/50 shadow-[0_0_30px_rgba(59,130,246,0.5)]">
                 <iframe
                   title="How to get to Goethe-Institut Athen"
-                  src="https://www.youtube.com/embed/YOUTUBE_VIDEO_ID"
-                  className="h-full w-full border-0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  src="https://www.instagram.com/reel/DXelyOojNiQ/embed"
+                  className="w-full border-0"
+                  style={{ minHeight: '500px' }}
                   allowFullScreen
                   loading="lazy"
                 />
