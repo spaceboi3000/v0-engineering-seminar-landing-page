@@ -92,15 +92,14 @@ export function Location() {
             Watch our quick guide to find the venue easily
           </p>
 
-          <div className="mt-8 mx-auto max-w-md">
+          <div className="mt-8 mx-auto" style={{ maxWidth: '340px' }}>
             <div className="relative">
               <div className="absolute -inset-2 rounded-2xl bg-blue-500/15 blur-2xl" />
-              <div className="relative w-full overflow-hidden rounded-2xl border-2 border-blue-400/50 shadow-[0_0_30px_rgba(59,130,246,0.5)]">
+              <div className="relative w-full overflow-hidden rounded-2xl border-2 border-blue-400/50 shadow-[0_0_30px_rgba(59,130,246,0.5)]" style={{ aspectRatio: '9/16' }}>
                 <iframe
                   title="How to get to Goethe-Institut Athen"
                   src="https://www.instagram.com/reel/DXelyOojNiQ/embed"
-                  className="w-full border-0"
-                  style={{ minHeight: '500px' }}
+                  className="h-full w-full border-0"
                   allowFullScreen
                   loading="lazy"
                 />
