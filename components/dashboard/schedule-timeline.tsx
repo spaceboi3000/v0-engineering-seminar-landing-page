@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { createSupabaseBrowser } from "@/lib/supabase-browser"
-import { Clock, MapPin, Presentation, Wrench, Coffee, Users, FileUp, Loader2, Users2, X, ChevronDown } from "lucide-react"
+import { Clock, MapPin, Presentation, Wrench, Coffee, Users, FileUp, FileText, Loader2, Users2, X, ChevronDown } from "lucide-react"
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -22,6 +22,7 @@ interface WorkshopRow {
   group_label: string | null
   conflict_group: string | null
   description: string | null
+  instructions_url: string | null
 }
 
 interface ProcessedEvent {
@@ -38,6 +39,7 @@ interface ProcessedEvent {
   groupLabel: string | null
   conflictGroup: string | null
   description: string | null
+  hasInstructions: boolean
 }
 
 type ScheduleRow =
@@ -85,6 +87,8 @@ interface Props {
 
 const fmt = (iso: string) =>
   new Date(iso).toLocaleTimeString("el-GR", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Athens" })
+
+const instructionsHref = (eventId: string) => `/api/workshop-instructions?id=${encodeURIComponent(eventId)}`
 
 function buildScheduleRows(events: ProcessedEvent[]): ScheduleRow[] {
   const singles: ProcessedEvent[] = []
@@ -220,6 +224,7 @@ export function ScheduleTimeline({ userId, assignedGroup, enrolledIds, waitliste
     groupLabel: w.group_label,
     conflictGroup: w.conflict_group,
     description: w.description,
+    hasInstructions: !!w.instructions_url,
   }))
 
   const scheduleRows = buildScheduleRows(events)
@@ -345,32 +350,46 @@ export function ScheduleTimeline({ userId, assignedGroup, enrolledIds, waitliste
     const hasDesc = !!event.description
     return (
       <div
-        className={`flex flex-col gap-1.5 rounded-xl border p-3 sm:p-4 transition-all ${
+        className={`flex rounded-xl border p-3 sm:p-4 transition-all ${
           highlight ? "border-blue-500/50 bg-blue-500/5 shadow-[0_0_12px_rgba(59,130,246,0.1)]" : "border-border"
         } ${hasDesc ? "cursor-pointer active:scale-[0.98] hover:border-muted-foreground/40" : ""}`}
         onClick={hasDesc ? () => setSelectedEvent(event) : undefined}
       >
-        <div className="flex items-start gap-2.5">
-          <div className={`flex items-center justify-center size-8 sm:size-9 rounded-lg shrink-0 ${cfg.bg} ${cfg.text}`}>
-            <Icon className="size-4" />
+        <div className="flex flex-col gap-1.5 flex-1 min-w-0">
+          <div className="flex items-start gap-2.5">
+            <div className={`flex items-center justify-center size-8 sm:size-9 rounded-lg shrink-0 ${cfg.bg} ${cfg.text}`}>
+              <Icon className="size-4" />
+            </div>
+            <div className="flex flex-col gap-0.5 min-w-0">
+              <h3 className="text-xs sm:text-sm font-medium leading-tight text-foreground">{event.title}</h3>
+              {event.speaker && <p className="text-[10px] sm:text-xs text-muted-foreground">{event.speaker}</p>}
+            </div>
           </div>
-          <div className="flex flex-col gap-0.5 min-w-0">
-            <h3 className="text-xs sm:text-sm font-medium leading-tight text-foreground">{event.title}</h3>
-            {event.speaker && <p className="text-[10px] sm:text-xs text-muted-foreground">{event.speaker}</p>}
+          <div className="flex items-center justify-between gap-1 text-[10px] sm:text-xs text-muted-foreground mt-0.5">
+            <span className="flex items-center gap-1 shrink-0"><Clock className="size-2.5 sm:size-3" />{event.time}–{event.endTime}</span>
+            <span className="flex items-center gap-1 text-right truncate"><MapPin className="size-2.5 sm:size-3 shrink-0" />{event.location}</span>
           </div>
+          {event.groupLabel && (
+            <span className={`inline-flex w-fit items-center rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+              highlight ? "bg-blue-500/20 text-blue-400" : "bg-secondary text-muted-foreground"
+            }`}>
+              Group {event.groupLabel}{highlight ? " · You" : ""}
+            </span>
+          )}
+          {hasDesc && <span className="flex items-center gap-1 text-[10px] text-muted-foreground/60 mt-0.5"><ChevronDown className="size-2.5" />Tap for details</span>}
         </div>
-        <div className="flex items-center justify-between gap-1 text-[10px] sm:text-xs text-muted-foreground mt-0.5">
-          <span className="flex items-center gap-1 shrink-0"><Clock className="size-2.5 sm:size-3" />{event.time}–{event.endTime}</span>
-          <span className="flex items-center gap-1 text-right truncate"><MapPin className="size-2.5 sm:size-3 shrink-0" />{event.location}</span>
-        </div>
-        {event.groupLabel && (
-          <span className={`inline-flex w-fit items-center rounded-full px-2 py-0.5 text-[10px] font-semibold ${
-            highlight ? "bg-blue-500/20 text-blue-400" : "bg-secondary text-muted-foreground"
-          }`}>
-            Group {event.groupLabel}{highlight ? " · You" : ""}
-          </span>
+        {event.hasInstructions && (
+          <a
+            href={instructionsHref(event.id)}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(ev) => ev.stopPropagation()}
+            className="flex items-center gap-1.5 self-center shrink-0 ml-2 rounded-lg border border-blue-500/30 bg-blue-500/10 px-2.5 py-1.5 text-[10px] sm:text-xs font-medium text-blue-400 transition-colors hover:bg-blue-500/20"
+          >
+            <FileText className="size-3" />
+            <span className="hidden sm:inline">Instructions</span>
+          </a>
         )}
-        {hasDesc && <span className="flex items-center gap-1 text-[10px] text-muted-foreground/60 mt-0.5"><ChevronDown className="size-2.5" />Tap for details</span>}
       </div>
     )
   }
@@ -383,24 +402,37 @@ export function ScheduleTimeline({ userId, assignedGroup, enrolledIds, waitliste
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setSelectedEvent(null)}>
         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-        <div className="relative w-full max-w-lg max-h-[80vh] overflow-y-auto rounded-2xl border border-border bg-background p-5 sm:p-6 shadow-2xl" onClick={(ev) => ev.stopPropagation()}>
-          <button onClick={() => setSelectedEvent(null)} className="absolute top-3 right-3 rounded-lg p-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
-            <X className="size-5" />
+        <div className="relative w-full max-w-3xl max-h-[85vh] overflow-y-auto rounded-2xl border border-border bg-background p-5 sm:p-8 shadow-2xl" onClick={(ev) => ev.stopPropagation()}>
+          <button onClick={() => setSelectedEvent(null)} className="absolute top-4 right-4 rounded-lg p-2 text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
+            <X className="size-6" />
           </button>
-          <div className="flex items-start gap-3 mb-4 pr-8">
-            <div className={`flex items-center justify-center size-10 rounded-lg shrink-0 ${cfg.bg} ${cfg.text}`}>
-              <Icon className="size-5" />
+          <div className="flex items-start gap-4 mb-6 pr-10">
+            <div className={`flex items-center justify-center size-12 rounded-xl shrink-0 ${cfg.bg} ${cfg.text}`}>
+              <Icon className="size-6" />
             </div>
-            <div className="flex flex-col gap-0.5">
-              <h3 className="text-base font-semibold text-foreground">{selectedEvent.title}</h3>
-              {selectedEvent.speaker && <p className="text-sm text-muted-foreground">{selectedEvent.speaker}</p>}
-              <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
-                <span className="flex items-center gap-1"><Clock className="size-3" />{selectedEvent.time}–{selectedEvent.endTime}</span>
-                <span className="flex items-center gap-1"><MapPin className="size-3" />{selectedEvent.location}</span>
+            <div className="flex flex-col gap-1">
+              <h3 className="text-xl font-bold text-foreground">{selectedEvent.title}</h3>
+              {selectedEvent.speaker && <p className="text-base text-muted-foreground">{selectedEvent.speaker}</p>}
+              <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
+                <span className="flex items-center gap-1.5"><Clock className="size-4" />{selectedEvent.time}–{selectedEvent.endTime}</span>
+                <span className="flex items-center gap-1.5"><MapPin className="size-4" />{selectedEvent.location}</span>
               </div>
             </div>
           </div>
-          <div className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{selectedEvent.description}</div>
+          <div className="text-base text-muted-foreground leading-relaxed whitespace-pre-line">{selectedEvent.description}</div>
+          {selectedEvent.instructionsUrl && (
+            <div className="mt-6 pt-6 border-t border-border/40">
+              <a
+                href={instructionsHref(selectedEvent.id)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-lg border border-blue-500/30 bg-blue-500/10 px-5 py-3 text-sm font-medium text-blue-400 hover:bg-blue-500/20 transition-colors"
+              >
+                <FileText className="size-4" />
+                Download Instructions (PDF)
+              </a>
+            </div>
+          )}
         </div>
       </div>
     )
@@ -479,6 +511,18 @@ export function ScheduleTimeline({ userId, assignedGroup, enrolledIds, waitliste
                   </div>
                   {hasDesc && <span className="flex items-center gap-1 text-[10px] text-muted-foreground/60 mt-1"><ChevronDown className="size-3" />Tap for details</span>}
                 </div>
+                {e.instructionsUrl && (
+                  <a
+                    href={instructionsHref(e.id)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(ev) => ev.stopPropagation()}
+                    className="flex items-center gap-1.5 rounded-lg shrink-0 border border-blue-500/30 bg-blue-500/10 px-3 py-2 text-xs font-medium text-blue-400 transition-colors hover:bg-blue-500/20"
+                  >
+                    <FileText className="size-3.5" />
+                    Instructions
+                  </a>
+                )}
               </div>
             )
           }
@@ -504,27 +548,41 @@ export function ScheduleTimeline({ userId, assignedGroup, enrolledIds, waitliste
                   const cfg = typeConfig[e.type]
                   const hasDesc = !!e.description
                   return (
-                    <div key={e.id} className="flex flex-col rounded-xl border border-border p-3 sm:p-4">
-                      <div
-                        className={hasDesc ? "cursor-pointer active:scale-[0.98] transition-all" : ""}
-                        onClick={hasDesc ? () => setSelectedEvent(e) : undefined}
-                      >
-                        <div className="flex items-start gap-2.5">
-                          <div className={`flex items-center justify-center size-8 sm:size-9 rounded-lg shrink-0 ${cfg.bg} ${cfg.text}`}>
-                            <Icon className="size-4" />
+                    <div key={e.id} className="flex rounded-xl border border-border p-3 sm:p-4">
+                      <div className="flex flex-col flex-1 min-w-0">
+                        <div
+                          className={hasDesc ? "cursor-pointer active:scale-[0.98] transition-all" : ""}
+                          onClick={hasDesc ? () => setSelectedEvent(e) : undefined}
+                        >
+                          <div className="flex items-start gap-2.5">
+                            <div className={`flex items-center justify-center size-8 sm:size-9 rounded-lg shrink-0 ${cfg.bg} ${cfg.text}`}>
+                              <Icon className="size-4" />
+                            </div>
+                            <div className="flex flex-col gap-0.5 min-w-0">
+                              <h3 className="text-xs sm:text-sm font-medium leading-tight text-foreground">{e.title}</h3>
+                              {e.speaker && <p className="text-[10px] sm:text-xs text-muted-foreground">{e.speaker}</p>}
+                            </div>
                           </div>
-                          <div className="flex flex-col gap-0.5 min-w-0">
-                            <h3 className="text-xs sm:text-sm font-medium leading-tight text-foreground">{e.title}</h3>
-                            {e.speaker && <p className="text-[10px] sm:text-xs text-muted-foreground">{e.speaker}</p>}
+                          <div className="flex items-center justify-between gap-1 text-[10px] sm:text-xs text-muted-foreground mt-2">
+                            <span className="flex items-center gap-1 shrink-0"><Clock className="size-2.5 sm:size-3" />{e.time}–{e.endTime}</span>
+                            <span className="flex items-center gap-1 truncate"><MapPin className="size-2.5 sm:size-3 shrink-0" />{e.location}</span>
                           </div>
+                          {hasDesc && <span className="flex items-center gap-1 text-[10px] text-muted-foreground/60 mt-1"><ChevronDown className="size-2.5" />Tap for details</span>}
                         </div>
-                        <div className="flex items-center justify-between gap-1 text-[10px] sm:text-xs text-muted-foreground mt-2">
-                          <span className="flex items-center gap-1 shrink-0"><Clock className="size-2.5 sm:size-3" />{e.time}–{e.endTime}</span>
-                          <span className="flex items-center gap-1 truncate"><MapPin className="size-2.5 sm:size-3 shrink-0" />{e.location}</span>
-                        </div>
-                        {hasDesc && <span className="flex items-center gap-1 text-[10px] text-muted-foreground/60 mt-1"><ChevronDown className="size-2.5" />Tap for details</span>}
+                        <EnrollButton event={e} />
                       </div>
-                      <EnrollButton event={e} />
+                      {e.instructionsUrl && (
+                        <a
+                          href={instructionsHref(e.id)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(ev) => ev.stopPropagation()}
+                          className="flex items-center gap-1.5 self-center shrink-0 ml-2 rounded-lg border border-blue-500/30 bg-blue-500/10 px-2.5 py-1.5 text-[10px] sm:text-xs font-medium text-blue-400 transition-colors hover:bg-blue-500/20"
+                        >
+                          <FileText className="size-3" />
+                          <span className="hidden sm:inline">Instructions</span>
+                        </a>
+                      )}
                     </div>
                   )
                 })}
@@ -548,23 +606,37 @@ export function ScheduleTimeline({ userId, assignedGroup, enrolledIds, waitliste
                     return (
                       <div
                         key={e.id}
-                        className={`flex flex-col rounded-xl border border-border p-3 sm:p-4 transition-all ${hasDesc ? "cursor-pointer active:scale-[0.98] hover:border-muted-foreground/40" : ""}`}
+                        className={`flex rounded-xl border border-border p-3 sm:p-4 transition-all ${hasDesc ? "cursor-pointer active:scale-[0.98] hover:border-muted-foreground/40" : ""}`}
                         onClick={hasDesc ? () => setSelectedEvent(e) : undefined}
                       >
-                        <div className="flex items-start gap-2.5">
-                          <div className={`flex items-center justify-center size-8 sm:size-9 rounded-lg shrink-0 ${cfg.bg} ${cfg.text}`}>
-                            <Icon className="size-4" />
+                        <div className="flex flex-col gap-1.5 flex-1 min-w-0">
+                          <div className="flex items-start gap-2.5">
+                            <div className={`flex items-center justify-center size-8 sm:size-9 rounded-lg shrink-0 ${cfg.bg} ${cfg.text}`}>
+                              <Icon className="size-4" />
+                            </div>
+                            <div className="flex flex-col gap-0.5 min-w-0">
+                              <h3 className="text-xs sm:text-sm font-medium leading-tight text-foreground">{e.title}</h3>
+                              {e.speaker && <p className="text-[10px] sm:text-xs text-muted-foreground">{e.speaker}</p>}
+                            </div>
                           </div>
-                          <div className="flex flex-col gap-0.5 min-w-0">
-                            <h3 className="text-xs sm:text-sm font-medium leading-tight text-foreground">{e.title}</h3>
-                            {e.speaker && <p className="text-[10px] sm:text-xs text-muted-foreground">{e.speaker}</p>}
+                          <div className="flex items-center justify-between gap-1 text-[10px] sm:text-xs text-muted-foreground mt-0.5">
+                            <span className="flex items-center gap-1 shrink-0"><Clock className="size-2.5 sm:size-3" />{e.time}–{e.endTime}</span>
+                            <span className="flex items-center gap-1 truncate"><MapPin className="size-2.5 sm:size-3 shrink-0" />{e.location}</span>
                           </div>
+                          {hasDesc && <span className="flex items-center gap-1 text-[10px] text-muted-foreground/60 mt-0.5"><ChevronDown className="size-2.5" />Tap for details</span>}
                         </div>
-                        <div className="flex items-center justify-between gap-1 text-[10px] sm:text-xs text-muted-foreground mt-2">
-                          <span className="flex items-center gap-1 shrink-0"><Clock className="size-2.5 sm:size-3" />{e.time}–{e.endTime}</span>
-                          <span className="flex items-center gap-1 truncate"><MapPin className="size-2.5 sm:size-3 shrink-0" />{e.location}</span>
-                        </div>
-                        {hasDesc && <span className="flex items-center gap-1 text-[10px] text-muted-foreground/60 mt-1"><ChevronDown className="size-2.5" />Tap for details</span>}
+                        {e.instructionsUrl && (
+                          <a
+                            href={instructionsHref(e.id)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(ev) => ev.stopPropagation()}
+                            className="flex items-center gap-1.5 self-center shrink-0 ml-2 rounded-lg border border-blue-500/30 bg-blue-500/10 px-2.5 py-1.5 text-[10px] sm:text-xs font-medium text-blue-400 transition-colors hover:bg-blue-500/20"
+                          >
+                            <FileText className="size-3" />
+                            <span className="hidden sm:inline">Instructions</span>
+                          </a>
+                        )}
                       </div>
                     )
                   })}
@@ -574,24 +646,38 @@ export function ScheduleTimeline({ userId, assignedGroup, enrolledIds, waitliste
                   const hasDesc = !!spanningEvent.description
                   return (
                     <div className="flex flex-col rounded-xl border border-border p-3 sm:p-4">
-                      <div
-                        className={hasDesc ? "cursor-pointer active:scale-[0.98] transition-all" : ""}
-                        onClick={hasDesc ? () => setSelectedEvent(spanningEvent) : undefined}
-                      >
-                        <div className="flex items-start gap-2.5">
-                          <div className={`flex items-center justify-center size-8 sm:size-9 rounded-lg shrink-0 ${typeConfig[spanningEvent.type].bg} ${typeConfig[spanningEvent.type].text}`}>
-                            <Wrench className="size-4" />
+                      <div className="flex">
+                        <div
+                          className={`flex flex-col flex-1 min-w-0 ${hasDesc ? "cursor-pointer active:scale-[0.98] transition-all" : ""}`}
+                          onClick={hasDesc ? () => setSelectedEvent(spanningEvent) : undefined}
+                        >
+                          <div className="flex items-start gap-2.5">
+                            <div className={`flex items-center justify-center size-8 sm:size-9 rounded-lg shrink-0 ${typeConfig[spanningEvent.type].bg} ${typeConfig[spanningEvent.type].text}`}>
+                              <Wrench className="size-4" />
+                            </div>
+                            <div className="flex flex-col gap-0.5 min-w-0">
+                              <h3 className="text-xs sm:text-sm font-medium leading-tight text-foreground">{spanningEvent.title}</h3>
+                              {spanningEvent.speaker && <p className="text-[10px] sm:text-xs text-muted-foreground">{spanningEvent.speaker}</p>}
+                            </div>
                           </div>
-                          <div className="flex flex-col gap-0.5 min-w-0">
-                            <h3 className="text-xs sm:text-sm font-medium leading-tight text-foreground">{spanningEvent.title}</h3>
-                            {spanningEvent.speaker && <p className="text-[10px] sm:text-xs text-muted-foreground">{spanningEvent.speaker}</p>}
+                          <div className="flex items-center justify-between gap-1 text-[10px] sm:text-xs text-muted-foreground mt-2">
+                            <span className="flex items-center gap-1 shrink-0"><Clock className="size-2.5 sm:size-3" />{spanningEvent.time}–{spanningEvent.endTime}</span>
+                            <span className="flex items-center gap-1 truncate"><MapPin className="size-2.5 sm:size-3 shrink-0" />{spanningEvent.location}</span>
                           </div>
+                          {hasDesc && <span className="flex items-center gap-1 text-[10px] text-muted-foreground/60 mt-1"><ChevronDown className="size-2.5" />Tap for details</span>}
                         </div>
-                        <div className="flex items-center justify-between gap-1 text-[10px] sm:text-xs text-muted-foreground mt-2">
-                          <span className="flex items-center gap-1 shrink-0"><Clock className="size-2.5 sm:size-3" />{spanningEvent.time}–{spanningEvent.endTime}</span>
-                          <span className="flex items-center gap-1 truncate"><MapPin className="size-2.5 sm:size-3 shrink-0" />{spanningEvent.location}</span>
-                        </div>
-                        {hasDesc && <span className="flex items-center gap-1 text-[10px] text-muted-foreground/60 mt-1"><ChevronDown className="size-2.5" />Tap for details</span>}
+                        {spanningEvent.instructionsUrl && (
+                          <a
+                            href={instructionsHref(spanningEvent.id)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(ev) => ev.stopPropagation()}
+                            className="flex items-center gap-1.5 self-center shrink-0 ml-2 rounded-lg border border-blue-500/30 bg-blue-500/10 px-2.5 py-1.5 text-[10px] sm:text-xs font-medium text-blue-400 transition-colors hover:bg-blue-500/20"
+                          >
+                            <FileText className="size-3" />
+                            <span className="hidden sm:inline">Instructions</span>
+                          </a>
+                        )}
                       </div>
                       <div className="flex-1" />
                       <EnrollButton event={spanningEvent} />

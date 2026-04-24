@@ -8,10 +8,11 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 interface SponsorNavProps {
   prevId: string | null
   nextId: string | null
+  basePath?: string
   children: React.ReactNode
 }
 
-export function SponsorNav({ prevId, nextId, children }: SponsorNavProps) {
+export function SponsorNav({ prevId, nextId, basePath = "/sponsors", children }: SponsorNavProps) {
   const router = useRouter()
   const [swipeOffset, setSwipeOffset] = useState(0)
   const [transitioning, setTransitioning] = useState(false)
@@ -22,9 +23,9 @@ export function SponsorNav({ prevId, nextId, children }: SponsorNavProps) {
     setTransitioning(true)
     setSwipeOffset(direction === "left" ? -window.innerWidth : window.innerWidth)
     setTimeout(() => {
-      router.push(`/sponsors/${id}`)
+      router.push(`${basePath}/${id}`)
     }, 200)
-  }, [router])
+  }, [router, basePath])
 
   useEffect(() => {
     const onTouchStart = (e: TouchEvent) => {
@@ -103,9 +104,9 @@ export function SponsorNav({ prevId, nextId, children }: SponsorNavProps) {
       {/* Left arrow */}
       {prevId && (
         <Link
-          href={`/sponsors/${prevId}`}
+          href={`${basePath}/${prevId}`}
           className="fixed left-2 top-1/2 -translate-y-1/2 z-50 hidden md:flex items-center justify-center size-11 rounded-full bg-black/20 backdrop-blur-md border border-white/20 text-white/80 transition-all hover:bg-black/40 hover:text-white shadow-lg"
-          aria-label="Previous sponsor"
+          aria-label="Previous"
         >
           <ChevronLeft className="size-6" />
         </Link>
@@ -114,9 +115,9 @@ export function SponsorNav({ prevId, nextId, children }: SponsorNavProps) {
       {/* Right arrow */}
       {nextId && (
         <Link
-          href={`/sponsors/${nextId}`}
+          href={`${basePath}/${nextId}`}
           className="fixed right-2 top-1/2 -translate-y-1/2 z-50 hidden md:flex items-center justify-center size-11 rounded-full bg-black/20 backdrop-blur-md border border-white/20 text-white/80 transition-all hover:bg-black/40 hover:text-white shadow-lg"
-          aria-label="Next sponsor"
+          aria-label="Next"
         >
           <ChevronRight className="size-6" />
         </Link>

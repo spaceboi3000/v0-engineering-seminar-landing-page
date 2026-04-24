@@ -16,7 +16,7 @@ Stores user profile information, linked to Supabase Auth users.
 | `university` | text | University name |
 | `department` | text | Department/school |
 | `year` | text | Year of study (CHECK constraint for valid values) |
-| `assigned_group` | text | Group assignment: `'Not set'`, `'A'`, or `'B'` (default: `'Not set'`) |
+| `assigned_group` | text | Group assignment: `'Not set'`, `'A'`, `'B'`, or `'Admin'` (default: `'Not set'`) |
 
 **RLS Policies:**
 
@@ -152,7 +152,7 @@ Applied in chronological order:
 auth.users
   │
   ├──1:1──► profiles (id = auth.users.id)
-  │           └── assigned_group (A / B / Not set)
+  │           └── assigned_group (A / B / Not set / Admin)
   │
   └──1:N──► enrollments
               │   └── status (enrolled / waitlisted)

@@ -6,6 +6,7 @@ interface Stat {
   label: string
   value: number
   big: boolean
+  showPlus?: boolean
 }
 
 function useCountUp(target: number, active: boolean, duration = 1600) {
@@ -100,7 +101,7 @@ function StatItem({ stat, visible, index }: { stat: Stat; visible: boolean; inde
           stat.big ? "text-7xl md:text-8xl" : "text-4xl md:text-5xl"
         }`}
       >
-        {count}+
+        {count}{stat.showPlus !== false && "+"}
       </span>
       <span className="mt-2 text-sm text-blue-200/70 font-medium uppercase tracking-wider">
         {stat.label}

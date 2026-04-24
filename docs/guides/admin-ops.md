@@ -37,6 +37,58 @@ echo "SELECT id, first_name, last_name, university, assigned_group FROM profiles
   | npx supabase db query --linked
 ```
 
+## Admin Check-in Page
+
+The admin check-in page (`/admin`) lets admins scan attendee QR codes on-site, view their profile and enrollments, and assign them to Group A or B.
+
+### Prerequisites
+
+1. The admin user must have `assigned_group = 'Admin'` in the `profiles` table
+2. The `profiles_assigned_group_check` constraint must include `'Admin'` as a valid value:
+
+```sql
+ALTER TABLE profiles DROP CONSTRAINT profiles_assigned_group_check;
+ALTER TABLE profiles ADD CONSTRAINT profiles_assigned_group_check
+  CHECK (assigned_group IN ('A', 'B', 'Not set', 'Admin'));
+```
+
+3. Set the admin's group in the Supabase dashboard or via SQL:
+
+```sql
+UPDATE profiles SET assigned_group = 'Admin' WHERE id = 'your-user-uuid';
+```
+
+### Using the Check-in Page
+
+1. Log in with an admin account and navigate to `/admin`
+2. Tap **Scan QR Code** to open the camera
+3. Point the camera at an attendee's QR code (format: `ras-ntua:checkin:{userId}`)
+4. The scanned user's profile appears:
+   - Name, university, department, role
+   - Current group assignment
+   - Workshop enrollments with times and status (enrolled/waitlisted)
+5. Tap **Group A** or **Group B** to assign the user
+6. A green confirmation banner appears on success
+7. Tap **Scan Another** to check in the next attendee
+
+### Access Control
+
+- Non-logged-in users are redirected to `/login`
+- Logged-in users without `assigned_group = 'Admin'` are redirected to `/dashboard`
+- The API routes (`/api/admin/lookup`, `/api/admin/assign-group`) independently verify admin status server-side
+
+### QR Code Format
+
+The attendee QR codes displayed on the dashboard follow this format:
+
+```
+ras-ntua:checkin:{userId}
+```
+
+Where `{userId}` is the Supabase Auth user UUID. The scanner parses this and looks up the user via the `/api/admin/lookup` endpoint.
+
+---
+
 ## Group Assignment
 
 ### How Groups Work
@@ -48,15 +100,20 @@ The `assigned_group` column in `profiles` determines which events are highlighte
 | `Not set` | No group highlighting, "No group" badge |
 | `A` | Group A events highlighted with blue glow |
 | `B` | Group B events highlighted with blue glow |
+| `Admin` | Admin access to `/admin` check-in page |
 
 ### Assign a User to a Group
+
+**Admin check-in page (recommended for on-site):**
+
+Navigate to `/admin`, scan the attendee's QR code, and tap Group A or Group B.
 
 **Supabase Dashboard:**
 
 1. Go to Table Editor > `profiles`
 2. Find the user's row
 3. Click the `assigned_group` cell
-4. Select from the dropdown: `Not set`, `A`, or `B`
+4. Select from the dropdown: `Not set`, `A`, `B`, or `Admin`
 
 The CHECK constraint ensures only valid values can be set.
 
@@ -69,8 +126,8 @@ UPDATE profiles SET assigned_group = 'A' WHERE id = 'user-uuid-here';
 -- Assign all users from a university to group A
 UPDATE profiles SET assigned_group = 'A' WHERE university ILIKE '%NTUA%';
 
--- Reset all groups
-UPDATE profiles SET assigned_group = 'Not set';
+-- Reset all groups (except admins)
+UPDATE profiles SET assigned_group = 'Not set' WHERE assigned_group != 'Admin';
 ```
 
 ### Bulk Group Assignment

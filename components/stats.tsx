@@ -17,8 +17,8 @@ export async function Stats() {
 
   const stats = [
     { label: "Participants", value: studentCount ?? 0, big: true },
-    { label: "Sponsors", value: sponsors.length, big: false },
-    { label: "Speakers", value: speakers.length, big: false },
+    { label: "Sponsors", value: sponsors.length, big: false, showPlus: false },
+    { label: "Speakers", value: speakers.length, big: false, showPlus: false },
     { label: "Company Representatives", value: companyCount ?? 0, big: false },
   ]
 

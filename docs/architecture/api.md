@@ -157,6 +157,69 @@ Confirms a newsletter subscription.
 
 ---
 
+## GET `/api/admin/lookup`
+
+Looks up a user's profile and workshop enrollments. Used by the admin check-in page after scanning a QR code.
+
+**Auth:** Cookie-based session (requester must have `assigned_group = 'Admin'`)
+
+**Query params:** `?userId=<uuid>`
+
+**Response:**
+
+```json
+{
+  "id": "uuid",
+  "firstName": "string",
+  "lastName": "string",
+  "university": "string",
+  "department": "string",
+  "role": "student | company",
+  "assignedGroup": "Not set | A | B | Admin",
+  "enrollments": [
+    {
+      "workshopId": "string",
+      "status": "enrolled | waitlisted",
+      "title": "string",
+      "type": "workshop | seminar",
+      "startTime": "ISO 8601",
+      "endTime": "ISO 8601"
+    }
+  ]
+}
+```
+
+**Notes:**
+
+- Uses `createSupabaseServer()` for auth check (cookie-based), then `getSupabase()` (service role) for data queries
+- Returns 401 if not logged in, 403 if not admin, 404 if target user not found
+
+---
+
+## POST `/api/admin/assign-group`
+
+Assigns a user to Group A or Group B. Used by the admin check-in page.
+
+**Auth:** Cookie-based session (requester must have `assigned_group = 'Admin'`)
+
+**Request body:**
+
+```json
+{
+  "userId": "uuid",
+  "group": "A | B"
+}
+```
+
+**Response:** `{ "success": true, "group": "A" }` or `{ "error": "message" }`
+
+**Notes:**
+
+- Only accepts `"A"` or `"B"` as group values (returns 400 otherwise)
+- Uses service role key to update the `profiles` table
+
+---
+
 ## Authentication Pattern
 
 API routes that require authentication follow this pattern:

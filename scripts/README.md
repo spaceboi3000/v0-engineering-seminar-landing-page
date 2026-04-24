@@ -66,6 +66,28 @@ This will:
 5. Send emails with 300ms throttle between each
 6. Write a log file to `scripts/logs/`
 
+### Skip confirmation (`--yes`)
+
+For scripted or automated runs, add `--yes` to skip the interactive prompt:
+
+```bash
+python scripts/send_blast.py scripts/workshops_correction.md --yes
+```
+
+This is useful when resending to a list of failed addresses via a shell script.
+
+### Resending to failed recipients
+
+If a blast partially fails (e.g. due to Gmail rate limits), create a shell script targeting only the failed addresses:
+
+```bash
+python scripts/send_blast.py scripts/workshops_correction.md --yes --test \
+  failed1@gmail.com \
+  failed2@gmail.com
+```
+
+See `scripts/resend_failed.sh` for an example.
+
 ## How it works
 
 1. Parses the Markdown file: extracts subject from frontmatter, converts body to HTML
@@ -80,12 +102,19 @@ This will:
 
 The script automatically converts Greek first names from nominative to vocative case for natural-sounding greetings:
 
-- -ος endings: Νίκος -> Νίκο
-- -ας endings: Κώστας -> Κώστα
-- -ης endings: Γιάννης -> Γιάννη
-- -ιος endings: Δημήτριος -> Δημήτριε
+- -ιος endings: Δημήτριος -> Δημήτριε, Γεώργιος -> Γεώργιε
+- -ος endings (learned): Άγγελος -> Άγγελε, Πέτρος -> Πέτρε (see `_VOCATIVE_E_NAMES` set)
+- -ος endings (demotic): Νίκος -> Νίκο, Χρήστος -> Χρήστο, Γιώργος -> Γιώργο
+- -ης endings: Γιάννης -> Γιάννη, Δημήτρης -> Δημήτρη, Μιχαλής -> Μιχαλή
+- -ας endings: Κώστας -> Κώστα, Ανδρέας -> Ανδρέα, Θωμάς -> Θωμά
+- -ις endings: Πάρις -> Πάρι
+- -ευς endings: Οδυσσεύς -> Οδυσσεύ
+- Feminine names (-α, -η, -ώ, -ου): unchanged
+- Latin/non-Greek names: unchanged
 
-Add irregular names to the `VOCATIVE_EXCEPTIONS` dictionary in the script if needed.
+All suffix checks are accent-insensitive — accented variants (e.g. -άς, -ής, -ός) are handled automatically.
+
+Add irregular names to the `VOCATIVE_EXCEPTIONS` dictionary or learned names to `_VOCATIVE_E_NAMES` in the script if needed.
 
 ## Log files
 
@@ -116,11 +145,15 @@ SUMMARY
 | File | Purpose |
 |---|---|
 | `scripts/workshops_open.md` | Announce that workshop enrollment is open |
+| `scripts/workshops_correction.md` | Follow-up correction email about workshops |
+| `scripts/resend_failed.sh` | Resend workshops_correction to 44 rate-limited users |
 
 ## Safety
 
-- The script always asks for confirmation before sending
+- The script always asks for confirmation before sending (unless `--yes` is passed)
 - Use `--test` to verify with your own email first
 - Emails are throttled at 300ms intervals to avoid Gmail rate limits
+- The SMTP connection auto-reconnects once if Gmail drops it mid-send
 - Gmail has a daily sending limit of ~500 emails (regular) or ~2000 (Google Workspace)
+- If you hit the daily limit, collect failed addresses from the log and resend the next day using `--test`
 - Logs are saved for audit purposes

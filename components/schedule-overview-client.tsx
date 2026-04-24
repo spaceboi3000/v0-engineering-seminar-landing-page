@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Clock, MapPin, Presentation, Wrench, Coffee, Users, ChevronDown } from "lucide-react"
+import { Clock, MapPin, Presentation, Wrench, Coffee, Users, ChevronDown, FileText } from "lucide-react"
 import { ScheduleCardLink } from "@/components/schedule-card-link"
 
 type EventType = "workshop" | "seminar" | "break" | "networking"
@@ -15,6 +15,7 @@ interface Workshop {
   start_time: string
   end_time: string
   description: string | null
+  instructions_url: string | null
 }
 
 const typeConfig: Record<EventType, { icon: typeof Presentation; bg: string; text: string }> = {
@@ -85,18 +86,30 @@ export function ScheduleOverviewClient({ workshops }: { workshops: Workshop[] })
                         </p>
                       )}
                       {w.description ? (
-                        <p className="text-xs text-muted-foreground leading-relaxed line-clamp-4">{w.description}</p>
+                        <p className="text-xs text-muted-foreground leading-relaxed max-h-24 overflow-y-auto" style={{ scrollbarWidth: "thin" }}>{w.description}</p>
                       ) : (
                         <p className="text-xs text-muted-foreground/50 italic">No description available.</p>
                       )}
-                      {(w.type === "workshop" || w.type === "seminar") && (
-                        <ScheduleCardLink
-                          type={w.type}
-                          className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors"
-                        >
-                          {w.type === "workshop" ? "Enroll →" : "Learn more →"}
-                        </ScheduleCardLink>
-                      )}
+                      <div className="flex items-center gap-3 mt-2">
+                        {(w.type === "workshop" || w.type === "seminar") && (
+                          <ScheduleCardLink
+                            type={w.type}
+                            className="inline-flex items-center gap-1 text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors"
+                          >
+                            {w.type === "workshop" ? "Enroll →" : "Learn more →"}
+                          </ScheduleCardLink>
+                        )}
+                        {w.instructions_url && (
+                          <a
+                            href={`/api/workshop-instructions?id=${encodeURIComponent(w.id)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors"
+                          >
+                            <FileText className="size-3" /> Instructions (PDF)
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>

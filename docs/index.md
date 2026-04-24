@@ -41,7 +41,9 @@ A full-stack Next.js web application that serves as both a **public marketing si
 │   │   ├── enroll/         # Workshop enrollment (POST/DELETE)
 │   │   ├── contact/        # Contact form email
 │   │   ├── subscribe/      # Newsletter subscription
-│   │   └── confirm/        # Email confirmation
+│   │   ├── confirm/        # Email confirmation
+│   │   └── admin/          # Admin check-in API (lookup + assign-group)
+│   ├── admin/              # Admin check-in page (QR scanner, group assignment)
 │   ├── dashboard/          # Protected attendee dashboard
 │   ├── login/              # Login page
 │   ├── register/           # Registration page

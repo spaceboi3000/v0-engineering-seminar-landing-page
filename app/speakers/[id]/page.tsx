@@ -3,6 +3,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { ArrowLeft, ExternalLink } from "lucide-react"
 import { speakers } from "@/data/speakers"
+import { SponsorNav } from "@/components/sponsor-nav"
 
 export function generateStaticParams() {
   return speakers.map((s) => ({ id: s.id }))
@@ -13,13 +14,18 @@ export default async function SpeakerPage({ params }: { params: Promise<{ id: st
   const speaker = speakers.find((s) => s.id === id)
   if (!speaker) notFound()
 
+  const currentIndex = speakers.findIndex((s) => s.id === id)
+  const prevSpeaker = currentIndex > 0 ? speakers[currentIndex - 1] : null
+  const nextSpeaker = currentIndex < speakers.length - 1 ? speakers[currentIndex + 1] : null
+
   return (
+    <SponsorNav prevId={prevSpeaker?.id ?? null} nextId={nextSpeaker?.id ?? null} basePath="/speakers">
     <main className="relative min-h-screen bg-background">
       {/* Floating back button */}
       <Link
-        href="/"
+        href="/#speakers"
         className="fixed top-4 left-4 z-50 flex items-center justify-center size-10 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-white/70 transition-all hover:bg-white/20 hover:text-white"
-        aria-label="Back to home"
+        aria-label="Back to speakers"
       >
         <ArrowLeft className="size-5" />
       </Link>
@@ -71,5 +77,6 @@ export default async function SpeakerPage({ params }: { params: Promise<{ id: st
         </div>
       </div>
     </main>
+    </SponsorNav>
   )
 }
