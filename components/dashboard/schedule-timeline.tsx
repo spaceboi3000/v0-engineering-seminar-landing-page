@@ -511,7 +511,7 @@ export function ScheduleTimeline({ userId, assignedGroup, enrolledIds, waitliste
                   </div>
                   {hasDesc && <span className="flex items-center gap-1 text-[10px] text-muted-foreground/60 mt-1"><ChevronDown className="size-3" />Tap for details</span>}
                 </div>
-                {e.instructionsUrl && (
+                {e.hasInstructions && (
                   <a
                     href={instructionsHref(e.id)}
                     target="_blank"
@@ -571,7 +571,7 @@ export function ScheduleTimeline({ userId, assignedGroup, enrolledIds, waitliste
                         </div>
                         <EnrollButton event={e} />
                       </div>
-                      {e.instructionsUrl && (
+                      {e.hasInstructions && (
                         <a
                           href={instructionsHref(e.id)}
                           target="_blank"
@@ -625,7 +625,7 @@ export function ScheduleTimeline({ userId, assignedGroup, enrolledIds, waitliste
                           </div>
                           {hasDesc && <span className="flex items-center gap-1 text-[10px] text-muted-foreground/60 mt-0.5"><ChevronDown className="size-2.5" />Tap for details</span>}
                         </div>
-                        {e.instructionsUrl && (
+                        {e.hasInstructions && (
                           <a
                             href={instructionsHref(e.id)}
                             target="_blank"
@@ -666,7 +666,7 @@ export function ScheduleTimeline({ userId, assignedGroup, enrolledIds, waitliste
                           </div>
                           {hasDesc && <span className="flex items-center gap-1 text-[10px] text-muted-foreground/60 mt-1"><ChevronDown className="size-2.5" />Tap for details</span>}
                         </div>
-                        {spanningEvent.instructionsUrl && (
+                        {spanningEvent.hasInstructions && (
                           <a
                             href={instructionsHref(spanningEvent.id)}
                             target="_blank"
