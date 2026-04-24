@@ -420,7 +420,7 @@ export function ScheduleTimeline({ userId, assignedGroup, enrolledIds, waitliste
             </div>
           </div>
           <div className="text-base text-muted-foreground leading-relaxed whitespace-pre-line">{selectedEvent.description}</div>
-          {selectedEvent.instructionsUrl && (
+          {selectedEvent.hasInstructions && (
             <div className="mt-6 pt-6 border-t border-border/40">
               <a
                 href={instructionsHref(selectedEvent.id)}
