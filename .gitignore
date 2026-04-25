@@ -11,3 +11,7 @@ node_modules/
 .env*.local
 .DS_Store
 .claude/
+site/
+tsconfig.tsbuildinfo
+tunnel.conf
+scripts/

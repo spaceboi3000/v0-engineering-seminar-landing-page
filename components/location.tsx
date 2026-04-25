@@ -82,6 +82,31 @@ export function Location() {
             </div>
           </div>
         </div>
+
+        {/* How to get to Goethe */}
+        <div className="mt-20 text-center">
+          <h3 className="text-2xl font-bold tracking-tight text-white md:text-3xl">
+            How to Get to Goethe
+          </h3>
+          <p className="mt-3 text-blue-200/70 text-sm max-w-md mx-auto">
+            Watch our quick guide to find the venue easily
+          </p>
+
+          <div className="mt-8 mx-auto" style={{ maxWidth: '340px' }}>
+            <div className="relative">
+              <div className="absolute -inset-2 rounded-2xl bg-blue-500/15 blur-2xl" />
+              <div className="relative w-full overflow-hidden rounded-2xl border-2 border-blue-400/50 shadow-[0_0_30px_rgba(59,130,246,0.5)]" style={{ aspectRatio: '9/16' }}>
+                <iframe
+                  title="How to get to Goethe-Institut Athen"
+                  src="https://www.instagram.com/reel/DXelyOojNiQ/embed"
+                  className="h-full w-full border-0"
+                  allowFullScreen
+                  loading="lazy"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   )

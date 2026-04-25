@@ -26,6 +26,10 @@ export function Sponsors() {
   }, [])
 
   useEffect(() => {
+    // Only auto-scroll on devices that support hover (mouse)
+    const hasHover = window.matchMedia("(hover: hover)").matches
+    if (!hasHover) return
+
     const el = scrollRef.current
     if (!el) return
 
@@ -69,15 +73,15 @@ export function Sponsors() {
 
         <div
           className="relative group/carousel"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
+          onPointerEnter={(e) => { if (e.pointerType === "mouse") setIsPaused(true) }}
+          onPointerLeave={(e) => { if (e.pointerType === "mouse") setIsPaused(false) }}
         >
           {/* Left arrow */}
           <button
             onClick={() => scrollBy("left")}
             disabled={!canScrollLeft}
             aria-label="Scroll sponsors left"
-            className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full border border-border/40 bg-background/70 backdrop-blur-sm flex items-center justify-center transition-all duration-300 ${
+            className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full border border-border/40 bg-background/70 backdrop-blur-sm hidden [@media(hover:hover)]:flex items-center justify-center transition-all duration-300 ${
               canScrollLeft
                 ? "opacity-0 group-hover/carousel:opacity-100 hover:border-ras-red/50 hover:bg-background/90 cursor-pointer"
                 : "opacity-0 cursor-default"
@@ -93,7 +97,7 @@ export function Sponsors() {
             onClick={() => scrollBy("right")}
             disabled={!canScrollRight}
             aria-label="Scroll sponsors right"
-            className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full border border-border/40 bg-background/70 backdrop-blur-sm flex items-center justify-center transition-all duration-300 ${
+            className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full border border-border/40 bg-background/70 backdrop-blur-sm hidden [@media(hover:hover)]:flex items-center justify-center transition-all duration-300 ${
               canScrollRight
                 ? "opacity-0 group-hover/carousel:opacity-100 hover:border-ras-red/50 hover:bg-background/90 cursor-pointer"
                 : "opacity-0 cursor-default"
@@ -104,15 +108,15 @@ export function Sponsors() {
             </svg>
           </button>
 
-          {/* Left/right fade edges */}
-          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-background/80 to-transparent z-[5]" />
-          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background/80 to-transparent z-[5]" />
+          {/* Left/right fade edges (desktop only) */}
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-background/80 to-transparent z-[5] hidden [@media(hover:hover)]:block" />
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background/80 to-transparent z-[5] hidden [@media(hover:hover)]:block" />
 
           {/* Scrollable track */}
           <div
             ref={scrollRef}
             onScroll={updateScrollButtons}
-            className="flex gap-5 overflow-x-auto scrollbar-hide px-2 py-2"
+            className="flex justify-center flex-wrap gap-5 overflow-x-auto scrollbar-hide px-2 py-2"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {sortedSponsors.map((sponsor) => {
@@ -121,33 +125,36 @@ export function Sponsors() {
                 <Link
                   key={sponsor.id}
                   href={`/sponsors/${sponsor.id}`}
-                  className="group relative flex shrink-0 w-[320px] items-start gap-4 rounded-2xl border border-border/40 bg-muted/20 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-border/60 hover:bg-muted/40 hover:shadow-[0_4px_30px_rgba(228,61,64,0.04)] cursor-pointer"
+                  className="group flex flex-col shrink-0 w-[320px] rounded-2xl border border-border/40 bg-muted/20 overflow-hidden transition-[border-color,background-color,box-shadow] duration-300 [@media(hover:hover)]:hover:-translate-y-1 [@media(hover:hover)]:transition-all hover:border-border/60 hover:bg-muted/40 hover:shadow-[0_4px_30px_rgba(228,61,64,0.04)] cursor-pointer"
                 >
-                  {/* Tier badge */}
-                  <span
-                    className={`absolute top-3 right-3 text-[10px] font-bold uppercase tracking-widest ${tier.textClass}`}
-                    style={{ opacity: 0.85 }}
+                  {/* Tier strip */}
+                  <div
+                    className="flex items-center justify-center py-2 text-[11px] font-bold uppercase tracking-widest text-black shrink-0"
+                    style={{ backgroundColor: tier.color }}
                   >
                     {tier.label}
-                  </span>
+                  </div>
 
-                  {/* Logo container */}
-                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border border-border/40 bg-muted/30 p-2">
+                  {/* Logo area */}
+                  <div
+                    className="relative h-[140px] w-full border-b border-border/40"
+                    style={{ background: sponsor.logoBg ?? "white" }}
+                  >
                     <Image
                       src={sponsor.logo}
                       alt={sponsor.name}
-                      width={48}
-                      height={48}
-                      className="h-auto w-full object-contain"
+                      fill
+                      sizes="(max-width: 640px) 80vw, (max-width: 1024px) 40vw, 280px"
+                      className="object-contain p-4"
                     />
                   </div>
 
                   {/* Text */}
-                  <div className="flex flex-col min-w-0 pt-0.5">
-                    <h3 className="text-sm font-semibold text-foreground truncate pr-16 group-hover:text-ras-red-400 transition-colors">
+                  <div className="flex flex-col justify-center gap-1.5 p-5">
+                    <h3 className="text-sm font-semibold text-foreground group-hover:text-ras-red-400 transition-colors">
                       {sponsor.name}
                     </h3>
-                    <p className="mt-1.5 text-xs text-muted-foreground/70 leading-relaxed line-clamp-3">
+                    <p className="text-xs text-muted-foreground/70 leading-relaxed line-clamp-3">
                       {sponsor.shortDescription}
                     </p>
                   </div>
@@ -160,7 +167,7 @@ export function Sponsors() {
         {/* "Become a Sponsor" CTA */}
         <div className="mt-8 flex justify-center">
           <a
-            href="mailto:sponsors@example.com"
+            href="mailto:ras.ntua@gmail.com"
             className="inline-flex items-center gap-2 rounded-full border border-dashed border-border/60 px-6 py-3 text-sm font-medium text-muted-foreground transition-all hover:border-border hover:bg-muted/30 hover:text-foreground/80"
           >
             <span className="text-lg leading-none">+</span> Become a Sponsor

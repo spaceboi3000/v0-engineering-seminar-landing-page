@@ -5,8 +5,12 @@ import { transporter } from "@/lib/mailer"
 export async function POST(req: Request) {
   const { email } = await req.json()
 
-  if (!email) {
+  if (!email || typeof email !== "string") {
     return NextResponse.json({ error: "Email is required." }, { status: 400 })
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return NextResponse.json({ error: "Invalid email address." }, { status: 400 })
   }
 
   // Check if already subscribed

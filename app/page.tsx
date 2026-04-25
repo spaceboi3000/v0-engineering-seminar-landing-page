@@ -2,13 +2,19 @@ import { Suspense } from "react"
 import { Header } from "@/components/header"
 import { Hero } from "@/components/hero"
 import { About } from "@/components/about"
+import { ScheduleOverview } from "@/components/schedule-overview"
 import { PastEvents } from "@/components/past-events"
 import { SectionDivider } from "@/components/section-divider"
 import { Organizers } from "@/components/organizers"
+import { Speakers } from "@/components/speakers"
+import { Sponsors } from "@/components/sponsors"
 import { Location } from "@/components/location"
+import { Stats } from "@/components/stats"
 import { Contact } from "@/components/contact"
 import { Footer } from "@/components/footer"
 import { ConfirmationToast } from "@/components/confirmation-toast"
+
+export const revalidate = 1200
 
 export default function Page() {
   return (
@@ -20,6 +26,14 @@ export default function Page() {
       <main>
         <Hero />
         <About />
+        <Stats />
+        <SectionDivider />
+        <ScheduleOverview />
+        <SectionDivider />
+        <Speakers />
+        <SectionDivider />
+        <Sponsors />
+        <SectionDivider />
         <PastEvents />
         <SectionDivider />
         <Organizers />

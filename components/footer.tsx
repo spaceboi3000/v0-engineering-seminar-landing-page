@@ -6,8 +6,7 @@ export function Footer() {
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 md:flex-row lg:px-8">
         <div className="flex items-center gap-3">
           <Image
-            // UPDATED: Path matches the exact filename in your public/images folder
-            src="/images/RoboTalk ROBOT_PNG_IM.png"
+            src="/images/robotalk-logo.webp"
             alt="RoboTalk logo"
             width={28}
             height={28}
@@ -27,8 +26,14 @@ export function Footer() {
           <a href="#about" className="text-xs text-white/40 transition-colors hover:text-sky-400">
             About
           </a>
+          <a href="#speakers" className="text-xs text-white/40 transition-colors hover:text-sky-400">
+            Speakers
+          </a>
           <a href="#past-events" className="text-xs text-white/40 transition-colors hover:text-sky-400">
-            Past Events
+            Gallery
+          </a>
+          <a href="#sponsors" className="text-xs text-white/40 transition-colors hover:text-sky-400">
+            Sponsors
           </a>
           <a href="#location" className="text-xs text-white/40 transition-colors hover:text-sky-400">
             Location

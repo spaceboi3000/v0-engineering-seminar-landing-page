@@ -88,7 +88,7 @@ export function Organizers() {
                   }`}
                 >
                   <Image
-                    src="/images/sb-logo.png"
+                    src="/images/sb-logo.webp"
                     alt="IEEE NTUA Student Branch"
                     width={100}
                     height={100}

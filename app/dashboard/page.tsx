@@ -1,0 +1,122 @@
+import { redirect } from "next/navigation"
+import Link from "next/link"
+import { ArrowLeft, Shield } from "lucide-react"
+import { createSupabaseServer } from "@/lib/supabase-server"
+import { getSupabase } from "@/lib/supabase"
+import { UserHeader } from "@/components/dashboard/user-header"
+import { QrCheckinCard } from "@/components/dashboard/qr-checkin-card"
+import { ScheduleTimeline } from "@/components/dashboard/schedule-timeline"
+
+import { GameSection } from "@/components/dashboard/game-section"
+import { WinOverlay } from "@/components/dashboard/winoverlay"
+
+export default async function DashboardPage() {
+  const supabase = await createSupabaseServer()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) redirect("/login")
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("first_name, last_name, university, department, assigned_group")
+    .eq("id", user.id)
+    .single()
+
+  const db = getSupabase()
+
+  const { data: enrollments } = await db
+    .from("enrollments")
+    .select("workshop_id, status")
+    .eq("user_id", user.id)
+
+  const enrolledIds   = enrollments?.filter((e) => e.status === "enrolled").map((e) => e.workshop_id) ?? []
+  const waitlistedIds = enrollments?.filter((e) => e.status === "waitlisted").map((e) => e.workshop_id) ?? []
+
+  const { data: countRows } = await db
+    .from("workshop_enrollment_summary")
+    .select("workshop_id, enrolled_count")
+
+  const enrollmentCounts: Record<string, number> = {}
+  for (const row of countRows ?? []) {
+    enrollmentCounts[row.workshop_id] = Number(row.enrolled_count)
+  }
+
+  const { data: workshops } = await db
+    .from("workshops")
+    .select("id, title, speaker, location, type, start_time, end_time, capacity, group_label, conflict_group, description, instructions_url")
+    .order("start_time")
+
+  const fullName = profile
+    ? `${profile.first_name} ${profile.last_name}`
+    : user.email ?? "Attendee"
+
+  // Short human-readable attendee ID derived from UUID
+  const attendeeId = `RAS-${user.id.slice(0, 8).toUpperCase()}`
+
+  return (
+    <div className="relative min-h-svh bg-background lg:flex lg:flex-row scroll-smooth overflow-y-auto" id="dashboard">
+      <WinOverlay />
+      <div className="flex flex-1 flex-col lg:flex-row lg:min-h-svh flex-wrap">
+        <div id="qr-code" className="mx-auto flex w-full max-w-lg flex-col gap-6 px-4 pt-10 lg:max-w-md lg:shrink-0 lg:border-r lg:border-border lg:px-8 lg:pb-8 lg:pt-16 lg:gap-8">
+          <UserHeader
+            name={fullName}
+            group={profile?.assigned_group ?? "Not set"}
+            eventName="RoboTalk 2026"
+            date="April 25, 2026"
+            userId={user.id}
+            firstName={profile?.first_name ?? ""}
+            lastName={profile?.last_name ?? ""}
+            university={profile?.university ?? ""}
+            department={profile?.department ?? ""}
+          />
+          <QrCheckinCard attendeeId={attendeeId} userId={user.id} />
+          <div className="hidden lg:flex flex-col gap-2 pb-4">
+            <Link
+              href="/"
+              className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-sky-500 px-4 py-3 text-sm font-semibold text-white shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(14,165,233,0.5)]"
+            >
+              Return to Home
+            </Link>
+            {profile?.assigned_group === "Admin" && (
+              <Link
+                href="/admin"
+                className="flex items-center justify-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm font-semibold text-emerald-400 transition-all hover:bg-emerald-500/20"
+              >
+                <Shield className="size-4" />
+                Admin Panel
+              </Link>
+            )}
+          </div>
+        </div>
+
+        <div className="flex flex-col lg:flex-1 lg:overflow-y-auto">
+          <div id="schedule" className="mx-auto flex w-full max-w-lg flex-col px-4 pt-6 lg:max-w-none lg:px-8 lg:pt-16">
+            <ScheduleTimeline userId={user.id} assignedGroup={profile?.assigned_group ?? "Not set"} enrolledIds={enrolledIds} waitlistedIds={waitlistedIds} enrollmentCounts={enrollmentCounts} workshops={workshops ?? []} />
+          </div>
+
+          <div className="w-full pb-20 lg:pb-8">
+            <GameSection />
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile floating buttons */}
+      <Link
+        href="/"
+        className="fixed top-4 left-4 z-50 flex items-center justify-center size-10 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-white/70 transition-all hover:bg-white/20 hover:text-white lg:hidden"
+        aria-label="Back to home"
+      >
+        <ArrowLeft className="size-5" />
+      </Link>
+      {profile?.assigned_group === "Admin" && (
+        <Link
+          href="/admin"
+          className="fixed top-4 right-4 z-50 flex items-center justify-center size-10 rounded-full bg-emerald-500/20 backdrop-blur-md border border-emerald-500/30 text-emerald-400 transition-all hover:bg-emerald-500/30 lg:hidden"
+          aria-label="Admin panel"
+        >
+          <Shield className="size-5" />
+        </Link>
+      )}
+    </div>
+  )
+}
