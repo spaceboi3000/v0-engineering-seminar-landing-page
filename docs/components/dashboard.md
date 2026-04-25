@@ -119,9 +119,53 @@ User clicks "Subscribe" on a workshop card
   → API checks capacity
   → Returns: enrolled, waitlisted, or error
   → Client updates state (optimistic UI)
+  → Immediate refresh from server to sync truth
 ```
 
 **Time conflict example:** If enrolled in Renesas (17:10-18:10), the API blocks enrollment in Eve Psalti (17:10-17:40) because their times overlap.
+
+### Unenroll & Waitlist Promotion
+
+```
+User clicks "Unsubscribe"
+  → DELETE /api/enroll with workshopId
+  → API checks if user was enrolled (not just waitlisted)
+  → If enrolled: auto-promotes earliest waitlisted user to enrolled
+  → Client updates state + immediate server refresh
+```
+
+The promoted user's dashboard updates automatically via polling (see below).
+
+### Real-Time Polling
+
+The schedule timeline polls Supabase every **15 seconds** to refresh:
+
+- The current user's enrollment statuses (enrolled vs waitlisted)
+- Global enrollment counts per workshop
+
+This ensures:
+
+- If you get promoted from the waitlist, your status badge updates automatically
+- Spot availability stays current across all users
+- After any enroll/unenroll action, an immediate refresh is triggered (no 15s wait)
+
+### Workshop Instructions
+
+Workshops can have instruction PDFs uploaded by admins. When instructions exist:
+
+- An "Instructions" button appears on the **right side** of workshop cards in the timeline
+- The detail popup shows a "Download Instructions (PDF)" link below the description
+- PDFs are served through `/api/workshop-instructions?id=...` (proxy hides Supabase URL)
+- The client only knows `hasInstructions: boolean`, never the storage URL
+
+### Event Detail Popup
+
+Tapping a card with a description opens a centered modal:
+
+- Max width: `max-w-3xl`, max height: `85vh`
+- Shows event icon, title, speaker, time, location
+- Full description text with `whitespace-pre-line`
+- Instructions download link below a separator (if available)
 
 ### Filter Tabs
 
@@ -164,10 +208,11 @@ Uses smooth scrolling to navigate between dashboard sections.
 
 ## GameSection (`game-section.tsx`)
 
-Container for the embedded Snake game.
+Container for the embedded Snake game. Always visible below the schedule on both mobile and desktop.
 
 - Wraps the SnakeGame component
 - Provides scoring context
+- No conditional show/hide — renders immediately for all logged-in users
 
 ## SnakeGame (`snake-game.tsx`)
 

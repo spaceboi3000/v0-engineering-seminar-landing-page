@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { createSupabaseBrowser } from "@/lib/supabase-browser"
 import { Clock, MapPin, Presentation, Wrench, Coffee, Users, FileUp, FileText, Loader2, Users2, X, ChevronDown } from "lucide-react"
 
@@ -210,6 +210,38 @@ export function ScheduleTimeline({ userId, assignedGroup, enrolledIds, waitliste
       .then(({ data }: { data: { id: string } | null }) => { if (data) setHasCv(true) })
   }, [userId])
 
+  // Poll enrollment data every 15s so counts and statuses stay fresh
+  const refreshEnrollments = useCallback(async () => {
+    const supabase = createSupabaseBrowser()
+
+    // Fetch user's own enrollments
+    const { data: userEnrollments } = await supabase
+      .from("enrollments")
+      .select("workshop_id, status")
+      .eq("user_id", userId)
+
+    if (userEnrollments) {
+      setEnrolled(new Set(userEnrollments.filter((e: { status: string; workshop_id: string }) => e.status === "enrolled").map((e: { workshop_id: string }) => e.workshop_id)))
+      setWaitlisted(new Set(userEnrollments.filter((e: { status: string; workshop_id: string }) => e.status === "waitlisted").map((e: { workshop_id: string }) => e.workshop_id)))
+    }
+
+    // Fetch global counts
+    const { data: countRows } = await supabase
+      .from("workshop_enrollment_summary")
+      .select("workshop_id, enrolled_count")
+
+    if (countRows) {
+      const fresh: Record<string, number> = {}
+      for (const row of countRows) fresh[row.workshop_id] = Number(row.enrolled_count)
+      setCounts(fresh)
+    }
+  }, [userId])
+
+  useEffect(() => {
+    const interval = setInterval(refreshEnrollments, 15_000)
+    return () => clearInterval(interval)
+  }, [refreshEnrollments])
+
   const events: ProcessedEvent[] = workshops.map((w) => ({
     id: w.id,
     title: w.title,
@@ -264,6 +296,8 @@ export function ScheduleTimeline({ userId, assignedGroup, enrolledIds, waitliste
       setCounts((prev) => ({ ...prev, [workshopId]: (prev[workshopId] ?? 0) + 1 }))
     }
     setLoading(null)
+    // Refresh from server to pick up any side-effects (e.g. waitlist promotions)
+    refreshEnrollments()
   }
 
   async function handleUnenroll(workshopId: string) {
@@ -287,10 +321,28 @@ export function ScheduleTimeline({ userId, assignedGroup, enrolledIds, waitliste
       }
     }
     setLoading(null)
+    // Refresh from server to pick up any side-effects (e.g. waitlist promotions)
+    refreshEnrollments()
   }
 
   /* ---- Sub-components ---- */
 
+  /* Capacity badge — sits in the capacity | instructions row */
+  function CapacityBadge({ event }: { event: ProcessedEvent }) {
+    if (event.type !== "workshop" || event.capacity >= 9999) return null
+    const enrolledCount = counts[event.id] ?? 0
+    const isFull = enrolledCount >= event.capacity
+    return (
+      <span className={`inline-flex items-center gap-1 text-[10px] font-medium ${
+        isFull ? "text-red-400" : "text-muted-foreground"
+      }`}>
+        <Users2 className="size-3" />
+        {enrolledCount}/{event.capacity}
+      </span>
+    )
+  }
+
+  /* Subscribe / Unsubscribe button — full-width row at bottom */
   function EnrollButton({ event }: { event: ProcessedEvent }) {
     if (event.type !== "workshop") return null
     const isEnrolled = enrolled.has(event.id)
@@ -302,35 +354,27 @@ export function ScheduleTimeline({ userId, assignedGroup, enrolledIds, waitliste
     const hasError = error?.workshopId === event.id
 
     return (
-      <div className="flex flex-col gap-1.5 mt-2">
-        {event.capacity < 9999 && (
-          <span className={`inline-flex w-fit items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium ${
-            isFull ? "bg-red-500/10 text-red-400" : "bg-secondary text-muted-foreground"
-          }`}>
-            <Users2 className="size-2.5" />
-            {isFull ? `Full · ${enrolledCount}/${event.capacity}` : `${enrolledCount}/${event.capacity} spots`}
-          </span>
-        )}
+      <div className="flex flex-col gap-1 mt-3">
         {hasError && (
-          <div className="rounded-lg border border-red-500/20 bg-red-500/10 px-2.5 py-1.5 text-[10px] sm:text-xs text-red-400">
+          <div className="rounded border border-red-500/20 bg-red-500/10 px-2 py-1 text-[10px] text-red-400 leading-tight">
             {error.message}
           </div>
         )}
         {isEnrolled ? (
           <button disabled={isLoading} onClick={() => handleUnenroll(event.id)}
-            className="flex items-center justify-center gap-1.5 rounded-lg border border-red-500/30 bg-red-500/10 px-2.5 py-1.5 text-[11px] sm:text-xs font-semibold text-red-400 transition-all hover:bg-red-500/20 disabled:opacity-60">
+            className="w-full flex items-center justify-center gap-1 rounded-lg border border-red-500/30 bg-red-500/10 py-1 text-[10px] font-semibold text-red-400 transition-all hover:bg-red-500/20 disabled:opacity-60">
             {isLoading && <Loader2 className="size-3 animate-spin" />}
             Unsubscribe
           </button>
         ) : isWaitlisted ? (
           <button disabled={isLoading} onClick={() => handleUnenroll(event.id)}
-            className="flex items-center justify-center gap-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-2.5 py-1.5 text-[11px] sm:text-xs font-semibold text-amber-400 transition-all hover:bg-amber-500/20 disabled:opacity-60">
+            className="w-full flex items-center justify-center gap-1 rounded-lg border border-amber-500/30 bg-amber-500/10 py-1 text-[10px] font-semibold text-amber-400 transition-all hover:bg-amber-500/20 disabled:opacity-60">
             {isLoading && <Loader2 className="size-3 animate-spin" />}
             Waitlisted
           </button>
         ) : (
           <button disabled={isLoading} onClick={() => handleEnroll(event.id)}
-            className={`flex items-center justify-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11px] sm:text-xs font-semibold transition-all disabled:opacity-60 ${
+            className={`w-full flex items-center justify-center gap-1 rounded-lg py-1 text-[10px] font-semibold transition-all disabled:opacity-60 ${
               isFull
                 ? "border border-amber-500/30 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20"
                 : "bg-accent text-accent-foreground hover:opacity-90"
@@ -343,53 +387,67 @@ export function ScheduleTimeline({ userId, assignedGroup, enrolledIds, waitliste
     )
   }
 
-  /* Compact card used in group-conflict, enrollable-conflict, spanning-conflict */
-  function CompactCard({ event, highlight }: { event: ProcessedEvent; highlight?: boolean }) {
-    const Icon = typeConfig[event.type].icon
-    const cfg = typeConfig[event.type]
+  /* Compact card used in group-conflict, enrollable-conflict, spanning-conflict
+     Layout:
+       title
+       group badge          (when groupLabel present)
+       description hint     (when description present)
+       time | location
+       capacity | instructions
+       subscribe
+  */
+  function CompactCard({ event, highlight, enrollable }: { event: ProcessedEvent; highlight?: boolean; enrollable?: boolean }) {
     const hasDesc = !!event.description
     return (
       <div
-        className={`flex rounded-xl border p-3 sm:p-4 transition-all ${
+        className={`rounded-xl border p-3 flex flex-col gap-1 transition-all ${
           highlight ? "border-blue-500/50 bg-blue-500/5 shadow-[0_0_12px_rgba(59,130,246,0.1)]" : "border-border"
         } ${hasDesc ? "cursor-pointer active:scale-[0.98] hover:border-muted-foreground/40" : ""}`}
         onClick={hasDesc ? () => setSelectedEvent(event) : undefined}
       >
-        <div className="flex flex-col gap-1.5 flex-1 min-w-0">
-          <div className="flex items-start gap-2.5">
-            <div className={`flex items-center justify-center size-8 sm:size-9 rounded-lg shrink-0 ${cfg.bg} ${cfg.text}`}>
-              <Icon className="size-4" />
-            </div>
-            <div className="flex flex-col gap-0.5 min-w-0">
-              <h3 className="text-xs sm:text-sm font-medium leading-tight text-foreground">{event.title}</h3>
-              {event.speaker && <p className="text-[10px] sm:text-xs text-muted-foreground">{event.speaker}</p>}
-            </div>
-          </div>
-          <div className="flex items-center justify-between gap-1 text-[10px] sm:text-xs text-muted-foreground mt-0.5">
-            <span className="flex items-center gap-1 shrink-0"><Clock className="size-2.5 sm:size-3" />{event.time}–{event.endTime}</span>
-            <span className="flex items-center gap-1 text-right truncate"><MapPin className="size-2.5 sm:size-3 shrink-0" />{event.location}</span>
-          </div>
-          {event.groupLabel && (
-            <span className={`inline-flex w-fit items-center rounded-full px-2 py-0.5 text-[10px] font-semibold ${
-              highlight ? "bg-blue-500/20 text-blue-400" : "bg-secondary text-muted-foreground"
-            }`}>
-              Group {event.groupLabel}{highlight ? " · You" : ""}
-            </span>
-          )}
-          {hasDesc && <span className="flex items-center gap-1 text-[10px] text-muted-foreground/60 mt-0.5"><ChevronDown className="size-2.5" />Tap for details</span>}
-        </div>
-        {event.hasInstructions && (
-          <a
-            href={instructionsHref(event.id)}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(ev) => ev.stopPropagation()}
-            className="flex items-center gap-1.5 self-center shrink-0 ml-2 rounded-lg border border-blue-500/30 bg-blue-500/10 px-2.5 py-1.5 text-[10px] sm:text-xs font-medium text-blue-400 transition-colors hover:bg-blue-500/20"
-          >
-            <FileText className="size-3" />
-            <span className="hidden sm:inline">Instructions</span>
-          </a>
+        {/* title */}
+        <h3 className="text-xs font-semibold leading-tight text-foreground">{event.title}</h3>
+
+        {/* group */}
+        {event.groupLabel && (
+          <span className={`self-start inline-flex items-center rounded-full px-1.5 py-0.5 text-[9px] font-semibold ${
+            highlight ? "bg-blue-500/20 text-blue-400" : "bg-secondary text-muted-foreground"
+          }`}>
+            Group {event.groupLabel}{highlight ? " · You" : ""}
+          </span>
         )}
+
+        {/* description */}
+        {event.speaker && <p className="text-[10px] text-muted-foreground leading-tight">{event.speaker}</p>}
+        {hasDesc && <span className="flex items-center gap-1 text-[10px] text-muted-foreground/60"><ChevronDown className="size-2.5" />Tap for details</span>}
+
+        {/* time | location */}
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[10px] text-muted-foreground mt-0.5">
+          <span className="flex items-center gap-1 shrink-0"><Clock className="size-3" />{event.time}–{event.endTime}</span>
+          <span className="flex items-center gap-1"><MapPin className="size-3 shrink-0" />{event.location}</span>
+        </div>
+
+        {/* capacity | instructions */}
+        {(event.type === "workshop" || event.hasInstructions) && (
+          <div className="flex items-center justify-between gap-1 text-[10px]">
+            <CapacityBadge event={event} />
+            {event.hasInstructions && (
+              <a
+                href={instructionsHref(event.id)}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(ev) => ev.stopPropagation()}
+                className="flex items-center gap-1 text-[10px] font-medium text-blue-400 hover:text-blue-300 transition-colors"
+              >
+                <FileText className="size-3" />
+                Instructions
+              </a>
+            )}
+          </div>
+        )}
+
+        {/* subscribe */}
+        {enrollable && <EnrollButton event={event} />}
       </div>
     )
   }
@@ -491,37 +549,49 @@ export function ScheduleTimeline({ userId, assignedGroup, enrolledIds, waitliste
           /* ---------- Single ---------- */
           if (row.kind === "single") {
             const e = row.event
-            const Icon = typeConfig[e.type].icon
-            const cfg = typeConfig[e.type]
             const hasDesc = !!e.description
             card = (
               <div
-                className={`rounded-xl border border-border p-3 sm:p-4 flex items-center gap-3 transition-all ${hasDesc ? "cursor-pointer active:scale-[0.98] hover:border-muted-foreground/40" : ""}`}
+                className={`rounded-xl border border-border p-3 flex flex-col gap-1 transition-all ${hasDesc ? "cursor-pointer active:scale-[0.98] hover:border-muted-foreground/40" : ""}`}
                 onClick={hasDesc ? () => setSelectedEvent(e) : undefined}
               >
-                <div className={`flex items-center justify-center size-9 sm:size-10 rounded-lg shrink-0 ${cfg.bg} ${cfg.text}`}>
-                  <Icon className="size-4 sm:size-5" />
+                {/* title | group on one line (fits for full-width single cards) */}
+                <div className="flex items-start justify-between gap-2">
+                  <h3 className="text-sm font-semibold text-foreground leading-tight">{e.title}</h3>
+                  {e.groupLabel && (
+                    <span className="inline-flex items-center shrink-0 rounded-full bg-secondary px-1.5 py-0.5 text-[9px] font-semibold text-muted-foreground">
+                      Group {e.groupLabel}
+                    </span>
+                  )}
                 </div>
-                <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                  <h3 className="text-sm font-medium text-foreground">{e.title}</h3>
-                  {e.speaker && <p className="text-xs text-muted-foreground">{e.speaker}</p>}
-                  <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground mt-1">
-                    <span className="flex items-center gap-1 shrink-0"><Clock className="size-3" />{e.time}–{e.endTime}</span>
-                    <span className="flex items-center gap-1"><MapPin className="size-3 shrink-0" />{e.location}</span>
+
+                {/* description */}
+                {e.speaker && <p className="text-xs text-muted-foreground">{e.speaker}</p>}
+                {hasDesc && <span className="flex items-center gap-1 text-[10px] text-muted-foreground/60"><ChevronDown className="size-3" />Tap for details</span>}
+
+                {/* time | location */}
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-muted-foreground mt-0.5">
+                  <span className="flex items-center gap-1 shrink-0"><Clock className="size-3" />{e.time}–{e.endTime}</span>
+                  <span className="flex items-center gap-1"><MapPin className="size-3 shrink-0" />{e.location}</span>
+                </div>
+
+                {/* capacity | instructions */}
+                {(e.type === "workshop" || e.hasInstructions) && (
+                  <div className="flex items-center justify-between gap-2 text-xs">
+                    <CapacityBadge event={e} />
+                    {e.hasInstructions && (
+                      <a
+                        href={instructionsHref(e.id)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(ev) => ev.stopPropagation()}
+                        className="flex items-center gap-1 rounded-md shrink-0 border border-blue-500/30 bg-blue-500/10 px-2 py-1.5 text-[10px] font-medium text-blue-400 transition-colors hover:bg-blue-500/20"
+                      >
+                        <FileText className="size-3" />
+                        Instructions
+                      </a>
+                    )}
                   </div>
-                  {hasDesc && <span className="flex items-center gap-1 text-[10px] text-muted-foreground/60 mt-1"><ChevronDown className="size-3" />Tap for details</span>}
-                </div>
-                {e.hasInstructions && (
-                  <a
-                    href={instructionsHref(e.id)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(ev) => ev.stopPropagation()}
-                    className="flex items-center gap-1.5 rounded-lg shrink-0 border border-blue-500/30 bg-blue-500/10 px-3 py-2 text-xs font-medium text-blue-400 transition-colors hover:bg-blue-500/20"
-                  >
-                    <FileText className="size-3.5" />
-                    Instructions
-                  </a>
                 )}
               </div>
             )
@@ -531,7 +601,7 @@ export function ScheduleTimeline({ userId, assignedGroup, enrolledIds, waitliste
           else if (row.kind === "group-conflict") {
             const sorted = [...row.events].sort((a, b) => (a.groupLabel ?? "").localeCompare(b.groupLabel ?? ""))
             card = (
-              <div className="grid grid-cols-2 gap-2 sm:gap-3">
+              <div className="grid grid-cols-2 gap-2">
                 {sorted.map((e) => (
                   <CompactCard key={e.id} event={e} highlight={assignedGroup === e.groupLabel} />
                 ))}
@@ -542,50 +612,10 @@ export function ScheduleTimeline({ userId, assignedGroup, enrolledIds, waitliste
           /* ---------- Enrollable conflict ---------- */
           else if (row.kind === "enrollable-conflict") {
             card = (
-              <div className="grid grid-cols-2 gap-2 sm:gap-3">
-                {row.events.map((e) => {
-                  const Icon = typeConfig[e.type].icon
-                  const cfg = typeConfig[e.type]
-                  const hasDesc = !!e.description
-                  return (
-                    <div key={e.id} className="flex rounded-xl border border-border p-3 sm:p-4">
-                      <div className="flex flex-col flex-1 min-w-0">
-                        <div
-                          className={hasDesc ? "cursor-pointer active:scale-[0.98] transition-all" : ""}
-                          onClick={hasDesc ? () => setSelectedEvent(e) : undefined}
-                        >
-                          <div className="flex items-start gap-2.5">
-                            <div className={`flex items-center justify-center size-8 sm:size-9 rounded-lg shrink-0 ${cfg.bg} ${cfg.text}`}>
-                              <Icon className="size-4" />
-                            </div>
-                            <div className="flex flex-col gap-0.5 min-w-0">
-                              <h3 className="text-xs sm:text-sm font-medium leading-tight text-foreground">{e.title}</h3>
-                              {e.speaker && <p className="text-[10px] sm:text-xs text-muted-foreground">{e.speaker}</p>}
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between gap-1 text-[10px] sm:text-xs text-muted-foreground mt-2">
-                            <span className="flex items-center gap-1 shrink-0"><Clock className="size-2.5 sm:size-3" />{e.time}–{e.endTime}</span>
-                            <span className="flex items-center gap-1 truncate"><MapPin className="size-2.5 sm:size-3 shrink-0" />{e.location}</span>
-                          </div>
-                          {hasDesc && <span className="flex items-center gap-1 text-[10px] text-muted-foreground/60 mt-1"><ChevronDown className="size-2.5" />Tap for details</span>}
-                        </div>
-                        <EnrollButton event={e} />
-                      </div>
-                      {e.hasInstructions && (
-                        <a
-                          href={instructionsHref(e.id)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(ev) => ev.stopPropagation()}
-                          className="flex items-center gap-1.5 self-center shrink-0 ml-2 rounded-lg border border-blue-500/30 bg-blue-500/10 px-2.5 py-1.5 text-[10px] sm:text-xs font-medium text-blue-400 transition-colors hover:bg-blue-500/20"
-                        >
-                          <FileText className="size-3" />
-                          <span className="hidden sm:inline">Instructions</span>
-                        </a>
-                      )}
-                    </div>
-                  )
-                })}
+              <div className="grid grid-cols-2 gap-2">
+                {row.events.map((e) => (
+                  <CompactCard key={e.id} event={e} enrollable />
+                ))}
               </div>
             )
           }
@@ -594,104 +624,24 @@ export function ScheduleTimeline({ userId, assignedGroup, enrolledIds, waitliste
           else if (row.kind === "spanning-conflict") {
             const spanningEvent = row.allEvents.find((e) => e.type === "workshop")
             card = (
-              <div className="grid grid-cols-2 gap-2 sm:gap-3">
+              <div className="grid grid-cols-2 gap-2">
                 {/* Left: stacked seminar talks */}
-                <div className="flex flex-col gap-2 sm:gap-3">
+                <div className="flex flex-col gap-2">
                   {row.subRows.map((sr, j) => {
                     if (!sr.left) return <div key={j} />
-                    const e = sr.left
-                    const Icon = typeConfig[e.type].icon
-                    const cfg = typeConfig[e.type]
-                    const hasDesc = !!e.description
-                    return (
-                      <div
-                        key={e.id}
-                        className={`flex rounded-xl border border-border p-3 sm:p-4 transition-all ${hasDesc ? "cursor-pointer active:scale-[0.98] hover:border-muted-foreground/40" : ""}`}
-                        onClick={hasDesc ? () => setSelectedEvent(e) : undefined}
-                      >
-                        <div className="flex flex-col gap-1.5 flex-1 min-w-0">
-                          <div className="flex items-start gap-2.5">
-                            <div className={`flex items-center justify-center size-8 sm:size-9 rounded-lg shrink-0 ${cfg.bg} ${cfg.text}`}>
-                              <Icon className="size-4" />
-                            </div>
-                            <div className="flex flex-col gap-0.5 min-w-0">
-                              <h3 className="text-xs sm:text-sm font-medium leading-tight text-foreground">{e.title}</h3>
-                              {e.speaker && <p className="text-[10px] sm:text-xs text-muted-foreground">{e.speaker}</p>}
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between gap-1 text-[10px] sm:text-xs text-muted-foreground mt-0.5">
-                            <span className="flex items-center gap-1 shrink-0"><Clock className="size-2.5 sm:size-3" />{e.time}–{e.endTime}</span>
-                            <span className="flex items-center gap-1 truncate"><MapPin className="size-2.5 sm:size-3 shrink-0" />{e.location}</span>
-                          </div>
-                          {hasDesc && <span className="flex items-center gap-1 text-[10px] text-muted-foreground/60 mt-0.5"><ChevronDown className="size-2.5" />Tap for details</span>}
-                        </div>
-                        {e.hasInstructions && (
-                          <a
-                            href={instructionsHref(e.id)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={(ev) => ev.stopPropagation()}
-                            className="flex items-center gap-1.5 self-center shrink-0 ml-2 rounded-lg border border-blue-500/30 bg-blue-500/10 px-2.5 py-1.5 text-[10px] sm:text-xs font-medium text-blue-400 transition-colors hover:bg-blue-500/20"
-                          >
-                            <FileText className="size-3" />
-                            <span className="hidden sm:inline">Instructions</span>
-                          </a>
-                        )}
-                      </div>
-                    )
+                    return <CompactCard key={sr.left.id} event={sr.left} />
                   })}
                 </div>
                 {/* Right: spanning workshop */}
-                {spanningEvent && (() => {
-                  const hasDesc = !!spanningEvent.description
-                  return (
-                    <div className="flex flex-col rounded-xl border border-border p-3 sm:p-4">
-                      <div className="flex">
-                        <div
-                          className={`flex flex-col flex-1 min-w-0 ${hasDesc ? "cursor-pointer active:scale-[0.98] transition-all" : ""}`}
-                          onClick={hasDesc ? () => setSelectedEvent(spanningEvent) : undefined}
-                        >
-                          <div className="flex items-start gap-2.5">
-                            <div className={`flex items-center justify-center size-8 sm:size-9 rounded-lg shrink-0 ${typeConfig[spanningEvent.type].bg} ${typeConfig[spanningEvent.type].text}`}>
-                              <Wrench className="size-4" />
-                            </div>
-                            <div className="flex flex-col gap-0.5 min-w-0">
-                              <h3 className="text-xs sm:text-sm font-medium leading-tight text-foreground">{spanningEvent.title}</h3>
-                              {spanningEvent.speaker && <p className="text-[10px] sm:text-xs text-muted-foreground">{spanningEvent.speaker}</p>}
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between gap-1 text-[10px] sm:text-xs text-muted-foreground mt-2">
-                            <span className="flex items-center gap-1 shrink-0"><Clock className="size-2.5 sm:size-3" />{spanningEvent.time}–{spanningEvent.endTime}</span>
-                            <span className="flex items-center gap-1 truncate"><MapPin className="size-2.5 sm:size-3 shrink-0" />{spanningEvent.location}</span>
-                          </div>
-                          {hasDesc && <span className="flex items-center gap-1 text-[10px] text-muted-foreground/60 mt-1"><ChevronDown className="size-2.5" />Tap for details</span>}
-                        </div>
-                        {spanningEvent.hasInstructions && (
-                          <a
-                            href={instructionsHref(spanningEvent.id)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={(ev) => ev.stopPropagation()}
-                            className="flex items-center gap-1.5 self-center shrink-0 ml-2 rounded-lg border border-blue-500/30 bg-blue-500/10 px-2.5 py-1.5 text-[10px] sm:text-xs font-medium text-blue-400 transition-colors hover:bg-blue-500/20"
-                          >
-                            <FileText className="size-3" />
-                            <span className="hidden sm:inline">Instructions</span>
-                          </a>
-                        )}
-                      </div>
-                      <div className="flex-1" />
-                      <EnrollButton event={spanningEvent} />
-                    </div>
-                  )
-                })()}
+                {spanningEvent && <CompactCard event={spanningEvent} enrollable />}
               </div>
             )
           }
 
           return (
-            <div key={getRowKey(row, i)} className="flex items-start gap-2 sm:gap-3" role="listitem">
+            <div key={getRowKey(row, i)} className="flex items-start gap-2" role="listitem">
               {/* ── Timeline column ── */}
-              <div className="flex flex-col items-center self-stretch w-12 sm:w-14 shrink-0">
+              <div className="flex flex-col items-center self-stretch w-12 shrink-0">
                 <span className="text-[10px] text-muted-foreground font-mono tabular-nums leading-none mt-[14px]">
                   {rowTime}
                 </span>

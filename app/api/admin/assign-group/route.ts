@@ -29,8 +29,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Missing userId or group" }, { status: 400 })
   }
 
-  if (group !== "A" && group !== "B") {
-    return NextResponse.json({ error: "Group must be 'A' or 'B'" }, { status: 400 })
+  if (group !== "A" && group !== "B" && group !== "Admin") {
+    return NextResponse.json({ error: "Group must be 'A', 'B', or 'Admin'" }, { status: 400 })
   }
 
   // Update the target user's assigned_group

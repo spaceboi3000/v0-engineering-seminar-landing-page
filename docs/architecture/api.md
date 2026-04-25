@@ -77,7 +77,7 @@ This correctly handles the Renesas spanning case (17:10-18:10) blocking enrollme
 
 ## DELETE `/api/enroll`
 
-Removes a user's enrollment from a workshop.
+Removes a user's enrollment from a workshop. If the user was **enrolled** (not waitlisted) and there are waitlisted users, the earliest waitlisted user is automatically promoted to enrolled.
 
 **Auth:** Bearer token
 
@@ -90,6 +90,35 @@ Removes a user's enrollment from a workshop.
 ```
 
 **Response:** `{ success: true }` or `{ error: "message" }`
+
+**Waitlist auto-promotion logic:**
+
+1. Before deleting, checks if the user's status was `enrolled`
+2. Deletes the enrollment row
+3. If the user was enrolled, queries for the oldest waitlisted user (`ORDER BY enrolled_at ASC LIMIT 1`)
+4. Promotes that user's status from `waitlisted` to `enrolled`
+
+This means admins no longer need to manually promote waitlisted users — it happens automatically when a spot opens up.
+
+---
+
+## GET `/api/workshop-instructions`
+
+Proxies workshop instruction PDFs from Supabase Storage, hiding the storage URL from the client.
+
+**Auth:** None (public)
+
+**Query params:** `?id=<workshop_id>`
+
+**Response:** The PDF file with `Content-Type: application/pdf` and `Content-Disposition: inline`
+
+**Logic:**
+
+1. Looks up the workshop's `instructions_url` column to verify instructions exist
+2. Downloads the PDF from Supabase Storage at path `{workshopId}/instructions.pdf`
+3. Serves the file with a clean filename derived from the workshop title
+
+**Why a proxy?** The raw Supabase Storage URL exposes infrastructure details. This route hides it behind `/api/workshop-instructions?id=...`.
 
 ---
 
@@ -217,6 +246,32 @@ Assigns a user to Group A or Group B. Used by the admin check-in page.
 
 - Only accepts `"A"` or `"B"` as group values (returns 400 otherwise)
 - Uses service role key to update the `profiles` table
+
+---
+
+## POST `/api/admin/upload-instructions`
+
+Uploads or removes a workshop instruction PDF.
+
+**Auth:** Cookie-based session (requester must have `assigned_group = 'Admin'`)
+
+**Request body:** `multipart/form-data` with fields:
+
+- `workshopId` (required) — The workshop ID
+- `file` (optional) — A PDF file. If omitted, existing instructions are removed.
+
+**Upload logic:**
+
+1. Verifies admin auth
+2. Uploads the PDF to `workshop-instructions` storage bucket at path `{workshopId}/instructions.pdf`
+3. Saves the public URL in the workshop's `instructions_url` column
+
+**Remove logic (no file):**
+
+1. Removes the file from storage
+2. Sets `instructions_url = NULL` on the workshop row
+
+**Response:** `{ success: true }` or `{ error: "message" }`
 
 ---
 

@@ -44,8 +44,8 @@ dashboard/page.tsx (Server Component)
   │
   ├── UserHeader          ← Name, group badge, settings modal (profile edit, CV upload)
   ├── QrCheckinCard       ← QR code with attendee ID for event check-in
-  ├── ScheduleTimeline    ← Full schedule with enrollment system
-  ├── GameSection         ← Snake game with scoring
+  ├── ScheduleTimeline    ← Full schedule with enrollment, 15s polling, instructions
+  ├── GameSection         ← Snake game (always visible below schedule)
   ├── BottomNav           ← Mobile navigation
   └── WinOverlay          ← Game achievement celebration
 ```
@@ -71,7 +71,25 @@ User clicks "Subscribe"
   → API validates user, checks time conflicts, checks capacity
   → Insert enrollment row (enrolled or waitlisted)
   → Client updates local state optimistically
+  → Immediate server refresh to sync truth
+
+User clicks "Unsubscribe"
+  → DELETE /api/enroll with Bearer token
+  → API deletes enrollment
+  → If user was enrolled: auto-promotes earliest waitlisted user
+  → Client updates local state + immediate server refresh
 ```
+
+### Client-Side (Polling)
+
+```
+Every 15 seconds:
+  → Query enrollments table for user's current statuses
+  → Query workshop_enrollment_summary view for counts
+  → Update UI with fresh data
+```
+
+This ensures waitlist promotions, capacity changes, and other users' actions are reflected promptly.
 
 ## Supabase Clients
 

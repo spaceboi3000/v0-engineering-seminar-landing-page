@@ -10,7 +10,11 @@ A full-stack Next.js web application that serves as both a **public marketing si
 - **User registration & authentication** via Supabase Auth with email confirmation
 - **Attendee dashboard** with QR check-in, real-time schedule with workshop enrollment, CV upload, and a mini-game
 - **Group-based scheduling** splitting attendees into groups (A/B) for parallel sessions
-- **Workshop enrollment** with capacity limits, waitlists, and time-conflict detection
+- **Workshop enrollment** with capacity limits, waitlists, auto-promotion, and time-conflict detection
+- **Workshop instruction PDFs** uploadable by admins, served via proxy to hide infrastructure URLs
+- **Real-time schedule updates** via 15-second polling for enrollment counts and status changes
+- **Admin panel** with QR check-in scanner, group assignment, and instructions management
+- **Automated cleanup** of unconfirmed accounts via pg_cron
 - **Email notifications** for contact forms and newsletter subscriptions
 
 ## Tech Stack
@@ -42,7 +46,8 @@ A full-stack Next.js web application that serves as both a **public marketing si
 │   │   ├── contact/        # Contact form email
 │   │   ├── subscribe/      # Newsletter subscription
 │   │   ├── confirm/        # Email confirmation
-│   │   └── admin/          # Admin check-in API (lookup + assign-group)
+│   │   ├── workshop-instructions/  # PDF proxy (hides storage URL)
+│   │   └── admin/          # Admin APIs (lookup, assign-group, upload-instructions)
 │   ├── admin/              # Admin check-in page (QR scanner, group assignment)
 │   ├── dashboard/          # Protected attendee dashboard
 │   ├── login/              # Login page

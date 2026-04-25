@@ -39,7 +39,7 @@ echo "SELECT id, first_name, last_name, university, assigned_group FROM profiles
 
 ## Admin Check-in Page
 
-The admin check-in page (`/admin`) lets admins scan attendee QR codes on-site, view their profile and enrollments, and assign them to Group A or B.
+The admin check-in page (`/admin`) provides on-site event management with three tabs: **Scan**, **Attendance**, and **Instructions**.
 
 ### Prerequisites
 
@@ -58,24 +58,48 @@ ALTER TABLE profiles ADD CONSTRAINT profiles_assigned_group_check
 UPDATE profiles SET assigned_group = 'Admin' WHERE id = 'your-user-uuid';
 ```
 
-### Using the Check-in Page
+### Scan Tab
 
-1. Log in with an admin account and navigate to `/admin`
-2. Tap **Scan QR Code** to open the camera
-3. Point the camera at an attendee's QR code (format: `ras-ntua:checkin:{userId}`)
-4. The scanned user's profile appears:
-   - Name, university, department, role
-   - Current group assignment
-   - Workshop enrollments with times and status (enrolled/waitlisted)
-5. Tap **Group A** or **Group B** to assign the user
-6. A green confirmation banner appears on success
-7. Tap **Scan Another** to check in the next attendee
+The Scan tab has a **context selector** dropdown at the top with options:
+- **Entrance** — for entrance check-in and group assignment
+- **Each workshop** — listed by title and start time
+
+**Entrance mode:**
+
+1. Select "Entrance" from the dropdown
+2. Tap **Scan QR Code** → point camera at attendee's QR
+3. The scanned user's profile appears with enrollments and check-in badges
+4. Tap **Group A** or **Group B** to assign the user
+5. Tap **Record Check-in** to log their entrance attendance
+6. A small **Promote to Admin** button appears below the group buttons (with confirmation)
+
+**Workshop mode:**
+
+1. Select a workshop from the dropdown
+2. Scan a QR code — the user's enrollment status for that workshop is shown:
+   - **Enrolled** → tap "Record Check-in" to log workshop attendance
+   - **Waitlisted** → a **Promote (bump latest no-show)** button appears. This removes the most recently enrolled person who hasn't been scanned for this workshop and gives their spot to the waitlisted user
+   - **Not enrolled** → warning message shown
+   - **Pending cancel** → automatically reverted to enrolled on check-in
+
+### Attendance Tab
+
+Shows a live list of all users who checked in for a selected context:
+
+1. Select context from dropdown (Entrance or any workshop)
+2. See count badge and list of attendees with name, university, group, and check-in time
+3. Auto-refreshes every 10 seconds
+4. **CSV export** button downloads the attendance list
+
+### Instructions Tab
+
+Same as before — upload/remove instruction PDFs per workshop.
 
 ### Access Control
 
 - Non-logged-in users are redirected to `/login`
 - Logged-in users without `assigned_group = 'Admin'` are redirected to `/dashboard`
-- The API routes (`/api/admin/lookup`, `/api/admin/assign-group`) independently verify admin status server-side
+- All admin API routes independently verify admin status server-side
 
 ### QR Code Format
 
@@ -200,20 +224,26 @@ WHERE e.workshop_id = 'renesas'
 ORDER BY e.enrolled_at;" | npx supabase db query --linked
 ```
 
-### Promote Waitlisted Users
+### Waitlist Auto-Promotion
 
-When an enrolled user drops out, promote the earliest waitlisted user:
+When an enrolled user unsubscribes, the system uses a **60-second grace period**:
 
-```sql
-UPDATE enrollments
-SET status = 'enrolled'
-WHERE id = (
-  SELECT id FROM enrollments
-  WHERE workshop_id = 'renesas' AND status = 'waitlisted'
-  ORDER BY enrolled_at ASC
-  LIMIT 1
-);
-```
+1. The enrollment is marked `pending_cancel` with `cancel_at = now + 60s`
+2. If the user re-subscribes within 60 seconds, their position is restored instantly
+3. After 60 seconds, a pg_cron job (`process_pending_cancels`) deletes the enrollment and promotes the earliest waitlisted user
+
+Waitlisted users who unsubscribe are deleted immediately (no grace period needed — they hold no spot).
+
+The promoted user's dashboard updates within 15 seconds via polling.
+
+### Admin Promote (Bump No-Shows)
+
+On the admin `/admin` page in Workshop scan mode, when a waitlisted user is scanned:
+
+1. The **Promote (bump latest no-show)** button appears
+2. Pressing it finds the enrolled user who registered **last** and has **not been scanned** for that workshop
+3. That user's enrollment is deleted, the waitlisted user is promoted to `enrolled`, and a workshop check-in is recorded
+4. If all enrolled users have already checked in, the promote fails with a message
 
 ### Export Enrollment Data
 
@@ -225,6 +255,29 @@ JOIN profiles p ON e.user_id = p.id
 JOIN workshops w ON e.workshop_id = w.id
 ORDER BY w.title, e.status, p.last_name;" | npx supabase db query --linked --csv
 ```
+
+## Workshop Instructions (PDF)
+
+### Uploading Instructions
+
+1. Navigate to `/admin` and click the **Instructions** tab
+2. Each workshop is listed with an upload area
+3. Click **Upload PDF** and select a PDF file
+4. The file is stored in the `workshop-instructions` Supabase Storage bucket
+5. A green "Uploaded" badge appears next to workshops that have instructions
+
+### Removing Instructions
+
+Click **Remove** next to a workshop with existing instructions. This deletes the file from storage and clears the `instructions_url` column.
+
+### How Users See Instructions
+
+- An "Instructions" button appears on workshop cards in the dashboard schedule
+- The detail popup includes a "Download Instructions (PDF)" link
+- The public schedule overview also shows an "Instructions (PDF)" link
+- All links go through `/api/workshop-instructions?id=...` — the raw Supabase Storage URL is never exposed to clients
+
+---
 
 ## CV Management
 
@@ -259,6 +312,27 @@ echo "SELECT email, confirmed_at FROM subscribers WHERE confirmed = true ORDER B
 echo "SELECT email FROM subscribers WHERE confirmed = true;" \
   | npx supabase db query --linked --csv
 ```
+
+## Automated Cleanup
+
+### Unconfirmed Account Deletion
+
+A `pg_cron` job runs **every hour** and deletes Supabase Auth users that:
+
+- Were created more than 24 hours ago
+- Have never confirmed their email (`email_confirmed_at IS NULL`)
+
+This prevents abandoned registrations from cluttering the database. The job cascades to delete related `profiles` and `enrollments` rows.
+
+**Migration:** `20260424000000_cleanup_unconfirmed_accounts.sql`
+
+**Check job status:**
+
+```sql
+SELECT * FROM cron.job_run_details ORDER BY start_time DESC LIMIT 10;
+```
+
+---
 
 ## Monitoring
 

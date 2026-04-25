@@ -18,10 +18,10 @@ export default async function AdminPage() {
 
   if (profile?.assigned_group !== "Admin") redirect("/dashboard")
 
-  // Fetch workshops for instructions management
+  // Fetch workshops for context dropdown + instructions management
   const { data: workshops } = await db
     .from("workshops")
-    .select("id, title, type, instructions_url")
+    .select("id, title, type, start_time, end_time, instructions_url")
     .in("type", ["workshop", "seminar"])
     .order("start_time")
 

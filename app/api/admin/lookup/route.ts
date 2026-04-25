@@ -68,6 +68,14 @@ export async function GET(req: Request) {
     }
   })
 
+  // Fetch check-in records for this user
+  const { data: checkIns } = await db
+    .from("check_ins")
+    .select("context")
+    .eq("user_id", targetId)
+
+  const checkedIn = (checkIns ?? []).map((c: { context: string }) => c.context)
+
   return NextResponse.json({
     id: targetId,
     firstName: profile.first_name,
@@ -77,5 +85,6 @@ export async function GET(req: Request) {
     role: profile.role,
     assignedGroup: profile.assigned_group,
     enrollments: enrichedEnrollments,
+    checkedIn,
   })
 }

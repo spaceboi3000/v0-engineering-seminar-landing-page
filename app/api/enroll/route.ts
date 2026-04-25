@@ -19,8 +19,29 @@ export async function POST(req: Request) {
 
   if (wErr || !workshop) return NextResponse.json({ error: "Workshop not found" }, { status: 404 })
 
-  // Fetch user's confirmed (enrolled) workshops for overlap check
-  // Waitlisted enrollments don't block scheduling — user may not get in
+  // Check if this user has a pending_cancel row for this exact workshop.
+  // If so, they're re-subscribing within the grace period — restore their spot.
+  const { data: pendingRow } = await db
+    .from("enrollments")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("workshop_id", workshopId)
+    .eq("status", "pending_cancel")
+    .single()
+
+  if (pendingRow) {
+    // Revert the cancellation — position is preserved
+    const { error: revertErr } = await db
+      .from("enrollments")
+      .update({ status: "enrolled", cancel_at: null })
+      .eq("id", pendingRow.id)
+
+    if (revertErr) return NextResponse.json({ error: revertErr.message }, { status: 500 })
+    return NextResponse.json({ success: true, waitlisted: false })
+  }
+
+  // Fetch user's confirmed (enrolled) workshops for overlap check.
+  // Waitlisted and pending_cancel enrollments don't block scheduling.
   const { data: userEnrollments } = await db
     .from("enrollments")
     .select("workshop_id, status, workshops(start_time, end_time, title)")
@@ -43,7 +64,7 @@ export async function POST(req: Request) {
     )
   }
 
-  // Count confirmed enrollments to check capacity
+  // Count confirmed enrollments to check capacity (exclude pending_cancel)
   const { count: enrolledCount } = await db
     .from("enrollments")
     .select("*", { count: "exact", head: true })
@@ -71,11 +92,37 @@ export async function DELETE(req: Request) {
 
   const { workshopId } = await req.json()
 
-  const { error } = await db
+  // Fetch current enrollment
+  const { data: enrollment } = await db
     .from("enrollments")
-    .delete()
+    .select("id, status")
     .eq("user_id", user.id)
     .eq("workshop_id", workshopId)
+    .single()
+
+  if (!enrollment) return NextResponse.json({ error: "Not enrolled" }, { status: 404 })
+
+  if (enrollment.status === "waitlisted") {
+    // Waitlisted users hold no confirmed spot — delete immediately, no grace period needed
+    const { error } = await db
+      .from("enrollments")
+      .delete()
+      .eq("id", enrollment.id)
+
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ success: true })
+  }
+
+  // enrolled → grace period: mark as pending_cancel for 1 minute.
+  // pg_cron (process_pending_cancels) will handle the actual deletion +
+  // waitlist promotion after 60 seconds. If the user re-subscribes before
+  // cancel_at, POST will detect the pending_cancel row and revert it instead
+  // of inserting a new row, preserving their queue position.
+  const cancelAt = new Date(Date.now() + 60_000).toISOString()
+  const { error } = await db
+    .from("enrollments")
+    .update({ status: "pending_cancel", cancel_at: cancelAt })
+    .eq("id", enrollment.id)
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ success: true })
