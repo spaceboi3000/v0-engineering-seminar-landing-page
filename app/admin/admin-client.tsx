@@ -453,6 +453,9 @@ export function AdminClient({ workshops }: { workshops: WorkshopInfo[] }) {
               <span className="text-xs font-medium text-amber-400 bg-amber-500/10 rounded-full px-2 py-0.5">
                 B: {attendees.filter((a) => a.group === "B").length}
               </span>
+              <span className="text-xs font-medium text-emerald-400 bg-emerald-500/10 rounded-full px-2 py-0.5">
+                Admin: {attendees.filter((a) => a.group === "Admin").length}
+              </span>
             </>)}
             {loadingAttendance && <Loader2 className="size-4 animate-spin text-muted-foreground ml-auto" />}
           </div>
