@@ -444,9 +444,17 @@ export function AdminClient({ workshops }: { workshops: WorkshopInfo[] }) {
             </a>
           </div>
 
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="text-sm font-semibold text-foreground">{attendanceCount} checked in</span>
-            {loadingAttendance && <Loader2 className="size-4 animate-spin text-muted-foreground" />}
+            {attendanceCount > 0 && (<>
+              <span className="text-xs font-medium text-blue-400 bg-blue-500/10 rounded-full px-2 py-0.5">
+                A: {attendees.filter((a) => a.group === "A").length}
+              </span>
+              <span className="text-xs font-medium text-amber-400 bg-amber-500/10 rounded-full px-2 py-0.5">
+                B: {attendees.filter((a) => a.group === "B").length}
+              </span>
+            </>)}
+            {loadingAttendance && <Loader2 className="size-4 animate-spin text-muted-foreground ml-auto" />}
           </div>
 
           {attendees.length === 0 && !loadingAttendance && (
